@@ -7,23 +7,25 @@ DISABLE="R0903,W0142,W0232"
 all : formatting doctest pylint
 
 formatting :
-	@echo Checking formatting...
-	@find lib scripts -name "*.py" \
-	    | grep -v scripts/xmlrpc_help.py \
-	    | xargs scripts/shotfactory03_formatting.py
+	@find lib -name "*.py" > check-formatting
+	@find scripts -type f -perm /a+x >> check-formatting
+	@echo "Checking formatting of "`wc -l < check-formatting`" files..."
+	@xargs -a check-formatting devtools/formatting.py
 
 doctest :
-	@echo Checking doctest...
+	@echo lib/image/hashmatch.py > check-doctest
+	@echo "Checking doctest for "`wc -l < check-doctest`" files..."
+	@xargs -a check-doctest -n 1 python
 
 pylint :
-	@echo Checking pylint...
-	@find lib scripts -name "*.py" \
-	    | grep -v scripts/xmlrpc_help.py \
-	    | xargs pylint --rcfile=conf/pylintrc --disable-msg=$(DISABLE) \
-	    || exit 0
+	@find lib scripts -name "*.py" > check-pylint
+	@find scripts -type f -perm /a+x >> check-pylint
+	@echo "Checking pylint for "`wc -l < check-pylint`" files..."
+	@xargs -a check-pylint pylint \
+		--rcfile=conf/pylintrc --disable-msg=$(DISABLE)
 
 install :
 	python setup.py install
 
 clean :
-	rm -rf build
+	rm -rf build *.ppm *.pbm

@@ -110,7 +110,7 @@ argument-rgx=[a-z_][a-z0-9_]*$
 variable-rgx=[a-z_][a-z0-9_]*$
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=os,_
+good-names=os,_,x,y,up
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz,toto,tutu,tata
@@ -151,7 +151,7 @@ additional-builtins=
 enable-design=yes
 
 # Maximum number of arguments for function / method
-max-args=5
+max-args=6
 
 # Maximum number of locals for function / method body
 max-locals=15
