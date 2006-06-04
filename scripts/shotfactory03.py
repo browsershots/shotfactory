@@ -25,3 +25,10 @@ Screenshot factory.
 __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
+
+import sys, xmlrpclib, platform
+
+arg0, server_url, factory_name = sys.argv
+
+server = xmlrpclib.Server(server_url)
+print server.auth.get_nonce(factory_name)
