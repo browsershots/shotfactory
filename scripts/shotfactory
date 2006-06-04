@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # browsershots.org
 # Copyright (C) 2006 Johann C. Rocholl <johann@browsershots.org>
@@ -26,7 +26,7 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import sys, xmlrpclib, platform
+import sys, xmlrpclib
 
 arg0, server_url, factory_name = sys.argv
 

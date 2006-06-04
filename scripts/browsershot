@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import platform, time
+from shotfactory03.gui import x11
+from shotfactory03.image import hashmatch
+
+system = platform.system()
+if system == 'Linux':
+    gui = x11.X11Gui()
+else:
+    raise NotImplemented(system)
+
+def pgdn(page):
+    return 'pgdn%d.ppm' % page
+
+gui.hide_mouse()
+time.sleep(0.1)
+
+filename = pgdn(1)
+gui.screenshot(filename)
+magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
+good_offset = height - 400
+pixels_per_line = 50
+scroll_lines = good_offset / pixels_per_line
+
+for page in range(2, 20):
+    for dummy in range(scroll_lines):
+        gui.down()
+    time.sleep(0.5)
+    previous = filename
+    filename = pgdn(page)
+    gui.screenshot(filename)
+    offset = hashmatch.find_offset(previous, filename)
+    apparently = offset / scroll_lines
+    if apparently > 10 and apparently != pixels_per_line:
+        pixels_per_line = apparently
+        scroll_lines = good_offset / pixels_per_line
+        print 'pixels/line:', pixels_per_line, 'scroll lines:', scroll_lines
+    print offset
+    if not offset:
+        break
+
+# gui.end()
+# for page in range(3):
+#     gui.screenshot('pgup%d.ppm' % (page + 1))

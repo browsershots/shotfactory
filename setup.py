@@ -11,10 +11,13 @@ setup(name = 'ShotFactory',
       package_dir = {'shotfactory03': 'lib'},
       packages = [
             'shotfactory03',
+            'shotfactory03.gui',
+            'shotfactory03.image',
             ],
       scripts = [
-            'scripts/shotfactory03.py',
-            'scripts/shotfactory03_formatting.py',
-            'scripts/xmlrpc_help.py',
+            'scripts/browsershot',
+            'scripts/ppmoffset',
+            'scripts/shotfactory',
+            'scripts/xmlrpcdoc',
             ],
       )
