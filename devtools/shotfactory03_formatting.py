@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # browsershots.org
 # Copyright (C) 2006 Johann C. Rocholl <johann@browsershots.org>
@@ -76,7 +76,7 @@ def remove_shebang(head):
     """
     Remove the first line if it is a valid shebang.
     """
-    if head[1][0] == '#! /usr/bin/python\n':
+    if head[1][0] == '#!/usr/bin/env python\n':
         head[0] += 1
         head[1].pop(0)
 
