@@ -18,7 +18,7 @@
 # MA 02111-1307, USA.
 
 """
-Shotfactory library.
+Image recognition and overlap matching.
 """
 
 __revision__ = '$Rev$'

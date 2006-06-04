@@ -18,7 +18,7 @@
 # MA 02111-1307, USA.
 
 """
-Shotfactory library.
+GUI-specific functionality for all platforms.
 """
 
 __revision__ = '$Rev$'

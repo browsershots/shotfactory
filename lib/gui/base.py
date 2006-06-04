@@ -18,9 +18,15 @@
 # MA 02111-1307, USA.
 
 """
-Shotfactory library.
+Base class for GUI-specific wrappers.
 """
 
 __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
+
+class BaseGui:
+    """
+    Base class for all GUI wrappers.
+    """
+    pass
