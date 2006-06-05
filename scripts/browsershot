@@ -1,6 +1,32 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# browsershots.org
+# Copyright (C) 2006 Johann C. Rocholl <johann@browsershots.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
 
-import platform, time
+"""
+Make screenshots and combine them into one tall image.
+"""
+
+__revision__ = '$Rev: 300 $'
+__date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
+__author__ = '$Author: johann $'
+
+import platform, time, os
 from shotfactory03.gui import x11
 from shotfactory03.image import hashmatch
 
@@ -10,8 +36,9 @@ if system == 'Linux':
 else:
     raise NotImplemented(system)
 
-def pgdn(page):
-    return 'pgdn%d.ppm' % page
+def pgdn(page_number):
+    """Create a PPM filename."""
+    return 'pgdn%02d.ppm' % page_number
 
 gui.hide_mouse()
 time.sleep(0.1)
@@ -19,10 +46,11 @@ time.sleep(0.1)
 filename = pgdn(1)
 gui.screenshot(filename)
 magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
-good_offset = height - 400
+good_offset = height/2
 pixels_per_line = 50
 scroll_lines = good_offset / pixels_per_line
 
+offsets = []
 for page in range(2, 20):
     for dummy in range(scroll_lines):
         gui.down()
@@ -35,11 +63,46 @@ for page in range(2, 20):
     if apparently > 10 and apparently != pixels_per_line:
         pixels_per_line = apparently
         scroll_lines = good_offset / pixels_per_line
-        print 'pixels/line:', pixels_per_line, 'scroll lines:', scroll_lines
-    print offset
+        # print 'pixels/line:', pixels_per_line, 'scroll lines:', scroll_lines
     if not offset:
         break
+    offsets.append(offset)
 
-# gui.end()
-# for page in range(3):
-#     gui.screenshot('pgup%d.ppm' % (page + 1))
+total = height
+for offset in offsets:
+    total += offset
+
+overlaps = []
+for offset in offsets:
+    overlaps.append(height - offset)
+
+print 'offsets: ', offsets
+print 'overlaps:', overlaps
+print 'total:   ', total
+
+outfilename = 'all.png'
+outfile = os.popen('pnmtopng > "%s"' % outfilename, 'wb')
+outfile.write('P6 %d %d 255\n' % (width, total))
+segments = []
+total = 0
+for index in range(0, len(offsets) + 1):
+    top = 0
+    bottom = 0
+    if index > 0:
+        top = overlaps[index-1] / 2
+    if index < len(offsets):
+        bottom = (overlaps[index]+1) / 2
+    segment = height - top - bottom
+    segments.append(segment)
+    total += segment
+    start = top
+    stop = height - bottom
+    filename = pgdn(index+1)
+    print filename, start, stop, segment, total
+    infile = open(filename, 'rb')
+    header = hashmatch.read_ppm_header(infile)
+    pixels = infile.read()
+    start *= 3*width
+    stop *= 3*width
+    outfile.write(pixels[start:stop])
+assert outfile.close() is None

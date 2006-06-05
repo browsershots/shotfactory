@@ -76,33 +76,37 @@ def build_hash(pixels, start, height, row_skip):
     """
     positions = {}
     frequencies = {}
+    frequencies_get = frequencies.get
     previous = pixels[start:start+step]
     for y in range(1, height):
         start += row_skip
         this = pixels[start:start+step]
         marker = previous + this
         previous = this
-        frequencies[marker] = frequencies.get(marker, 0) + 1
+        frequencies[marker] = frequencies_get(marker, 0) + 1
         positions[marker] = y
+    positions_pop = positions.pop
     for marker, counter in frequencies.iteritems():
         if counter > 1:
-            positions.pop(marker)
+            positions_pop(marker)
     return positions
 
 def match_markers(pixels, start, height, row_skip, positions, votes):
     """
     Match markers and collect votes for different offset positions.
     """
+    positions_get = positions.get
+    votes_get = votes.get
     previous = pixels[start:start+step]
     for y in range(1, height):
         start += row_skip
         this = pixels[start:start+step]
         marker = previous + this
         previous = this
-        position = positions.get(marker, -1)
+        position = positions_get(marker, -1)
         if position > -1:
             offset = position - y
-            votes[offset] = votes.get(offset, 0) + 1
+            votes[offset] = votes_get(offset, 0) + 1
 
 def winner(votes, minimum):
     """
@@ -113,6 +117,10 @@ def winner(votes, minimum):
     >>> winner({0:100, 1:1, 2:2, 3:3}, 1)
     3
     >>> winner({0:100, 1:1, 2:2, 3:3}, 0)
+    3
+    >>> winner({0:100, 1:1, 2:2, 3:3}, 4)
+    0
+    >>> winner({}, 1)
     0
     """
     maximum = minimum - 1
