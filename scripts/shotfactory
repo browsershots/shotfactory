@@ -27,8 +27,19 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 import sys, xmlrpclib
+from md5 import md5
 
 arg0, server_url, factory_name = sys.argv
 
+def crypt_password(challenge, password):
+    salt = challenge[:4]
+    nonce = challenge[4:]
+    crypt = md5(salt + password).hexdigest()
+    print salt, nonce, crypt
+    crypt = md5(crypt + nonce).hexdigest()
+    return crypt
+
 server = xmlrpclib.Server(server_url)
-print server.auth.get_nonce(factory_name)
+challenge = server.auth.challenge(factory_name)
+crypt = crypt_password(challenge, 'secret')
+print server.auth.test(factory_name, crypt)
