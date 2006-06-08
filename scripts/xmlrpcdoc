@@ -7,7 +7,7 @@ Free software, licensed under the terms of the GNU GPL
 __revision__ = '$Rev$'
 import sys, xmlrpclib, time
 if len(sys.argv) != 2:
-    print "usage: %s http://www.example.com/xmlrpc/" % sys.argv[0]
+    print "usage: %s http://www.example.com/RPC2" % sys.argv[0]
     sys.exit(1)
 server = xmlrpclib.Server(sys.argv[1])
 methods = server.system.listMethods()

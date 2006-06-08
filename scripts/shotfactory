@@ -35,11 +35,14 @@ def crypt_password(challenge, password):
     salt = challenge[:4]
     nonce = challenge[4:]
     crypt = md5(salt + password).hexdigest()
-    print salt, crypt, nonce
+    # print salt, crypt, nonce
     crypt = md5(crypt + nonce).hexdigest()
     return crypt
 
 server = xmlrpclib.Server(server_url)
+
 challenge = server.auth.challenge(factory_name)
 crypt = crypt_password(challenge, 'secret')
-print server.request.poll(factory_name, crypt)
+
+poll = server.request.poll(factory_name, crypt)
+print poll
