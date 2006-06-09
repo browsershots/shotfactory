@@ -82,7 +82,7 @@ def write_chunk(outfile, tag, data):
     checksum = zlib.crc32(data, checksum)
     outfile.write(struct.pack("!I", checksum))
 
-def write(outfile, width, height, pixels, interlace = False):
+def write(outfile, width, height, pixels, interlace = False, transparent = None):
     """
     Write a 24bpp RGB opaque PNG to the output file.
     http://www.w3.org/TR/PNG/
@@ -96,8 +96,16 @@ def write(outfile, width, height, pixels, interlace = False):
     re-arranged with the Adam7 scheme. This is good for incremental
     display over a slow network connection, but it increases encoding
     time by a factor of 5 and file size by a factor of 1.2 or so.
+
+    The transparent parameter can be used to mark a color as
+    transparent in the resulting image file. If specified, it must be
+    a string of length 3 with the red, green, blue values.
     """
+    assert type(pixels) is str
     assert len(pixels) == 3*width*height
+    if transparent is not None:
+        assert type(transparent) is str
+        assert len(transparent) == 3
     if interlace:
         interlace = 1
         data = scanlines_interlace(width, height, pixels)
@@ -108,10 +116,13 @@ def write(outfile, width, height, pixels, interlace = False):
     outfile.write(struct.pack("8B", 137, 80, 78, 71, 13, 10, 26, 10))
     # http://www.w3.org/TR/PNG/#11IHDR
     write_chunk(outfile, 'IHDR', struct.pack("!2I5B", width, height, 8, 2, 0, 0, interlace))
+    # http://www.w3.org/TR/PNG/#11tRNS
+    if transparent is not None:
+        write_chunk(outfile, 'tRNS', struct.pack("!3H", *map(ord, transparent)))
     # http://www.w3.org/TR/PNG/#11IDAT
     write_chunk(outfile, 'IDAT', zlib.compress(data))
     # http://www.w3.org/TR/PNG/#11IEND
     write_chunk(outfile, 'IEND', '')
 
 if __name__ == '__main__':
-    write(sys.stdout, 2, 2, '~~~000###aaa', interlace = True)
+    write(sys.stdout, 2, 2, '~~~000###aaa', interlace = True, transparent = 'aaa')
