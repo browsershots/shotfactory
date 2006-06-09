@@ -26,7 +26,7 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import sys, xmlrpclib
+import sys, os, time, xmlrpclib
 from md5 import md5
 
 arg0, server_url, factory_name = sys.argv
@@ -46,3 +46,13 @@ crypt = crypt_password(challenge, 'secret')
 
 poll = server.request.poll(factory_name, crypt)
 print poll
+
+pngfilename = 'browsershot.png'
+if poll[0] == 'OK':
+    if os.path.exists(pngfilename):
+        os.remove(pngfilename)
+    os.system('killall firefox-bin')
+    os.system('firefox "%s" &' % poll[1])
+    time.sleep(20)
+    error = os.system('browsershot')
+    server.request.upload(poll[-1], file(pngfilename).read())
