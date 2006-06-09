@@ -28,6 +28,18 @@ __author__ = '$Author$'
 
 import sys, zlib, struct
 
+def scanlines(width, height, pixels):
+    """
+    Insert a filter type marker byte before every scanline.
+    """
+    scanlines = []
+    scanline = 3*width
+    for y in range(height):
+        scanlines.append(chr(0))
+        offset = y*scanline
+        scanlines.append(pixels[offset:offset+scanline])
+    return ''.join(scanlines)
+
 # http://www.w3.org/TR/PNG/#8InterlaceMethods
 adam7 = [(0, 0, 8, 8),
          (4, 0, 8, 8),
@@ -36,6 +48,21 @@ adam7 = [(0, 0, 8, 8),
          (0, 2, 2, 4),
          (1, 0, 2, 2),
          (0, 1, 1, 2)]
+
+def scanlines_interlace(width, height, pixels, scheme = adam7):
+    """
+    Interlace and insert a filter type marker byte before every scanline.
+    """
+    scanlines = []
+    scanline = 3*width
+    for xstart, ystart, xstep, ystep in scheme:
+        for y in range(ystart, height, ystep):
+            if xstart < width:
+                scanlines.append(chr(0))
+            for x in range(xstart, width, xstep):
+                offset = scanline*y + 3*x
+                scanlines.append(pixels[offset:offset+3])
+    return ''.join(scanlines)
 
 def write_chunk(outfile, tag, data):
     """
@@ -53,43 +80,23 @@ def write(outfile, width, height, pixels, interlace = False):
     """
     Write a 24bpp RGB opaque PNG to the output file.
     http://www.w3.org/TR/PNG/
-
     The pixels parameter must be a string of length 3*width*height,
     containing the red, green, blue values for each pixel in rows from
     left to right, top to bottom.
     """
     assert len(pixels) == 3*width*height
-
-    # http://www.w3.org/TR/PNG/#5PNG-file-signature
-    outfile.write(struct.pack("8B", 137, 80, 78, 71, 13, 10, 26, 10))
-
     if interlace:
         interlace = 1
+        data = scanlines_interlace(width, height, pixels)
     else:
         interlace = 0
-
+        data = scanlines(width, height, pixels)
+    # http://www.w3.org/TR/PNG/#5PNG-file-signature
+    outfile.write(struct.pack("8B", 137, 80, 78, 71, 13, 10, 26, 10))
     # http://www.w3.org/TR/PNG/#11IHDR
     write_chunk(outfile, 'IHDR', struct.pack("!2I5B", width, height, 8, 2, 0, 0, interlace))
-
-    scanline = 3*width
-    scanlines = []
-    if not interlace:
-        for y in range(height):
-            scanlines.append(chr(0))
-            offset = y*scanline
-            scanlines.append(pixels[offset:offset+scanline])
-    else:
-        for xstart, ystart, xstep, ystep in adam7:
-            for y in range(ystart, height, ystep):
-                if xstart < width:
-                    scanlines.append(chr(0))
-                for x in range(xstart, width, xstep):
-                    offset = scanline*y + 3*x
-                    scanlines.append(pixels[offset:offset+3])
-    scanlines = ''.join(scanlines)
-
     # http://www.w3.org/TR/PNG/#11IDAT
-    write_chunk(outfile, 'IDAT', zlib.compress(scanlines))
+    write_chunk(outfile, 'IDAT', zlib.compress(data))
     # http://www.w3.org/TR/PNG/#11IEND
     write_chunk(outfile, 'IEND', '')
 
