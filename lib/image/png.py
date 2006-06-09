@@ -32,43 +32,43 @@ def scanlines(width, height, pixels):
     """
     Insert a filter type marker byte before every scanline.
     """
-    scanlines = []
+    result = []
     scanline = 3*width
     for y in range(height):
-        scanlines.append(chr(0))
+        result.append(chr(0))
         offset = y*scanline
-        scanlines.append(pixels[offset:offset+scanline])
-    return ''.join(scanlines)
+        result.append(pixels[offset:offset+scanline])
+    return ''.join(result)
 
 # http://www.w3.org/TR/PNG/#8InterlaceMethods
-adam7 = [(0, 0, 8, 8),
+adam7 = ((0, 0, 8, 8),
          (4, 0, 8, 8),
          (0, 4, 4, 8),
          (2, 0, 4, 4),
          (0, 2, 2, 4),
          (1, 0, 2, 2),
-         (0, 1, 1, 2)]
+         (0, 1, 1, 2))
 
 def scanlines_interlace(width, height, pixels, scheme = adam7):
     """
     Interlace and insert a filter type marker byte before every scanline.
     """
-    scanlines = []
+    result = []
     scanline = 3*width
     for xstart, ystart, xstep, ystep in scheme:
         for y in range(ystart, height, ystep):
             if xstart < width:
-                scanlines.append(chr(0))
+                result.append(chr(0))
                 if xstep == 1:
                     offset = scanline*y
-                    scanlines.append(pixels[offset:offset+scanline])
+                    result.append(pixels[offset:offset+scanline])
                 else:
                     row = []
                     for x in range(xstart, width, xstep):
                         offset = scanline*y + 3*x
                         row.append(pixels[offset:offset+3])
-                    scanlines.append(''.join(row))
-    return ''.join(scanlines)
+                    result.append(''.join(row))
+    return ''.join(result)
 
 def write_chunk(outfile, tag, data):
     """
@@ -118,7 +118,8 @@ def write(outfile, width, height, pixels, interlace = False, transparent = None)
     write_chunk(outfile, 'IHDR', struct.pack("!2I5B", width, height, 8, 2, 0, 0, interlace))
     # http://www.w3.org/TR/PNG/#11tRNS
     if transparent is not None:
-        write_chunk(outfile, 'tRNS', struct.pack("!3H", *map(ord, transparent)))
+        transparent = struct.pack("!3H", ord(transparent[0]), ord(transparent[1]), ord(transparent[2]))
+        write_chunk(outfile, 'tRNS', transparent)
     # http://www.w3.org/TR/PNG/#11IDAT
     write_chunk(outfile, 'IDAT', zlib.compress(data))
     # http://www.w3.org/TR/PNG/#11IEND
