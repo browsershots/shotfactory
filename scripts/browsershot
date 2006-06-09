@@ -26,9 +26,9 @@ __revision__ = '$Rev: 300 $'
 __date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import platform, time, os
+import platform, time
 from shotfactory03.gui import x11
-from shotfactory03.image import hashmatch
+from shotfactory03.image import hashmatch, png
 
 system = platform.system()
 if system == 'Linux':
@@ -80,11 +80,9 @@ print 'offsets: ', offsets
 print 'overlaps:', overlaps
 print 'total:   ', total
 
-outfilename = 'all.png'
-outfile = os.popen('pnmtopng > "%s"' % outfilename, 'wb')
-outfile.write('P6 %d %d 255\n' % (width, total))
-segments = []
+pixels = []
 total = 0
+scanline = 3*width
 for index in range(0, len(offsets) + 1):
     top = 0
     bottom = 0
@@ -93,7 +91,6 @@ for index in range(0, len(offsets) + 1):
     if index < len(offsets):
         bottom = (overlaps[index]+1) / 2
     segment = height - top - bottom
-    segments.append(segment)
     total += segment
     start = top
     stop = height - bottom
@@ -101,8 +98,14 @@ for index in range(0, len(offsets) + 1):
     print filename, start, stop, segment, total
     infile = open(filename, 'rb')
     header = hashmatch.read_ppm_header(infile)
-    pixels = infile.read()
-    start *= 3*width
-    stop *= 3*width
-    outfile.write(pixels[start:stop])
-assert outfile.close() is None
+    read_pixels = infile.read()
+    for y in range(start, stop):
+        offset = scanline*y
+        pixels.append(chr(0))
+        pixels.append(read_pixels[offset:offset+scanline])
+pixels = ''.join(pixels)
+pixels = png.interlace(width, total, pixels)
+
+outfile = file('browsershot.png', 'wb')
+png.write(outfile, width, total, pixels, interlaced = True)
+outfile.close()
