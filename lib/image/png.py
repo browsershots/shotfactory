@@ -86,9 +86,16 @@ def write(outfile, width, height, pixels, interlace = False):
     """
     Write a 24bpp RGB opaque PNG to the output file.
     http://www.w3.org/TR/PNG/
+
     The pixels parameter must be a string of length 3*width*height,
     containing the red, green, blue values for each pixel in rows from
-    left to right, top to bottom.
+    left to right, top to bottom (the same format that you get when
+    reading a PPM file with maxval <= 255).
+
+    If the interlace parameter is set to True, the pixels will be
+    re-arranged with the Adam7 scheme. This is good for incremental
+    display over a slow network connection, but it increases encoding
+    time by a factor of 5 and file size by a factor of 1.2 or so.
     """
     assert len(pixels) == 3*width*height
     if interlace:
@@ -107,4 +114,4 @@ def write(outfile, width, height, pixels, interlace = False):
     write_chunk(outfile, 'IEND', '')
 
 if __name__ == '__main__':
-    write(sys.stdout, 2, 2, '~~~###aaa000', interlace = True)
+    write(sys.stdout, 2, 2, '~~~000###aaa', interlace = True)
