@@ -59,9 +59,15 @@ def scanlines_interlace(width, height, pixels, scheme = adam7):
         for y in range(ystart, height, ystep):
             if xstart < width:
                 scanlines.append(chr(0))
-            for x in range(xstart, width, xstep):
-                offset = scanline*y + 3*x
-                scanlines.append(pixels[offset:offset+3])
+                if xstep == 1:
+                    offset = scanline*y
+                    scanlines.append(pixels[offset:offset+scanline])
+                else:
+                    row = []
+                    for x in range(xstart, width, xstep):
+                        offset = scanline*y + 3*x
+                        row.append(pixels[offset:offset+3])
+                    scanlines.append(''.join(row))
     return ''.join(scanlines)
 
 def write_chunk(outfile, tag, data):
@@ -101,4 +107,4 @@ def write(outfile, width, height, pixels, interlace = False):
     write_chunk(outfile, 'IEND', '')
 
 if __name__ == '__main__':
-    write(sys.stdout, 2, 2, '~##' + '#~#' + '~~#' + '##~', interlace = True)
+    write(sys.stdout, 2, 2, '~~~###aaa000', interlace = True)
