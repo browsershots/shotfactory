@@ -99,13 +99,9 @@ for index in range(0, len(offsets) + 1):
     infile = open(filename, 'rb')
     header = hashmatch.read_ppm_header(infile)
     read_pixels = infile.read()
-    for y in range(start, stop):
-        offset = scanline*y
-        pixels.append(chr(0))
-        pixels.append(read_pixels[offset:offset+scanline])
+    pixels.append(read_pixels[scanline*start:scanline*stop])
 pixels = ''.join(pixels)
-pixels = png.interlace(width, total, pixels)
 
 outfile = file('browsershot.png', 'wb')
-png.write(outfile, width, total, pixels, interlaced = True)
+png.write(outfile, width, total, pixels, interlace = True)
 outfile.close()
