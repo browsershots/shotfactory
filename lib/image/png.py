@@ -51,9 +51,15 @@ def write_chunk(outfile, tag, data):
 
 def write(outfile, width, height, pixels, interlace = False):
     """
-    Write a 8bpp RGB opaque PNG file to the output file.
+    Write a 24bpp RGB opaque PNG to the output file.
     http://www.w3.org/TR/PNG/
+
+    The pixels parameter must be a string of length 3*width*height,
+    containing the red, green, blue values for each pixel in rows from
+    left to right, top to bottom.
     """
+    assert len(pixels) == 3*width*height
+
     # http://www.w3.org/TR/PNG/#5PNG-file-signature
     outfile.write(struct.pack("8B", 137, 80, 78, 71, 13, 10, 26, 10))
 
