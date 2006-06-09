@@ -65,26 +65,25 @@ def write(outfile, width, height, pixels, interlace = False):
     # http://www.w3.org/TR/PNG/#11IHDR
     write_chunk(outfile, 'IHDR', struct.pack("!2I5B", width, height, 8, 2, 0, 0, interlace))
 
-    compressor = zlib.compressobj(9)
-    compressed = []
     scanline = 3*width
+    scanlines = []
     if not interlace:
         for y in range(height):
-            compressed.append(compressor.compress(chr(0)))
+            scanlines.append(chr(0))
             offset = y*scanline
-            compressed.append(compressor.compress(pixels[offset:offset+scanline]))
+            scanlines.append(pixels[offset:offset+scanline])
     else:
         for xstart, ystart, xstep, ystep in adam7:
             for y in range(ystart, height, ystep):
                 if xstart < width:
-                    compressed.append(compressor.compress(chr(0)))
+                    scanlines.append(chr(0))
                 for x in range(xstart, width, xstep):
                     offset = scanline*y + 3*x
-                    compressed.append(compressor.compress(pixels[offset:offset+3]))
-    compressed.append(compressor.flush())
+                    scanlines.append(pixels[offset:offset+3])
+    scanlines = ''.join(scanlines)
 
     # http://www.w3.org/TR/PNG/#11IDAT
-    write_chunk(outfile, 'IDAT', ''.join(compressed))
+    write_chunk(outfile, 'IDAT', zlib.compress(scanlines))
     # http://www.w3.org/TR/PNG/#11IEND
     write_chunk(outfile, 'IEND', '')
 
