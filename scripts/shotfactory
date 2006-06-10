@@ -35,25 +35,33 @@ def crypt_password(challenge, password):
     return crypt
 
 server = xmlrpclib.Server(server_url)
-
 password = 'secret'
-challenge = server.auth.challenge(factory_name)
-crypt = crypt_password(challenge, password)
 
+# Get authentication challenge
+challenge = server.auth.challenge(factory_name)
+
+# Ask server for a matching screenshot request
+crypt = crypt_password(challenge, password)
 status, challenge, options = server.request.poll(factory_name, crypt)
-print status
-print challenge
+print status, challenge
 print options
 
 pngfilename = 'browsershot.png'
-if status == 'OK':
+if status == 'OK' or True:
+    # Start browser
+    os.system('killall firefox-bin')
     nonce = challenge[4:]
     url = '%s/redirect/%s' % (server_url, nonce)
-    if os.path.exists(pngfilename):
-        os.remove(pngfilename)
-    os.system('killall firefox-bin')
     os.system('firefox "%s" &' % url)
     time.sleep(20)
+
+    # Make screenshots
+    if os.path.exists(pngfilename):
+        os.remove(pngfilename)
     error = os.system('browsershot')
-    server.request.upload(file(pngfilename).read(),
-                          crypt_password(challenge, password))
+
+    # Upload PNG file
+    binary = xmlrpclib.Binary(file(pngfilename).read())
+    crypt = crypt_password(challenge, password)
+    response = server.request.upload(binary, crypt)
+    print response
