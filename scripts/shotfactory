@@ -44,14 +44,13 @@ def browsershot(server, password, challenge):
     # Ask server for a matching screenshot request
     crypt = crypt_password(challenge, password)
     status, challenge, options = server.request.poll(factory_name, crypt)
-    print status, challenge
-    print options
     if status != 'OK':
-        raise RuntimeError(status)
+        print status
+        return
+    print options
 
     # Start browser
     os.system('killall firefox-bin')
-    nonce = challenge[4:]
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
     os.system('firefox "%s" &' % url)
