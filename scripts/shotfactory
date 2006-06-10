@@ -27,14 +27,14 @@ from md5 import md5
 pngfilename = 'browsershot.png'
 arg0, server_url, factory_name = sys.argv
 
-def crypt_password(challenge, password):
+def crypt_password(challenge, password, prefix = ''):
     """
     Encrypt a password for transmission.
     """
     salt = challenge[:4]
     nonce = challenge[4:]
     crypt = md5(salt + password).hexdigest()
-    crypt = md5(crypt + nonce).hexdigest()
+    crypt = md5(prefix + crypt + nonce).hexdigest()
     return crypt
 
 def browsershot(server, password, challenge):
@@ -52,7 +52,8 @@ def browsershot(server, password, challenge):
     # Start browser
     os.system('killall firefox-bin')
     nonce = challenge[4:]
-    url = '%s/redirect/%s' % (server_url, nonce)
+    crypt = crypt_password(challenge, password, 'redirect')
+    url = '%s/redirect/%s' % (server_url, crypt)
     os.system('firefox "%s" &' % url)
     time.sleep(10)
 
