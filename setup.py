@@ -18,6 +18,5 @@ setup(name = 'ShotFactory',
             'scripts/browsershot',
             'scripts/ppmoffset',
             'scripts/shotfactory',
-            'scripts/xmlrpcdoc',
             ],
       )
