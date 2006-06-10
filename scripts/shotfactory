@@ -54,7 +54,7 @@ def browsershot(server, password, challenge):
     nonce = challenge[4:]
     url = '%s/redirect/%s' % (server_url, nonce)
     os.system('firefox "%s" &' % url)
-    time.sleep(20)
+    time.sleep(10)
 
     # Make screenshots
     if os.path.exists(pngfilename):
