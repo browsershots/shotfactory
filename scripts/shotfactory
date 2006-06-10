@@ -24,30 +24,31 @@ __author__ = '$Author$'
 import sys, os, time, xmlrpclib
 from md5 import md5
 
+pngfilename = 'browsershot.png'
 arg0, server_url, factory_name = sys.argv
 
 def crypt_password(challenge, password):
+    """
+    Encrypt a password for transmission.
+    """
     salt = challenge[:4]
     nonce = challenge[4:]
     crypt = md5(salt + password).hexdigest()
-    # print salt, crypt, nonce
     crypt = md5(crypt + nonce).hexdigest()
     return crypt
 
-server = xmlrpclib.Server(server_url)
-password = 'secret'
+def browsershot(server, password, challenge):
+    """
+    Process a screenshot request and upload the resulting PNG file.
+    """
+    # Ask server for a matching screenshot request
+    crypt = crypt_password(challenge, password)
+    status, challenge, options = server.request.poll(factory_name, crypt)
+    print status, challenge
+    print options
+    if status != 'OK':
+        raise RuntimeError(status)
 
-# Get authentication challenge
-challenge = server.auth.challenge(factory_name)
-
-# Ask server for a matching screenshot request
-crypt = crypt_password(challenge, password)
-status, challenge, options = server.request.poll(factory_name, crypt)
-print status, challenge
-print options
-
-pngfilename = 'browsershot.png'
-if status == 'OK' or True:
     # Start browser
     os.system('killall firefox-bin')
     nonce = challenge[4:]
@@ -59,9 +60,22 @@ if status == 'OK' or True:
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
     error = os.system('browsershot')
+    assert not error
 
     # Upload PNG file
     binary = xmlrpclib.Binary(file(pngfilename).read())
     crypt = crypt_password(challenge, password)
     response = server.request.upload(binary, crypt)
     print response
+
+def main():
+    """
+    Main loop for screenshot factory.
+    """
+    server = xmlrpclib.Server(server_url)
+    password = 'secret'
+    challenge = server.auth.challenge(factory_name)
+    browsershot(server, password, challenge)
+
+if __name__ == '__main__':
+    main()
