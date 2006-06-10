@@ -1,22 +1,17 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# browsershots.org
 # Copyright (C) 2006 Johann C. Rocholl <johann@browsershots.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-# MA 02111-1307, USA.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """
 Screenshot factory.
@@ -41,18 +36,24 @@ def crypt_password(challenge, password):
 
 server = xmlrpclib.Server(server_url)
 
+password = 'secret'
 challenge = server.auth.challenge(factory_name)
-crypt = crypt_password(challenge, 'secret')
+crypt = crypt_password(challenge, password)
 
-poll = server.request.poll(factory_name, crypt)
-print poll
+status, challenge, options = server.request.poll(factory_name, crypt)
+print status
+print challenge
+print options
 
 pngfilename = 'browsershot.png'
-if poll[0] == 'OK':
+if status == 'OK':
+    nonce = challenge[4:]
+    url = '%s/redirect/%s' % (server_url, nonce)
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
     os.system('killall firefox-bin')
-    os.system('firefox "%s" &' % poll[1])
+    os.system('firefox "%s" &' % url)
     time.sleep(20)
     error = os.system('browsershot')
-    server.request.upload(poll[-1], file(pngfilename).read())
+    server.request.upload(file(pngfilename).read(),
+                          crypt_password(challenge, password))

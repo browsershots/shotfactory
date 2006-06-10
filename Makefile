@@ -29,4 +29,4 @@ install :
 	python setup.py install
 
 clean :
-	rm -rf build *.ppm *.pbm
+	rm -rf build dist *.ppm *.pbm
