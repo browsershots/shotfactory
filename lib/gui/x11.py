@@ -86,27 +86,19 @@ class X11Gui(BaseGui):
         """Create a PPM filename."""
         return 'pg%s%02d.ppm' % (direction, page_number)
 
-    def browsershot(self, filename = 'browsershot.png'):
+    def scroll_pages(self, good_offset=300):
         """
-        Take a number of screenshots and merge them into one tall image.
+        Take screenshots and scroll down between them.
         """
-        self.hide_mouse()
-        time.sleep(0.1)
-
         filename = self.page_filename(1)
-        self.screenshot(filename)
-        magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
-        assert magic == 'P6'
-        assert maxval == 255
-        good_offset = height/2
         pixels_per_line = 50
         scroll_lines = good_offset / pixels_per_line
-
         offsets = []
         for page in range(2, 20):
             for dummy in range(scroll_lines):
                 self.down()
             time.sleep(0.5)
+
             previous = filename
             filename = self.page_filename(page)
             self.screenshot(filename)
@@ -116,23 +108,20 @@ class X11Gui(BaseGui):
             if apparently > 10 and apparently != pixels_per_line:
                 pixels_per_line = apparently
                 scroll_lines = good_offset / pixels_per_line
-                # print 'pixels/line:', pixels_per_line, 'scroll lines:', scroll_lines
             if not offset:
                 break
             offsets.append(offset)
-        self.close_window()
+        return offsets
 
-        total = height
-        for offset in offsets:
-            total += offset
-
+    def merge(self, width, height, offsets):
+        """
+        Merge multi-page screenshots and return a string of pixels.
+        """
         overlaps = []
         for offset in offsets:
             overlaps.append(height - offset)
-
         print 'offsets: ', offsets
         print 'overlaps:', overlaps
-        print 'total:   ', total
 
         pixels = []
         total = 0
@@ -146,16 +135,30 @@ class X11Gui(BaseGui):
                 bottom = (overlaps[index]+1) / 2
             segment = height - top - bottom
             total += segment
-            start = top
-            stop = height - bottom
+            bottom = height - bottom
             filename = self.page_filename(index+1)
-            print filename, start, stop, segment, total
+            print filename, top, bottom, segment, total
             infile = open(filename, 'rb')
-            dummy = hashmatch.read_ppm_header(infile)
-            read_pixels = infile.read()
-            pixels.append(read_pixels[scanline*start:scanline*stop])
-        pixels = ''.join(pixels)
+            hashmatch.read_ppm_header(infile)
+            pixels.append(infile.read()[scanline*top:scanline*bottom])
+        return total, ''.join(pixels)
 
-        outfile = file('browsershot.png', 'wb')
+    def browsershot(self, pngfilename = 'browsershot.png'):
+        """
+        Take a number of screenshots and merge them into one tall image.
+        """
+        self.hide_mouse()
+        time.sleep(0.1)
+
+        filename = self.page_filename(1)
+        self.screenshot(filename)
+        magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
+        assert magic == 'P6'
+        assert maxval == 255
+
+        offsets = self.scroll_pages(good_offset=height/2)
+        total, pixels = self.merge(width, height, offsets)
+
+        outfile = file(pngfilename, 'wb')
         png.write(outfile, width, total, pixels, interlace = True)
         outfile.close()
