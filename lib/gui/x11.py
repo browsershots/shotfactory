@@ -59,6 +59,13 @@ class X11Gui(BaseGui):
         os.system('xte "key Down"')
 
     @staticmethod
+    def close_window():
+        """Close the active window."""
+        os.system('xte "keydown Alt_L"')
+        os.system('xte "key F4"')
+        os.system('xte "keyup Alt_L"')
+
+    @staticmethod
     def hide_mouse():
         """Move the mouse cursor out of the way."""
         os.system('xte "mousemove 400 0"')

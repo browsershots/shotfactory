@@ -50,10 +50,10 @@ def browsershot(server, password, challenge):
     print options
 
     # Start browser
-    os.system('killall firefox-bin')
+    # os.system('killall firefox-bin')
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
-    os.system('firefox "%s" &' % url)
+    os.system('firefox -new-window "%s" &' % url)
     time.sleep(10)
 
     # Make screenshots
