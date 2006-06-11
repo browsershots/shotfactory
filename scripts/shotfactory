@@ -49,8 +49,20 @@ def browsershot(server, password, challenge):
         return
     print options
 
+    # Start VNC server
+    width = options['width']
+    if not width:
+        width = 1024
+    if width == 1280:
+        height = 1024
+    else:
+        height = width / 4 * 3
+    bpp = options['bpp']
+    command = 'vncserver :1 -geometry %dx%d -depth %d' % (width, height, bpp)
+    error = os.system(command)
+    assert not error
+
     # Start browser
-    # os.system('killall firefox-bin')
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
     os.system('firefox -new-window "%s" &' % url)
@@ -60,6 +72,10 @@ def browsershot(server, password, challenge):
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
     error = os.system('browsershot')
+    assert not error
+
+    # Kill VNC server
+    error = os.system('vncserver -kill :1')
     assert not error
 
     # Upload PNG file

@@ -21,9 +21,8 @@ __revision__ = '$Rev: 300 $'
 __date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import platform, time
+import sys, platform
 from shotfactory03.gui import x11
-from shotfactory03.image import hashmatch, png
 
 system = platform.system()
 if system == 'Linux':
@@ -31,73 +30,5 @@ if system == 'Linux':
 else:
     raise NotImplemented(system)
 
-def pgdn(page_number):
-    """Create a PPM filename."""
-    return 'pgdn%02d.ppm' % page_number
-
-gui.hide_mouse()
-time.sleep(0.1)
-
-filename = pgdn(1)
-gui.screenshot(filename)
-magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
-good_offset = height/2
-pixels_per_line = 50
-scroll_lines = good_offset / pixels_per_line
-
-offsets = []
-for page in range(2, 20):
-    for dummy in range(scroll_lines):
-        gui.down()
-    time.sleep(0.5)
-    previous = filename
-    filename = pgdn(page)
-    gui.screenshot(filename)
-    offset = hashmatch.find_offset(previous, filename)
-    apparently = offset / scroll_lines
-    if apparently > 10 and apparently != pixels_per_line:
-        pixels_per_line = apparently
-        scroll_lines = good_offset / pixels_per_line
-        # print 'pixels/line:', pixels_per_line, 'scroll lines:', scroll_lines
-    if not offset:
-        break
-    offsets.append(offset)
-gui.close_window()
-
-total = height
-for offset in offsets:
-    total += offset
-
-overlaps = []
-for offset in offsets:
-    overlaps.append(height - offset)
-
-print 'offsets: ', offsets
-print 'overlaps:', overlaps
-print 'total:   ', total
-
-pixels = []
-total = 0
-scanline = 3*width
-for index in range(0, len(offsets) + 1):
-    top = 0
-    bottom = 0
-    if index > 0:
-        top = overlaps[index-1] / 2
-    if index < len(offsets):
-        bottom = (overlaps[index]+1) / 2
-    segment = height - top - bottom
-    total += segment
-    start = top
-    stop = height - bottom
-    filename = pgdn(index+1)
-    print filename, start, stop, segment, total
-    infile = open(filename, 'rb')
-    header = hashmatch.read_ppm_header(infile)
-    read_pixels = infile.read()
-    pixels.append(read_pixels[scanline*start:scanline*stop])
-pixels = ''.join(pixels)
-
-outfile = file('browsershot.png', 'wb')
-png.write(outfile, width, total, pixels, interlace = True)
-outfile.close()
+gui.display = int(sys.argv[1])
+gui.browsershot()

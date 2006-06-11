@@ -8,15 +8,16 @@ setup(name = 'ShotFactory',
       author = 'Johann C. Rocholl',
       author_email = 'johann@browsershots.org',
       url = 'http://browsershots.org/',
-      package_dir = {'shotfactory03': 'lib'},
+      package_dir = {'shotfactory03': 'lib', '': 'pypng'},
       packages = [
             'shotfactory03',
             'shotfactory03.gui',
             'shotfactory03.image',
             ],
+      py_modules = ['png'],
       scripts = [
-            'scripts/browsershot',
             'scripts/ppmoffset',
             'scripts/shotfactory',
+            'scripts/browsershot',
             ],
       )
