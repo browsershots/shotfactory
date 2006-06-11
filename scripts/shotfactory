@@ -49,7 +49,9 @@ def start_vnc_server(options):
     else:
         height = width / 4 * 3
     bpp = options['bpp']
-    command = 'vncserver :1 -geometry %dx%d -depth %d' % (width, height, bpp)
+    dpi = 90
+    command = ('vncserver :1 -geometry %dx%d -depth %d -dpi %d'
+               % (width, height, bpp, dpi))
     error = os.system(command)
     assert not error
 
@@ -71,7 +73,7 @@ def browsershot(server_url, server, factory, password, challenge):
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
-    gui.shell('firefox -new-window "%s" &' % url)
+    gui.shell('firefox "%s" &' % url)
     time.sleep(10)
 
     # Make screenshots
@@ -104,6 +106,7 @@ def main(server_url, factory):
     debug_factory_features(server, factory)
     password = 'secret'
     challenge = server.auth.challenge(factory)
+    print challenge
     browsershot(server_url, server, factory, password, challenge)
 
 if __name__ == '__main__':
