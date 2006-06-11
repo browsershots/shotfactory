@@ -67,6 +67,12 @@ class X11Gui(BaseGui):
         self.shell('xte "key F4"')
         self.shell('xte "keyup Alt_L"')
 
+    def maximize(self):
+        """Maximize the active window."""
+        self.shell('xte "keydown Alt_L"')
+        self.shell('xte "key F10"')
+        self.shell('xte "keyup Alt_L"')
+
     def hide_mouse(self):
         """Move the mouse cursor out of the way."""
         self.shell('xte "mousemove 400 0"')
