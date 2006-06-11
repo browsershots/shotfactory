@@ -22,6 +22,7 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 import sys, os, time, xmlrpclib
+from shotfactory03.gui import x11
 from md5 import md5
 
 pngfilename = 'browsershot.png'
@@ -61,18 +62,18 @@ def browsershot(server, password, challenge):
     command = 'vncserver :1 -geometry %dx%d -depth %d' % (width, height, bpp)
     error = os.system(command)
     assert not error
+    gui = x11.X11Gui(display=1)
 
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
-    os.system('firefox -new-window "%s" &' % url)
+    gui.shell('firefox -new-window "%s" &' % url)
     time.sleep(10)
 
     # Make screenshots
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
-    error = os.system('browsershot')
-    assert not error
+    gui.browsershot(pngfilename)
 
     # Kill VNC server
     error = os.system('vncserver -kill :1')

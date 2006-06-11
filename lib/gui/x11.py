@@ -30,8 +30,8 @@ class X11Gui(BaseGui):
     Special functions for the X11 screen.
     """
 
-    def __init__(self):
-        self.display = 0
+    def __init__(self, display=0):
+        self.display = display
 
     def shell(self, command):
         """Run a shell command on my display."""
