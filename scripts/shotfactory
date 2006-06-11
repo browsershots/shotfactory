@@ -26,7 +26,6 @@ from shotfactory03.gui import x11
 from md5 import md5
 
 pngfilename = 'browsershot.png'
-arg0, server_url, factory_name = sys.argv
 
 def crypt_password(challenge, password, prefix = ''):
     """
@@ -38,13 +37,13 @@ def crypt_password(challenge, password, prefix = ''):
     crypt = md5(prefix + crypt + nonce).hexdigest()
     return crypt
 
-def browsershot(server, password, challenge):
+def browsershot(server_url, server, factory, password, challenge):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
     # Ask server for a matching screenshot request
     crypt = crypt_password(challenge, password)
-    status, challenge, options = server.request.poll(factory_name, crypt)
+    status, challenge, options = server.request.poll(factory, crypt)
     if status != 'OK':
         print status
         return
@@ -85,14 +84,15 @@ def browsershot(server, password, challenge):
     response = server.request.upload(binary, crypt)
     print response
 
-def main():
+def main(server_url, factory):
     """
     Main loop for screenshot factory.
     """
     server = xmlrpclib.Server(server_url)
+    print server.factory.features(factory)
     password = 'secret'
-    challenge = server.auth.challenge(factory_name)
-    browsershot(server, password, challenge)
+    challenge = server.auth.challenge(factory)
+    browsershot(server_url, server, factory, password, challenge)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1], sys.argv[2])
