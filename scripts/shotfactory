@@ -121,4 +121,9 @@ def hostname():
     return socket.gethostname()
 
 if __name__ == '__main__':
-    main(sys.argv[1], hostname())
+    if len(sys.argv) == 1:
+        main('http://v03.browsershots.org', hostname())
+    elif len(sys.argv) == 2:
+        main(sys.argv[1], hostname())
+    else:
+        print "usage: shotfactory [http://v03.browsershots.org]"
