@@ -21,7 +21,7 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import sys, os, time, xmlrpclib
+import sys, os, time, xmlrpclib, socket
 from shotfactory03.gui import x11
 from md5 import md5
 
@@ -116,5 +116,9 @@ def main(server_url, factory):
     print challenge
     browsershot(server_url, server, factory, password, challenge)
 
+def hostname():
+    """Get hostname of local machine."""
+    return socket.gethostname()
+
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], hostname())
