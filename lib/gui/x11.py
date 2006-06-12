@@ -79,7 +79,7 @@ class X11Gui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        self.shell('xwd -root -silent | xwdtopnm > "%s"' % filename)
+        self.shell('xwd -root -silent | xwdtopnm | pnmdepth 255 > "%s"' % filename)
 
     @staticmethod
     def page_filename(page_number, direction='dn'):
