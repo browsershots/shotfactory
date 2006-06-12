@@ -97,20 +97,26 @@ class X11Gui(BaseGui):
         for page in range(2, 20):
             for dummy in range(scroll_lines):
                 self.down()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             previous = filename
             filename = self.page_filename(page)
             self.screenshot(filename)
             offset = hashmatch.find_offset(previous, filename)
 
-            apparently = offset / scroll_lines
-            if apparently > 10 and apparently != pixels_per_line:
-                pixels_per_line = apparently
-                scroll_lines = good_offset / pixels_per_line
             if not offset:
                 break
             offsets.append(offset)
+
+            apparently = offset / scroll_lines
+            if apparently == 0:
+                print ("apparently no offset per keypress: %d/%d=%d"
+                       %(offset, scroll_lines, apparently))
+            elif apparently != pixels_per_line:
+                pixels_per_line = apparently
+                scroll_lines = min(good_offset / pixels_per_line, 30)
+                print ("%d pixels/keypress, %d keypresses/scroll"
+                       % (pixels_per_line, scroll_lines))
         return offsets
 
     def merge(self, width, height, offsets):
