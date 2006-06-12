@@ -79,7 +79,7 @@ def browsershot(server_url, server, factory, password, challenge):
         gui.shell('konqueror "%s" &' % url)
     else:
         raise RuntimeError("Unsupported browser: %s" % options['browser'])
-    time.sleep(16)
+    time.sleep(24)
     gui.maximize()
     time.sleep(4)
 
@@ -108,7 +108,7 @@ def debug_factory_features(server, factory):
     for index in range(len(features)):
         if features[index] == '(':
             nested += 1
-            if nested <= 2:
+            if nested <= 2 and index > 0:
                 stop = index
                 print features[start:stop].strip()
                 start = stop
