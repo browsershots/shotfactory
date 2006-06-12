@@ -103,7 +103,24 @@ def debug_factory_features(server, factory):
     Print the SQL WHERE clause for a given factory.
     """
     features = server.factory.features(factory)
-    print features.replace(' AND ', ' AND\n')
+    start = 0
+    nested = 0
+    for index in range(len(features)):
+        if features[index] == '(':
+            nested += 1
+            if nested <= 2:
+                stop = index
+                print features[start:stop].strip()
+                start = stop
+        elif features[index] == ')':
+            nested -= 1
+            if nested == 0 and features[index - 1] == ')':
+                stop = index
+                print features[start:stop].strip()
+                start = stop
+    rest = features[start:].strip()
+    if rest:
+        print rest
 
 def main(server_url, factory):
     """
