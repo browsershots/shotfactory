@@ -114,7 +114,7 @@ class X11Gui(BaseGui):
                        %(offset, scroll_lines, apparently))
             elif apparently != pixels_per_line:
                 pixels_per_line = apparently
-                scroll_lines = min(good_offset / pixels_per_line, 30)
+                scroll_lines = min(good_offset / pixels_per_line, 40)
                 print ("%d pixels/keypress, %d keypresses/scroll"
                        % (pixels_per_line, scroll_lines))
         return offsets
