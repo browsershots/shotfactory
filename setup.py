@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
 from distutils.core import setup
 
 setup(name = 'ShotFactory',
-      version = '0.3.0',
-      description = 'Server software for browsershots.org',
+      version = '0.3-alpha1',
+      description = 'Screenshot factory for browsershots.org',
       author = 'Johann C. Rocholl',
       author_email = 'johann@browsershots.org',
-      url = 'http://browsershots.org/',
+      url = 'http://v03.browsershots.org/',
       package_dir = {'shotfactory03': 'lib', '': 'pypng'},
       packages = [
             'shotfactory03',
