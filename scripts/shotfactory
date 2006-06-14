@@ -126,25 +126,23 @@ def debug_factory_features(server, factory):
     if rest:
         print rest
 
-def main(server_url, factory):
+def _main():
     """
     Main loop for screenshot factory.
     """
+    if len(sys.argv) == 1:
+        server_url = 'http://v03.browsershots.org'
+    elif len(sys.argv) == 2:
+        server_url = sys.argv[1]
+    else:
+        print "usage: shotfactory [http://v03.browsershots.org]"
     server = xmlrpclib.Server(server_url)
+    factory = socket.gethostname()
     debug_factory_features(server, factory)
     password = 'secret'
     challenge = server.auth.challenge(factory)
     print challenge
     browsershot(server_url, server, factory, password, challenge)
 
-def hostname():
-    """Get hostname of local machine."""
-    return socket.gethostname()
-
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        main('http://v03.browsershots.org', hostname())
-    elif len(sys.argv) == 2:
-        main(sys.argv[1], hostname())
-    else:
-        print "usage: shotfactory [http://v03.browsershots.org]"
+    _main()
