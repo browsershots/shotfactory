@@ -47,7 +47,7 @@ def log(status, extra=None):
 
 def sleep():
     """Sleep a while to wait for new requests."""
-    time.sleep(10)
+    time.sleep(60)
 
 def crypt_password(challenge, password, prefix = ''):
     """
