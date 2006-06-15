@@ -31,6 +31,24 @@ from md5 import md5
 
 pngfilename = 'browsershot.png'
 
+def log(status, extra=None):
+    """
+    Add a line to the log file.
+    """
+    logfile = open('shotfactory.log', 'a')
+    logfile.write(time.strftime('%Y-%m-%d %H:%M:%S'))
+    logfile.write(' ')
+    logfile.write(status)
+    if extra is not None:
+        logfile.write(' ')
+        logfile.write(str(extra))
+    logfile.write('\n')
+    logfile.close()
+
+def sleep():
+    """Sleep a while to wait for new requests."""
+    time.sleep(10)
+
 def crypt_password(challenge, password, prefix = ''):
     """
     Encrypt a password for transmission.
@@ -59,18 +77,10 @@ def start_vnc_server(options):
     error = os.system(command)
     assert not error
 
-def browsershot(server_url, server, factory, password, challenge):
+def browsershot(server_url, server, factory, options, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
-    # Ask server for a matching screenshot request
-    crypt = crypt_password(challenge, password)
-    status, challenge, options = server.request.poll(factory, crypt)
-    if status != 'OK':
-        print status
-        return
-    print options
-
     start_vnc_server(options)
     gui = x11.X11Gui(display=1)
 
@@ -99,12 +109,15 @@ def browsershot(server_url, server, factory, password, challenge):
     # Upload PNG file
     binary = xmlrpclib.Binary(file(pngfilename).read())
     crypt = crypt_password(challenge, password)
-    response = server.request.upload(binary, crypt)
-    print response
+    status, challenge = server.request.upload(binary, crypt)
+    print 'uploaded:', status
+    if status != 'OK':
+        log(status, options)
+    return challenge
 
 def debug_factory_features(server, factory):
     """
-    Print the SQL WHERE clause for a given factory.
+    Print the SQL WHERE clause for a given factory, with linebreaks.
     """
     features = server.factory.features(factory)
     start = 0
@@ -141,8 +154,19 @@ def _main():
     debug_factory_features(server, factory)
     password = 'secret'
     challenge = server.auth.challenge(factory)
-    print challenge
-    browsershot(server_url, server, factory, password, challenge)
+    while True:
+        print challenge
+        crypt = crypt_password(challenge, password)
+        status, challenge, options = server.request.poll(factory, crypt)
+        if status != 'OK':
+            print status
+            log(status)
+            sleep()
+            challenge = server.auth.challenge(factory)
+            continue
+        print options
+        challenge = browsershot(server_url, server, factory, options,
+                                challenge, password)
 
 if __name__ == '__main__':
     _main()
