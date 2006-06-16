@@ -25,9 +25,10 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 import os, time
+from array import array
 from shotfactory03.gui.base import BaseGui
 from shotfactory03.image import hashmatch
-import png
+from shotfactory03.pypng import png
 
 class X11Gui(BaseGui):
     """
@@ -123,20 +124,18 @@ class X11Gui(BaseGui):
                        % (pixels_per_line, scroll_lines))
         return offsets
 
-    def merge(self, width, height, offsets):
+    def scanlines(self, width, height, offsets):
         """
-        Merge multi-page screenshots and return a string of pixels.
+        Merge multi-page screenshots and yield scanlines.
         """
         overlaps = []
         for offset in offsets:
             overlaps.append(height - offset)
         print 'offsets: ', offsets
         print 'overlaps:', overlaps
-
-        pixels = []
         total = 0
-        scanline = 3*width
-        for index in range(0, len(offsets) + 1):
+        row_bytes = 3*width
+        for index in range(0, len(overlaps) + 1):
             top = 0
             bottom = 0
             if index > 0:
@@ -150,8 +149,13 @@ class X11Gui(BaseGui):
             print filename, top, bottom, segment, total
             infile = open(filename, 'rb')
             hashmatch.read_ppm_header(infile)
-            pixels.append(infile.read()[scanline*top:scanline*bottom])
-        return total, ''.join(pixels)
+            infile.seek(top*row_bytes, 1)
+            for y in range(top, bottom):
+                scanline = array('B')
+                scanline.fromfile(infile, row_bytes)
+                yield scanline
+            infile.close()
+
 
     def browsershot(self, pngfilename = 'browsershot.png'):
         """
@@ -167,8 +171,10 @@ class X11Gui(BaseGui):
         assert maxval == 255
 
         offsets = self.scroll_pages(good_offset=height/2)
-        total, pixels = self.merge(width, height, offsets)
+        total = height + sum(offsets)
+        print 'total:', total
+        scanlines = self.scanlines(width, height, offsets)
 
         outfile = file(pngfilename, 'wb')
-        png.write(outfile, width, total, pixels, interlace = True)
+        png.write(outfile, scanlines, width, total)
         outfile.close()
