@@ -58,9 +58,9 @@ def crypt_password(challenge, password, prefix = ''):
     crypt = md5(prefix + crypt + nonce).hexdigest()
     return crypt
 
-def start_vnc_server(options):
+def browsershot(server_url, server, factory, options, challenge, password):
     """
-    Start a VNC server.
+    Process a screenshot request and upload the resulting PNG file.
     """
     width = options['width']
     if not width:
@@ -70,24 +70,17 @@ def start_vnc_server(options):
     else:
         height = width / 4 * 3
     bpp = options['bpp']
+    if not bpp:
+        bpp = 24
     dpi = 90
-    command = ('vncserver :1 -geometry %dx%d -depth %d -dpi %d'
-               % (width, height, bpp, dpi))
-    error = os.system(command)
-    assert not error
 
-def browsershot(server_url, server, factory, options, challenge, password):
-    """
-    Process a screenshot request and upload the resulting PNG file.
-    """
     platform_name = platform.system()
     if platform_name == 'Linux':
         from shotfactory03.gui import x11
-        start_vnc_server(options)
-        gui = x11.X11Gui(display=1)
+        gui = x11.X11Gui(width, height, bpp, dpi, display=1)
     elif platform_name == 'Darwin':
         from shotfactory03.gui import darwin
-        gui = darwin.DarwinGui()
+        gui = darwin.DarwinGui(width, height, bpp, dpi)
     else:
         raise NotImplementedError(platform_name)
 
