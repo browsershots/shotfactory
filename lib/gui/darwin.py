@@ -65,25 +65,24 @@ class DarwinGui(BaseGui):
         time.sleep(0.1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
         time.sleep(0.1)
-        # self.safari.activate()
-        # time.sleep(0.1)
+        self.safari.activate()
+        time.sleep(0.1)
         self.js("document.location='%s'" % url)
-
         ready_count = 0
-        for dummy in range(10):
+        for dummy in range(30):
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
+                if ready_count > 3:
+                    break
             else:
                 ready_count = 0
-            if ready_count > 5:
-                break
 
     def ready_state(self):
         """Get progress indicator."""
-        answer = self.js("document.readyState")
-        print answer
-        return answer == u'complete'
+        state = self.js("document.readyState")
+        # print state
+        return state == 'complete'
 
     def scroll_down(self, pixels):
         """Scroll down with AppleScript/JavaScript."""
