@@ -58,7 +58,7 @@ def crypt_password(challenge, password, prefix = ''):
     crypt = md5(prefix + crypt + nonce).hexdigest()
     return crypt
 
-def browsershot(server_url, server, factory, options, challenge, password):
+def browsershot(server_url, server, options, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
@@ -154,8 +154,7 @@ def _main():
             challenge = server.auth.challenge(factory)
             continue
         print options
-        challenge = browsershot(server_url, server, factory, options,
-                                challenge, password)
+        challenge = browsershot(server_url, server, options, challenge, password)
 
 if __name__ == '__main__':
     _main()
