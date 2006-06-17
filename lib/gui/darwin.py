@@ -65,6 +65,8 @@ class DarwinGui(BaseGui):
         time.sleep(1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
         time.sleep(1)
+        self.safari.activate()
+        time.sleep(1)
         self.js("document.location='%s'" % url)
         for dummy in range(10):
             time.sleep(3)
