@@ -25,8 +25,7 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import sys, os, time, xmlrpclib, socket
-from shotfactory03.gui import x11
+import sys, os, time, xmlrpclib, socket, platform
 from md5 import md5
 
 pngfilename = 'browsershot.png'
@@ -81,8 +80,16 @@ def browsershot(server_url, server, factory, options, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
-    start_vnc_server(options)
-    gui = x11.X11Gui(display=1)
+    platform_name = platform.system()
+    if platform_name == 'Linux':
+        from shotfactory03.gui import x11
+        start_vnc_server(options)
+        gui = x11.X11Gui(display=1)
+    elif platform_name == 'Darwin':
+        from shotfactory03.gui import darwin
+        gui = darwin.DarwinGui()
+    else:
+        raise NotImplementedError(platform_name)
 
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
