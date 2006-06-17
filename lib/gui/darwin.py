@@ -58,7 +58,8 @@ class DarwinGui(BaseGui):
         """Start browser and load website."""
         self.safari = appscript.app('Safari')
         self.js("window.moveTo(0,0)")
-        self.js("window.resizeTo(screen.width,screen.height)")
+        time.sleep(1)
+        self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
         time.sleep(1)
         self.js("document.location='%s'" % url)
         for dummy in range(10):
@@ -66,7 +67,7 @@ class DarwinGui(BaseGui):
             if self.ready_state():
                 break
 
-    def ready_state():
+    def ready_state(self):
         """Get progress indicator."""
         answer = self.js("document.readyState")
         return answer == u'complete'
