@@ -86,8 +86,7 @@ class X11Gui(BaseGui):
         """Save the full screen to a PPM file."""
         self.shell('xwd -root -silent | xwdtopnm | pnmdepth 255 > "%s"' % filename)
 
-    @staticmethod
-    def page_filename(page_number, direction='dn'):
+    def page_filename(self, page_number, direction='dn'):
         """Create a PPM filename."""
         return 'pg%s%02d.ppm' % (direction, page_number)
 
