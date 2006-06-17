@@ -78,7 +78,8 @@ class DarwinGui(BaseGui):
         time.sleep(0.1)
         self.js("document.location='%s'" % url)
         ready_count = 0
-        for dummy in range(30):
+        max_wait = time.time() + 30
+        while time.time() < max_wait:
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
