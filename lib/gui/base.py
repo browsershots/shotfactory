@@ -46,10 +46,13 @@ class BaseGui:
         pixels_per_line = 50
         scroll_lines = good_offset / pixels_per_line
         offsets = []
-        for page in range(2, 20):
-            for dummy in range(scroll_lines):
-                self.down()
-            time.sleep(0.1)
+        for page in range(2, 10):
+            if hasattr(self, 'scroll_down'):
+                self.scroll_down(good_offset)
+            else:
+                for dummy in range(scroll_lines):
+                    self.down()
+            time.sleep(0.2)
 
             previous = filename
             filename = self.page_filename(page)
