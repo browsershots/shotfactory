@@ -127,7 +127,3 @@ class BaseGui:
         outfile = file(pngfilename, 'wb')
         png.write(outfile, scanlines, width, total)
         outfile.close()
-
-    def close(self):
-        """Dummy for closing exactly nothing."""
-        pass

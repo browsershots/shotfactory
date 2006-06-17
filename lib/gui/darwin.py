@@ -62,16 +62,17 @@ class DarwinGui(BaseGui):
         """Start browser and load website."""
         self.safari = appscript.app('Safari')
         self.js("window.moveTo(0,0)")
-        time.sleep(1)
+        time.sleep(0.1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
-        time.sleep(1)
+        time.sleep(0.1)
         self.safari.activate()
-        time.sleep(1)
+        time.sleep(0.1)
         self.js("document.location='%s'" % url)
         for dummy in range(10):
-            time.sleep(3)
+            time.sleep(1)
             if self.ready_state():
                 break
+        time.sleep(1)
 
     def ready_state(self):
         """Get progress indicator."""
@@ -82,3 +83,6 @@ class DarwinGui(BaseGui):
         """Scroll down with AppleScript/JavaScript."""
         self.js('window.scrollBy(0,%d)' % pixels)
 
+    def close(self):
+        """Close Safari."""
+        self.shell('killall Safari')
