@@ -83,7 +83,7 @@ class DarwinGui(BaseGui):
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
-                if ready_count > 3:
+                if ready_count > 5:
                     break
             else:
                 ready_count = 0
