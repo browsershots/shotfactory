@@ -76,7 +76,7 @@ class DarwinGui(BaseGui):
         answer = self.js("document.readyState")
         return answer == u'complete'
 
-    def scroll_down(pixels):
+    def scroll_down(self, pixels):
         """Scroll down with AppleScript/JavaScript."""
         self.js('window.scrollBy(0,%d)' % pixels)
 
