@@ -39,6 +39,9 @@ class DarwinGui(BaseGui):
         BaseGui.__init__(self, width, height, bpp, dpi)
         self.bottom_skip = 4
         self.safari = None
+        # Set screen resolution and color depth with Lynn Pye's cscreen
+        # Freeware, available from http://www.pyehouse.com/lynn/cscreen.php
+        self.shell('./cscreen -x %d -y %d -d %d -f' % (width, height, bpp))
 
     def shell(self, command):
         """Run a shell command."""
