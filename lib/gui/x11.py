@@ -104,3 +104,6 @@ class X11Gui(BaseGui):
             self.shell('konqueror "%s" &' % url)
         else:
             raise ValueError("Unsupported browser: %s" % options['browser'])
+        time.sleep(24)
+        self.maximize()
+        time.sleep(4)
