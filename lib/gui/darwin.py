@@ -41,6 +41,10 @@ class DarwinGui(BaseGui):
         self.bpp = bpp
         self.dpi = dpi
 
+    def shell(self, command):
+        """Run a shell command."""
+        return os.system(command)
+
     def hide_mouse(self):
         """Move the mouse cursor out of the way."""
         pass
