@@ -55,3 +55,10 @@ class DarwinGui(BaseGui):
         safari = appscript.app('Safari')
         safari.do_JavaScript('window.scrollBy(0,%d)' % pixels,
                              in_=safari.documents[0])
+
+    def ready_state():
+        """Get progress indicator."""
+        safari = appscript.app('Safari')
+        answer = safari.do_JavaScript('document.readyState',
+                                      in_=safari.documents[0])
+        return answer == u'complete'
