@@ -107,3 +107,8 @@ class X11Gui(BaseGui):
         time.sleep(24)
         self.maximize()
         time.sleep(4)
+
+    def close(self):
+        """Shut down the VNC server."""
+        error = os.system('vncserver -kill :%d' % self.display)
+        assert not error
