@@ -87,12 +87,7 @@ def browsershot(server_url, server, factory, options, challenge, password):
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
-    if options['browser'] == 'Firefox':
-        gui.shell('firefox "%s" &' % url)
-    elif options['browser'] == 'Konqueror':
-        gui.shell('konqueror "%s" &' % url)
-    else:
-        raise RuntimeError("Unsupported browser: %s" % options['browser'])
+    gui.start_browser(options['browser'], url)
     time.sleep(24)
     gui.maximize()
     time.sleep(4)

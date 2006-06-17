@@ -95,3 +95,12 @@ class X11Gui(BaseGui):
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
         self.shell('xwd -root -silent | xwdtopnm | pnmdepth 255 > "%s"' % filename)
+
+    def start_browser(self, browser, url):
+        """Start browser and load website."""
+        if browser == 'Firefox':
+            self.shell('firefox "%s" &' % url)
+        elif browser == 'Konqueror':
+            self.shell('konqueror "%s" &' % url)
+        else:
+            raise ValueError("Unsupported browser: %s" % options['browser'])
