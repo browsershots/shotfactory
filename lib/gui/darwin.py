@@ -50,15 +50,28 @@ class DarwinGui(BaseGui):
         self.shell('screencapture "%s.png"' % filename)
         self.shell('pngtopnm "%s.png" > "%s"' % (filename, filename))
 
-    def scroll_down(pixels):
-        """Scroll down with AppleScript/JavaScript."""
-        safari = appscript.app('Safari')
-        safari.do_JavaScript('window.scrollBy(0,%d)' % pixels,
-                             in_=safari.documents[0])
+    def js(self, command):
+        """Run JavaScript in Safari."""
+        return self.safari.do_JavaScript(command, in_=self.safari.documents[0])
+
+    def start_browser(self, browser, url):
+        """Start browser and load website."""
+        self.safari = appscript.app('Safari')
+        self.js("window.moveTo(0,0)")
+        self.js("window.resizeTo(screen.width,screen.height)")
+        time.sleep(1)
+        self.js("document.location='%s'" % url)
+        for dummy in range(10):
+            time.sleep(3)
+            if self.ready_state():
+                break
 
     def ready_state():
         """Get progress indicator."""
-        safari = appscript.app('Safari')
-        answer = safari.do_JavaScript('document.readyState',
-                                      in_=safari.documents[0])
+        answer = self.js("document.readyState")
         return answer == u'complete'
+
+    def scroll_down(pixels):
+        """Scroll down with AppleScript/JavaScript."""
+        self.js('window.scrollBy(0,%d)' % pixels)
+
