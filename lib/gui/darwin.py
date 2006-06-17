@@ -35,7 +35,7 @@ class DarwinGui(BaseGui):
     Special functions for Mac OS X.
     """
 
-    def __init__(width, height, bpp, dpi):
+    def __init__(self, width, height, bpp, dpi):
         self.width = width
         self.height = height
         self.bpp = bpp
