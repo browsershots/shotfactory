@@ -25,7 +25,7 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 
-import os
+import os, time
 from shotfactory03.gui.base import BaseGui
 
 
@@ -38,15 +38,12 @@ class X11Gui(BaseGui):
         """
         Start a VNC server.
         """
+        BaseGui.__init__(self, width, height, bpp, dpi)
+        self.display = display
         command = ('vncserver :%d -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))
         error = os.system(command)
         assert not error
-        self.width = width
-        self.height = height
-        self.bpp = bpp
-        self.dpi = dpi
-        self.display = display
 
     def shell(self, command):
         """Run a shell command on my display."""
@@ -103,7 +100,7 @@ class X11Gui(BaseGui):
         elif browser == 'Konqueror':
             self.shell('konqueror "%s" &' % url)
         else:
-            raise ValueError("Unsupported browser: %s" % options['browser'])
+            raise ValueError("Unsupported browser: %s" % browser)
         time.sleep(24)
         self.maximize()
         time.sleep(4)

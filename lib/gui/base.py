@@ -34,6 +34,15 @@ class BaseGui:
     Base class for all GUI wrappers.
     """
 
+    def __init__(self, width, height, bpp, dpi):
+        """Save arguments and set defaults."""
+        self.width = width
+        self.height = height
+        self.bpp = bpp
+        self.dpi = dpi
+        self.top_skip = 0
+        self.bottom_skip = 0
+
     def page_filename(self, page_number, direction='dn'):
         """Create a PPM filename."""
         return 'pg%s%02d.ppm' % (direction, page_number)
@@ -88,13 +97,17 @@ class BaseGui:
         for index in range(0, len(overlaps) + 1):
             top = 0
             bottom = 0
-            if index > 0:
+            if index == 0:
+                top = self.top_skip
+            else:
                 top = overlaps[index-1] / 2
-            if index < len(offsets):
+            if index == len(offsets):
+                bottom = self.bottom_skip
+            else:
                 bottom = (overlaps[index]+1) / 2
-            segment = height - top - bottom
-            total += segment
             bottom = height - bottom
+            segment = bottom - top
+            total += segment
             filename = self.page_filename(index+1)
             print filename, top, bottom, segment, total
             infile = open(filename, 'rb')
@@ -120,7 +133,7 @@ class BaseGui:
         assert maxval == 255
 
         offsets = self.scroll_pages(good_offset=height/2)
-        total = height + sum(offsets)
+        total = height + sum(offsets) - self.top_skip - self.bottom_skip
         print 'total:', total
         scanlines = self.scanlines(width, height, offsets)
 

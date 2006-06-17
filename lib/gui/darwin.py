@@ -36,10 +36,9 @@ class DarwinGui(BaseGui):
     """
 
     def __init__(self, width, height, bpp, dpi):
-        self.width = width
-        self.height = height
-        self.bpp = bpp
-        self.dpi = dpi
+        BaseGui.__init__(self, width, height, bpp, dpi)
+        self.bottom_skip = 4
+        self.safari = None
 
     def shell(self, command):
         """Run a shell command."""
