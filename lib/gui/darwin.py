@@ -24,7 +24,7 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time, appscript
+import os, time, appscript, MacOS
 from array import array
 from shotfactory03.gui.base import BaseGui
 from shotfactory03.image import hashmatch
@@ -63,7 +63,13 @@ class DarwinGui(BaseGui):
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
-        self.safari = appscript.app('Safari')
+        self.close()
+
+        try:
+            self.safari = appscript.app('Safari')
+        except MacOS.Error:
+            return False
+
         self.js("window.moveTo(0,0)")
         time.sleep(0.1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
@@ -80,6 +86,7 @@ class DarwinGui(BaseGui):
                     break
             else:
                 ready_count = 0
+        return True
 
     def ready_state(self):
         """Get progress indicator."""
