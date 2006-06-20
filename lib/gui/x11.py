@@ -109,3 +109,4 @@ class X11Gui(BaseGui):
         """Shut down the VNC server."""
         error = os.system('vncserver -kill :%d' % self.display)
         assert not error
+        os.system('killall -9 klauncher')
