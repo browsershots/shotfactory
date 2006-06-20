@@ -146,7 +146,9 @@ def _main():
     while True:
         print challenge
         crypt = crypt_password(challenge, password)
+        poll_start = time.time()
         status, challenge, options = server.request.poll(factory, crypt)
+        print "%.2f seconds server poll latency." % (time.time() - poll_start)
         if status != 'OK':
             print status
             log(status)
