@@ -138,5 +138,6 @@ class BaseGui:
         scanlines = self.scanlines(width, height, offsets)
 
         outfile = file(pngfilename, 'wb')
-        png.write(outfile, scanlines, width, total)
+        writer = png.Writer(width, total)
+        writer.write(outfile, scanlines)
         outfile.close()
