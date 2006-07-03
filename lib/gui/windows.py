@@ -54,7 +54,7 @@ class WindowsGui(BaseGui):
         bitmap = win32gui.CreateCompatibleBitmap(screen, self.width, self.height)
         start_time = time.time()
         result = win32gui.BitBlt(bitmap, 0, 0, self.width, self.height,
-                                 screen, 0, 0, SRCCOPY);
+                                 screen, 0, 0, win32con.SRCCOPY);
         print result, time.time() - start_time
         sys.exit(1)
 
@@ -79,8 +79,8 @@ class WindowsGui(BaseGui):
             print "MSIE is not ready (timeout in %d seconds)." % timeout
             time.sleep(4)
             timeout -= 4
-        print "Sleeping 20 seconds to finish loading."
-        time.sleep(20)
+        print "Sleeping 3 seconds to finish loading."
+        time.sleep(3)
         return True
 
     def close(self):
