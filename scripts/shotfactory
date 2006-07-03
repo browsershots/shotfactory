@@ -81,6 +81,9 @@ def browsershot(server_url, server, options, challenge, password):
     elif platform_name == 'Darwin':
         from shotfactory03.gui import darwin
         gui = darwin.DarwinGui(width, height, bpp, dpi)
+    elif platform_name == 'Windows':
+        from shotfactory03.gui import windows
+        gui = windows.WindowsGui(width, height, bpp, dpi)
     else:
         raise NotImplementedError(platform_name)
 
