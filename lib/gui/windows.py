@@ -50,16 +50,11 @@ class WindowsGui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        hDC = win32gui.GetWindowDC(0)
-        memDC = CreateCompatibleDC(hDC);
-        memBM = win32gui.CreateCompatibleBitmap(hDC, self.width, self.height)
-        win32gui.SelectObject(memDC, memBM)
-
-        start_time = time.time()
-        result = win32gui.BitBlt(memDC, 0, 0, self.width, self.height,
-                                 hDC, 0, 0, win32con.SRCCOPY);
-        print result, time.time() - start_time
-        sys.exit(1)
+        import ImageGrab
+        im = ImageGrab.grab()
+        outfile = open(filename, 'wb')
+        im.save(outfile, 'PPM')
+        outfile.close()
 
     def scroll_down(self, pixels):
         """Scroll down a number of pixels."""
