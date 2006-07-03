@@ -50,8 +50,12 @@ class WindowsGui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        dc = win32gui.GetWindowDC(0)
-        print dc
+        screen = win32gui.GetWindowDC(0)
+        bitmap = win32gui.CreateCompatibleBitmap(screen, self.width, self.height)
+        start_time = time.time()
+        result = win32gui.BitBlt(bitmap, 0, 0, self.width, self.height,
+                                 screen, 0, 0, SRCCOPY);
+        print result, time.time() - start_time
         sys.exit(1)
 
     def scroll_down(self, pixels):
@@ -61,23 +65,22 @@ class WindowsGui(BaseGui):
     def start_browser(self, browser, url):
         """Start browser and load website."""
         self.close()
-
         command = 'c:\programme\internet explorer\iexplore.exe'
         os.spawnl(os.P_DETACH, command, 'iexplore', url)
-
-        attempts = 0
-        while attempts < 10:
-            attempts += 1
+        timeout = 20
+        while timeout > 0:
             try:
                 msie = window_by_classname('IEFrame')
-                child = child_window_by_classname(
+                self.scroll_window = child_window_by_classname(
                     msie, 'Internet Explorer_Server')
                 break
             except:
-                print "MSIE is not ready, sleeping 10 seconds."
-                time.sleep(10)
+                pass
+            print "MSIE is not ready (timeout in %d seconds)." % timeout
+            time.sleep(4)
+            timeout -= 4
+        print "Sleeping 20 seconds to finish loading."
         time.sleep(20)
-
         return True
 
     def close(self):
