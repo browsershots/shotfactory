@@ -25,10 +25,8 @@ __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import os, time
-from array import array
+import win32api, win32gui, win32con
 from shotfactory03.gui.base import BaseGui
-from shotfactory03.image import hashmatch
-from shotfactory03.pypng import png
 
 class WindowsGui(BaseGui):
     """
@@ -37,9 +35,9 @@ class WindowsGui(BaseGui):
 
     def __init__(self, width, height, bpp, dpi):
         BaseGui.__init__(self, width, height, bpp, dpi)
-        # Set screen resolution and depth with Stefan Tucker's reschange.exe
+        # Set screen resolution with Stefan Tucker's Resolution Changer
         # Freeware, available from http://www.12noon.com/reschange.htm
-        self.shell('reschange.exe -width=%u -height=%u -depth=%u -refresh=60'
+        self.shell('reschangecon.exe -width=%u -height=%u -depth=%u'
                    % (width, height, bpp))
 
     def shell(self, command):
@@ -48,7 +46,7 @@ class WindowsGui(BaseGui):
 
     def hide_mouse(self):
         """Move the mouse cursor out of the way."""
-        pass
+        win32api.SetCursorPos((0, 0))
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
@@ -65,6 +63,18 @@ class WindowsGui(BaseGui):
 
         command = 'c:\programme\internet explorer\iexplore.exe'
         os.spawnl(os.P_DETACH, command, 'iexplore', url)
+
+        attempts = 0
+        while attempts < 10:
+            attempts += 1
+            try:
+                msie = window_by_classname('IEFrame')
+                child = child_window_by_classname(
+                    msie, 'Internet Explorer_Server')
+                break
+            except:
+                print "MSIE is not ready, sleeping 10 seconds."
+                time.sleep(10)
         time.sleep(20)
 
         return True
@@ -72,3 +82,27 @@ class WindowsGui(BaseGui):
     def close(self):
         """Close the browser."""
         pass
+
+
+def enum_classname_hwnd(hwnd, extra):
+    extra[win32gui.GetClassName(hwnd)] = hwnd
+
+
+def window_by_classname(classname):
+    extra = {}
+    win32gui.EnumWindows(enum_classname_hwnd, extra)
+    return extra[classname]
+
+
+def child_window_by_classname(hwnd, classname):
+    extra = {}
+    win32gui.EnumChildWindows(hwnd, enum_classname_hwnd, extra)
+    return extra[classname]
+
+
+def enum_print(hwnd, extra):
+    print hwnd, win32gui.GetClassName(hwnd)
+
+
+def print_child_windows(hwnd):
+    win32gui.EnumChildWindows(hwnd, enum_print, 0)
