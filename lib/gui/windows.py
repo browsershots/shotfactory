@@ -78,7 +78,7 @@ class WindowsGui(BaseGui):
                 self.scroll_window = child_window_by_classname(
                     msie, 'Internet Explorer_Server')
                 break
-            except:
+            except KeyError:
                 pass
             print "MSIE is not ready (timeout in %d seconds)." % timeout
             time.sleep(5)
