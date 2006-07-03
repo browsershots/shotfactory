@@ -77,15 +77,14 @@ class WindowsGui(BaseGui):
             except:
                 pass
             print "MSIE is not ready (timeout in %d seconds)." % timeout
-            time.sleep(4)
-            timeout -= 4
-        print "Sleeping 3 seconds to finish loading."
-        time.sleep(3)
-        return True
+            time.sleep(5)
+            timeout -= 5
+        print "Sleeping 20 seconds while page is loading."
+        time.sleep(20)
 
     def close(self):
         """Close the browser."""
-        # Using process.exe from beyondlogic.org which is freeware:
+        # Using process.exe from beyondlogic.org (freeware):
         # http://www.beyondlogic.org/solutions/processutil/processutil.htm
         # win32gui.PostMessage(self.msie_window, win32con.WM_CLOSE, 0, 0)
         os.system("process.exe -k iexplore.exe > NULL")
