@@ -99,7 +99,7 @@ def browsershot(server_url, server, options, challenge, password):
     gui.close()
 
     # Upload PNG file
-    binary = xmlrpclib.Binary(file(pngfilename).read())
+    binary = xmlrpclib.Binary(file(pngfilename, 'rb').read())
     crypt = crypt_password(challenge, password)
     status, challenge = server.request.upload(binary, crypt)
     print 'uploaded:', status
