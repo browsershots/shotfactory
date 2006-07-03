@@ -56,8 +56,8 @@ class WindowsGui(BaseGui):
         im.save(outfile, 'PPM')
         outfile.close()
 
-    def scroll_down(self, pixels):
-        """Scroll down a number of pixels."""
+    def down(self):
+        """Scroll down one line."""
         win32gui.PostMessage(self.scroll_window,
                              win32con.WM_VSCROLL,
                              win32con.SB_LINEDOWN, 0)

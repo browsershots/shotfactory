@@ -52,8 +52,8 @@ class BaseGui:
         Take screenshots and scroll down between them.
         """
         filename = self.page_filename(1)
-        pixels_per_line = 50
-        scroll_lines = good_offset / pixels_per_line
+        pixels_per_line = 100
+        scroll_lines = max(1, good_offset / pixels_per_line)
         offsets = []
         for page in range(2, 10):
             if hasattr(self, 'scroll_down'):
