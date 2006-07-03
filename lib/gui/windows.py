@@ -24,7 +24,7 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time
+import os, time, sys
 import win32api, win32gui, win32con
 from shotfactory03.gui.base import BaseGui
 
@@ -50,8 +50,9 @@ class WindowsGui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        self.shell('screencapture "%s.png"' % filename)
-        self.shell('pngtopnm "%s.png" > "%s"' % (filename, filename))
+        dc = win32gui.GetWindowDC(0)
+        print dc
+        sys.exit(1)
 
     def scroll_down(self, pixels):
         """Scroll down a number of pixels."""
