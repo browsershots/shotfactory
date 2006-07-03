@@ -76,7 +76,7 @@ class WindowsGui(BaseGui):
             try:
                 self.msie_window = window_by_classname('IEFrame')
                 self.scroll_window = child_window_by_classname(
-                    msie, 'Internet Explorer_Server')
+                    self.msie_window, 'Internet Explorer_Server')
                 break
             except KeyError:
                 pass
