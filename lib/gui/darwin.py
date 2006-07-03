@@ -25,10 +25,7 @@ __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import os, time, appscript, MacOS
-from array import array
 from shotfactory03.gui.base import BaseGui
-from shotfactory03.image import hashmatch
-from shotfactory03.pypng import png
 
 class DarwinGui(BaseGui):
     """
