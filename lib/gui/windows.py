@@ -58,9 +58,10 @@ class WindowsGui(BaseGui):
 
     def down(self):
         """Scroll down one line."""
-        win32gui.PostMessage(self.scroll_window,
-                             win32con.WM_VSCROLL,
-                             win32con.SB_LINEDOWN, 0)
+        if self.scroll_window:
+            win32gui.PostMessage(self.scroll_window,
+                                 win32con.WM_VSCROLL,
+                                 win32con.SB_LINEDOWN, 0)
         time.sleep(0.1)
 
     def start_browser(self, browser, url):
@@ -68,10 +69,12 @@ class WindowsGui(BaseGui):
         self.close()
         command = 'c:\programme\internet explorer\iexplore.exe'
         os.spawnl(os.P_DETACH, command, 'iexplore', url)
+        self.msie_window = 0
+        self.scroll_window = 0
         timeout = 20
         while timeout > 0:
             try:
-                msie = window_by_classname('IEFrame')
+                self.msie_window = window_by_classname('IEFrame')
                 self.scroll_window = child_window_by_classname(
                     msie, 'Internet Explorer_Server')
                 break
