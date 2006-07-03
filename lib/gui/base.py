@@ -61,7 +61,7 @@ class BaseGui:
             else:
                 for dummy in range(scroll_lines):
                     self.down()
-            time.sleep(0.2)
+            time.sleep(0.5)
 
             previous = filename
             filename = self.page_filename(page)

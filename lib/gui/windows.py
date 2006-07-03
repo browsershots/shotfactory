@@ -61,6 +61,7 @@ class WindowsGui(BaseGui):
         win32gui.PostMessage(self.scroll_window,
                              win32con.WM_VSCROLL,
                              win32con.SB_LINEDOWN, 0)
+        time.sleep(0.1)
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
