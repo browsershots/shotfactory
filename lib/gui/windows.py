@@ -58,7 +58,8 @@ class WindowsGui(BaseGui):
 
     def scroll_down(self, pixels):
         """Scroll down a number of pixels."""
-        self.js('window.scrollBy(0,%d)' % pixels)
+        win32gui.PostMessage(self.scroll_window,
+                             win32con.WM_VSCROLL, win32con.SB_DOWN, 0)
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
