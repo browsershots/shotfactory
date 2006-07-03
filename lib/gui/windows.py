@@ -50,11 +50,14 @@ class WindowsGui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        screen = win32gui.GetWindowDC(0)
-        bitmap = win32gui.CreateCompatibleBitmap(screen, self.width, self.height)
+        hDC = win32gui.GetWindowDC(0)
+        memDC = CreateCompatibleDC(hDC);
+        memBM = win32gui.CreateCompatibleBitmap(hDC, self.width, self.height)
+        win32gui.SelectObject(memDC, memBM)
+
         start_time = time.time()
-        result = win32gui.BitBlt(bitmap, 0, 0, self.width, self.height,
-                                 screen, 0, 0, win32con.SRCCOPY);
+        result = win32gui.BitBlt(memDC, 0, 0, self.width, self.height,
+                                 hDC, 0, 0, win32con.SRCCOPY);
         print result, time.time() - start_time
         sys.exit(1)
 
