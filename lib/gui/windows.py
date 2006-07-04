@@ -37,7 +37,7 @@ class WindowsGui(BaseGui):
         BaseGui.__init__(self, width, height, bpp, dpi)
         # Set screen resolution with Stefan Tucker's Resolution Changer
         # Freeware, available from http://www.12noon.com/reschange.htm
-        self.shell('reschangecon.exe -width=%u -height=%u -depth=%u'
+        self.shell('reschangecon.exe -width=%u -height=%u -depth=%u > NUL'
                    % (width, height, bpp))
 
     def shell(self, command):
@@ -67,7 +67,7 @@ class WindowsGui(BaseGui):
     def start_browser(self, browser, url):
         """Start browser and load website."""
         self.close()
-        command = 'c:\programme\internet explorer\iexplore.exe'
+        command = 'c:\progra~1\intern~1\iexplore.exe'
         os.spawnl(os.P_DETACH, command, 'iexplore', url)
         self.msie_window = 0
         self.scroll_window = 0
@@ -91,16 +91,16 @@ class WindowsGui(BaseGui):
         # Using process.exe from beyondlogic.org (freeware):
         # http://www.beyondlogic.org/solutions/processutil/processutil.htm
         # win32gui.PostMessage(self.msie_window, win32con.WM_CLOSE, 0, 0)
-        os.system("process.exe -k iexplore.exe > NULL")
+        os.system("process.exe -k iexplore.exe > NUL")
 
         # Kill crash report system
-        os.system("process.exe -k dwwin.exe > NULL")
-        os.system("process.exe -k iedw.exe > NULL")
-        os.system("process.exe -k telnet.exe > NULL")
+        os.system("process.exe -k dwwin.exe > NUL")
+        os.system("process.exe -k iedw.exe > NUL")
+        os.system("process.exe -k telnet.exe > NUL")
         # Kill image preview
-        os.system("process.exe -k rundll32.exe > NULL")
+        os.system("process.exe -k rundll32.exe > NUL")
         # Kill Outlook Express internet connection wizard
-        os.system("process.exe -k msimn.exe > NULL")
+        os.system("process.exe -k msimn.exe > NUL")
         # It would be better to close all open windows except own console,
         # or maybe kill all processes except those which ran at start.
 
