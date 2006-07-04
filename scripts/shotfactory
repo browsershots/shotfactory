@@ -159,6 +159,7 @@ def _main():
         server_url = sys.argv[1]
     else:
         print "usage: shotfactory [http://v03.browsershots.org]"
+    socket.setdefaulttimeout(10.0)
     server = xmlrpclib.Server(server_url)
     factory = socket.gethostname()
     debug_factory_features(server, factory)
@@ -166,7 +167,7 @@ def _main():
     challenge = None
     while True:
         try:
-            if challenge is None:
+            if not challenge:
                 challenge = server.auth.challenge(factory)
             print 'challenge:', challenge
             crypt = crypt_password(challenge, password)
@@ -185,6 +186,9 @@ def _main():
                 challenge = None
         except socket.gaierror, (errno, message):
             error_sleep(message)
+            challenge = None
+        except socket.timeout:
+            error_sleep('Socket operation timed out')
             challenge = None
 
 
