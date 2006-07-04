@@ -21,14 +21,18 @@
 Screenshot factory.
 """
 
+
 __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
+
 import sys, os, time, xmlrpclib, socket, platform
 from md5 import md5
 
+
 pngfilename = 'browsershot.png'
+
 
 def log(status, extra=None):
     """
@@ -44,9 +48,11 @@ def log(status, extra=None):
     logfile.write('\n')
     logfile.close()
 
+
 def sleep():
     """Sleep a while to wait for new requests."""
     time.sleep(60)
+
 
 def crypt_password(challenge, password, prefix = ''):
     """
@@ -57,6 +63,7 @@ def crypt_password(challenge, password, prefix = ''):
     crypt = md5(salt + password).hexdigest()
     crypt = md5(prefix + crypt + nonce).hexdigest()
     return crypt
+
 
 def browsershot(server_url, server, options, challenge, password):
     """
@@ -107,6 +114,7 @@ def browsershot(server_url, server, options, challenge, password):
         log(status, options)
     return challenge
 
+
 def debug_factory_features(server, factory):
     """
     Print the SQL WHERE clause for a given factory, with linebreaks.
@@ -131,6 +139,7 @@ def debug_factory_features(server, factory):
     if rest:
         print rest
 
+
 def error_sleep(message):
     """
     Log error message, sleep a while, get a new challenge.
@@ -138,6 +147,7 @@ def error_sleep(message):
     print message
     log(message)
     sleep()
+
 
 def _main():
     """
@@ -176,6 +186,7 @@ def _main():
         except socket.gaierror, (errno, message):
             error_sleep(message)
             challenge = None
+
 
 if __name__ == '__main__':
     _main()
