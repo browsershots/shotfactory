@@ -186,6 +186,7 @@ def _main():
                 challenge = browsershot(server_url, server, options,
                                         challenge, password)
             elif status == 'No matching request.':
+                print status
                 sleep()
                 challenge = None
             else:
