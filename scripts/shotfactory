@@ -131,6 +131,14 @@ def debug_factory_features(server, factory):
     if rest:
         print rest
 
+def error_sleep(message):
+    """
+    Log error message, sleep a while, get a new challenge.
+    """
+    print message
+    log(message)
+    sleep()
+
 def _main():
     """
     Main loop for screenshot factory.
@@ -145,21 +153,29 @@ def _main():
     factory = socket.gethostname()
     debug_factory_features(server, factory)
     password = 'secret'
-    challenge = server.auth.challenge(factory)
+    challenge = None
     while True:
-        print challenge
-        crypt = crypt_password(challenge, password)
-        poll_start = time.time()
-        status, challenge, options = server.request.poll(factory, crypt)
-        print "%.2f seconds server poll latency." % (time.time() - poll_start)
-        if status != 'OK':
-            print status
-            log(status)
-            sleep()
-            challenge = server.auth.challenge(factory)
-            continue
-        print options
-        challenge = browsershot(server_url, server, options, challenge, password)
+        try:
+            if challenge is None:
+                challenge = server.auth.challenge(factory)
+            print 'challenge:', challenge
+            crypt = crypt_password(challenge, password)
+
+            poll_start = time.time()
+            status, challenge, options = server.request.poll(factory, crypt)
+            poll_latency = time.time() - poll_start
+            print 'server poll latency: %.2f seconds' % poll_latency
+
+            if status == 'OK':
+                print options
+                challenge = browsershot(server_url, server, options,
+                                        challenge, password)
+            else:
+                error_sleep(status)
+                challenge = None
+        except socket.gaierror, (errno, message):
+            error_sleep(message)
+            challenge = None
 
 if __name__ == '__main__':
     _main()
