@@ -144,6 +144,9 @@ def error_sleep(message):
     """
     Log error message, sleep a while, get a new challenge.
     """
+    message = message.capitalize()
+    if not message.endswith('.'):
+        message += '.'
     print message
     log(message)
     sleep()
@@ -181,6 +184,9 @@ def _main():
                 print options
                 challenge = browsershot(server_url, server, options,
                                         challenge, password)
+            elif status == 'No matching request.':
+                sleep()
+                challenge = None
             else:
                 error_sleep(status)
                 challenge = None
@@ -188,7 +194,7 @@ def _main():
             error_sleep(message)
             challenge = None
         except socket.timeout:
-            error_sleep('Socket operation timed out')
+            error_sleep('Socket operation timed out.')
             challenge = None
 
 
