@@ -123,9 +123,6 @@ class BaseGui:
         """
         Take a number of screenshots and merge them into one tall image.
         """
-        self.hide_mouse()
-        time.sleep(0.1)
-
         filename = self.page_filename(1)
         self.screenshot(filename)
         magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
