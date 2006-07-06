@@ -163,7 +163,7 @@ def _main():
         server_url = sys.argv[1]
     else:
         print "usage: shotfactory [http://v03.browsershots.org]"
-    socket.setdefaulttimeout(30.0)
+    socket.setdefaulttimeout(60.0)
     server = xmlrpclib.Server(server_url)
     factory = socket.gethostname()
     debug_factory_features(server, factory)
@@ -192,9 +192,15 @@ def _main():
             else:
                 error_sleep(status)
         except socket.gaierror, (errno, message):
-            error_sleep(message)
+            error_sleep('Socket gaierror: ' + message)
         except socket.timeout:
-            error_sleep('Socket operation timed out.')
+            error_sleep('Socket timeout.')
+        except socket.error, error:
+            if type(error.args) in (tuple, list):
+                (errno, message) = error.args
+            else:
+                message = str(error.args)
+            error_sleep('Socket error: ' + message)
         except xmlrpclib.ProtocolError:
             error_sleep('XML-RPC protocol error.')
 
