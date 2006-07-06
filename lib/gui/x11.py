@@ -95,7 +95,6 @@ class X11Gui(BaseGui):
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
-        self.close()
         if browser == 'Firefox':
             self.shell('firefox "%s" &' % url)
         elif browser == 'Konqueror':
