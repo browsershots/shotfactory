@@ -145,7 +145,8 @@ def error_sleep(message):
     """
     Log error message, sleep a while, get a new challenge.
     """
-    message = message.capitalize()
+    if not message[0].isupper():
+        message = message[0].upper + message[1:]
     if not message.endswith('.'):
         message += '.'
     print message
