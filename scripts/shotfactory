@@ -175,6 +175,7 @@ def _main():
                 challenge = server.auth.challenge(factory)
             print 'challenge:', challenge
             crypt = crypt_password(challenge, password)
+            challenge = None
 
             poll_start = time.time()
             status, challenge, options = server.request.poll(factory, crypt)
@@ -188,16 +189,14 @@ def _main():
             elif status == 'No matching request.':
                 print status
                 sleep()
-                challenge = None
             else:
                 error_sleep(status)
-                challenge = None
         except socket.gaierror, (errno, message):
             error_sleep(message)
-            challenge = None
         except socket.timeout:
             error_sleep('Socket operation timed out.')
-            challenge = None
+        except xmlrpclib.ProtocolError:
+            error_sleep('XML-RPC protocol error.')
 
 
 if __name__ == '__main__':
