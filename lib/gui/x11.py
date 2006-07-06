@@ -95,6 +95,7 @@ class X11Gui(BaseGui):
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
+        self.close()
         if browser == 'Firefox':
             self.shell('firefox "%s" &' % url)
         elif browser == 'Konqueror':
@@ -110,3 +111,6 @@ class X11Gui(BaseGui):
         error = os.system('vncserver -kill :%d' % self.display)
         assert not error
         os.system('killall -9 klauncher')
+        os.system('killall -9 dcopserver')
+        os.system('killall -9 kio_http')
+        os.system('killall -9 artsd')
