@@ -91,7 +91,12 @@ class X11Gui(BaseGui):
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
-        self.shell('xwd -root -silent | xwdtopnm | pnmdepth 255 > "%s"' % filename)
+        parts = ('xwd -root -silent',
+                 'xwdtopnm',
+                 'pnmdepth 255 > "%s"' % filename)
+        error = self.shell('|'.join(parts))
+        if error:
+            raise RuntimeError('screenshot failed')
 
     def start_browser(self, browser, url):
         """Start browser and load website."""

@@ -24,7 +24,7 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import time
+import time, os
 from array import array
 from shotfactory03.image import hashmatch
 from shotfactory03.pypng import png
@@ -47,6 +47,15 @@ class BaseGui:
         """Create a PPM filename."""
         return 'pg%s%02d.ppm' % (direction, page_number)
 
+    def check_screenshot(self, filename):
+        """
+        Check if the screenshot file looks ok.
+        """
+        if not os.path.exists(filename):
+            raise RuntimeError('%s not found' % filename)
+        if not os.path.getsize(filename):
+            raise RuntimeError('%s is empty' % filename)
+
     def scroll_pages(self, good_offset=300):
         """
         Take screenshots and scroll down between them.
@@ -66,6 +75,7 @@ class BaseGui:
             previous = filename
             filename = self.page_filename(page)
             self.screenshot(filename)
+            self.check_screenshot(filename)
             offset = hashmatch.find_offset(previous, filename)
 
             if not offset:
@@ -125,6 +135,7 @@ class BaseGui:
         """
         filename = self.page_filename(1)
         self.screenshot(filename)
+        self.check_screenshot(filename)
         magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
         assert magic == 'P6'
         assert maxval == 255
