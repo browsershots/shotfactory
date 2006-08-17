@@ -65,18 +65,18 @@ def crypt_password(challenge, password, prefix = ''):
     return crypt
 
 
-def browsershot(server_url, server, options, challenge, password):
+def browsershot(server_url, server, config, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
-    width = options['width']
+    width = config['width']
     if not width:
         width = 1024
     if width == 1280:
         height = 1024
     else:
         height = width / 4 * 3
-    bpp = options['bpp']
+    bpp = config['bpp']
     if not bpp:
         bpp = 24
     dpi = 90
@@ -98,7 +98,7 @@ def browsershot(server_url, server, options, challenge, password):
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
     gui.hide_mouse()
-    gui.start_browser(options['browser'], url)
+    gui.start_browser(config['browser'], url)
 
     # Make screenshots
     if os.path.exists(pngfilename):
@@ -112,7 +112,7 @@ def browsershot(server_url, server, options, challenge, password):
     status, challenge = server.request.upload(binary, crypt)
     print 'uploaded:', status
     if status != 'OK':
-        log(status, options)
+        log(status, config)
     return challenge
 
 
@@ -158,37 +158,57 @@ def _main():
     """
     Main loop for screenshot factory.
     """
-    if len(sys.argv) == 2:
-        password = sys.argv[1]
-        server_url = 'http://v03.browsershots.org'
-    elif len(sys.argv) == 3:
-        password = sys.argv[1]
-        server_url = sys.argv[2]
-    else:
-        print "usage: shotfactory <password> [http://v03.browsershots.org]"
-        sys.exit(1)
+    from optparse import OptionParser
+    version = '%prog ' + __revision__.strip('$').replace('Rev: ', 'r')
+    parser = OptionParser(version=version)
+    parser.add_option("-p", action="store", dest="password", type="string",
+                      metavar="<password>",
+                      help="supply password on command line (insecure)")
+    parser.add_option("-s", action="store", dest="server", type="string",
+                      default="http://v03.browsershots.org",
+                      metavar="<url>",
+                      help="server url (default: http://v03.browsershots.org)")
+    parser.add_option("-f", action="store", dest="factory", type="string",
+                      metavar="<name>",
+                      help="factory name (default: hostname)")
+    (options, args) = parser.parse_args()
+
+    if options.password is None:
+        from getpass import getpass
+        options.password = getpass('Factory password: ')
+
+    if options.factory is None:
+        options.factory = socket.gethostname()
+
     socket.setdefaulttimeout(60.0)
-    server = xmlrpclib.Server(server_url)
-    factory = socket.gethostname()
-    debug_factory_features(server, factory)
+    server = xmlrpclib.Server(options.server)
+    challenge = server.auth.challenge(options.factory)
+    crypt = crypt_password(challenge, options.password)
+    auth_test = server.auth.test(options.factory, crypt)
+    if not auth_test == 'OK':
+        print auth_test
+        sys.exit(1)
+
+    debug_factory_features(server, options.factory)
     challenge = None
     while True:
         try:
             if not challenge:
-                challenge = server.auth.challenge(factory)
+                challenge = server.auth.challenge(options.factory)
             print 'challenge:', challenge
-            crypt = crypt_password(challenge, password)
+            crypt = crypt_password(challenge, options.password)
             challenge = None
 
             poll_start = time.time()
-            status, challenge, options = server.request.poll(factory, crypt)
+            status, challenge, config = server.request.poll(
+                options.factory, crypt)
             poll_latency = time.time() - poll_start
             print 'server poll latency: %.2f seconds' % poll_latency
 
             if status == 'OK':
-                print options
-                challenge = browsershot(server_url, server, options,
-                                        challenge, password)
+                print config
+                challenge = browsershot(options.server, server, config,
+                                        challenge, options.password)
             elif status == 'No matching request.':
                 print status
                 sleep()
