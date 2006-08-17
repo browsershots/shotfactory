@@ -30,3 +30,4 @@ install :
 
 clean :
 	rm -rf build dist *.ppm *.pbm
+
