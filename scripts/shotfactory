@@ -166,6 +166,7 @@ def _main():
         server_url = sys.argv[2]
     else:
         print "usage: shotfactory <password> [http://v03.browsershots.org]"
+        sys.exit(1)
     socket.setdefaulttimeout(60.0)
     server = xmlrpclib.Server(server_url)
     factory = socket.gethostname()
