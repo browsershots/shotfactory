@@ -194,6 +194,8 @@ def _main():
                 sleep()
             else:
                 error_sleep(status)
+        except xmlrpclib.ProtocolError:
+            error_sleep('XML-RPC protocol error.')
         except socket.gaierror, (errno, message):
             error_sleep('Socket gaierror: ' + message)
         except socket.timeout:
@@ -204,8 +206,8 @@ def _main():
             else:
                 message = str(error.args)
             error_sleep('Socket error: ' + message)
-        except xmlrpclib.ProtocolError:
-            error_sleep('XML-RPC protocol error.')
+        except RuntimeError, message:
+            error_sleep(message)
 
 
 if __name__ == '__main__':
