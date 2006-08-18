@@ -104,6 +104,14 @@ class X11Gui(BaseGui):
             self.shell('firefox "%s" &' % url)
         elif browser == 'Konqueror':
             self.shell('konqueror "%s" &' % url)
+        elif browser == 'SeaMonkey':
+            self.shell('seamonkey "%s" &' % url)
+        elif browser == 'Galeon':
+            self.shell('galeon "%s" &' % url)
+        elif browser == 'Opera':
+            self.shell('opera "%s" &' % url)
+        elif browser == 'Epiphany':
+            self.shell('epiphany "%s" &' % url)
         else:
             raise ValueError("Unsupported browser: %s" % browser)
         time.sleep(24)
