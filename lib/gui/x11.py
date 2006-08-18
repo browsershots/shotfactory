@@ -112,6 +112,12 @@ class X11Gui(BaseGui):
             self.shell('opera "%s" &' % url)
         elif browser == 'Epiphany':
             self.shell('epiphany "%s" &' % url)
+        elif browser == 'Flock':
+            self.shell('flock "%s" &' % url)
+        elif browser == 'Navigator':
+            self.shell('netscape "%s" &' % url)
+        elif browser == 'Mozilla':
+            self.shell('mozilla "%s" &' % url)
         else:
             raise ValueError("Unsupported browser: %s" % browser)
         time.sleep(24)
