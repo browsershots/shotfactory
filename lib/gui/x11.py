@@ -100,34 +100,11 @@ class X11Gui(BaseGui):
 
     def start_browser(self, browser, url):
         """Start browser and load website."""
-        if browser == 'Firefox':
-            self.shell('firefox "%s" &' % url)
-        elif browser == 'Konqueror':
-            self.shell('konqueror "%s" &' % url)
-        elif browser == 'SeaMonkey':
-            self.shell('seamonkey "%s" &' % url)
-        elif browser == 'Galeon':
-            self.shell('galeon "%s" &' % url)
-        elif browser == 'Opera':
-            self.shell('opera "%s" &' % url)
-        elif browser == 'Epiphany':
-            self.shell('epiphany "%s" &' % url)
-        elif browser == 'Flock':
-            self.shell('flock "%s" &' % url)
-        elif browser == 'Navigator':
-            self.shell('netscape "%s" &' % url)
-        elif browser == 'Mozilla':
-            self.shell('mozilla "%s" &' % url)
-        elif browser == 'BonEcho':
-            self.shell('bonecho "%s" &' % url)
-        elif browser == 'Firebird':
-            self.shell('firebird "%s" &' % url)
-        elif browser == 'Phoenix':
-            self.shell('phoenix "%s" &' % url)
-        elif browser == 'Dillo':
-            self.shell('dillo "%s" &' % url)
-        else:
+        supported = """Firefox Konqueror SeaMonkey Galeon Opera Epiphany Flock
+        Navigator Mozilla BonEcho Firebird Phoenix Dillo""".split()
+        if browser not in supported:
             raise ValueError("Unsupported browser: %s" % browser)
+        self.shell('%s "%s" &' % (browser.lower(), url))
         time.sleep(24)
         self.maximize()
         time.sleep(4)
