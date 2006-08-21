@@ -118,6 +118,14 @@ class X11Gui(BaseGui):
             self.shell('netscape "%s" &' % url)
         elif browser == 'Mozilla':
             self.shell('mozilla "%s" &' % url)
+        elif browser == 'BonEcho':
+            self.shell('bonecho "%s" &' % url)
+        elif browser == 'Firebird':
+            self.shell('firebird "%s" &' % url)
+        elif browser == 'Phoenix':
+            self.shell('phoenix "%s" &' % url)
+        elif browser == 'Dillo':
+            self.shell('dillo "%s" &' % url)
         else:
             raise ValueError("Unsupported browser: %s" % browser)
         time.sleep(24)
