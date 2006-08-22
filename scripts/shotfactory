@@ -27,11 +27,15 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 
-import sys, os, time, xmlrpclib, socket, platform
+import sys, os, time, xmlrpclib, socket, platform, re
 from md5 import md5
 
 
 pngfilename = 'browsershot.png'
+
+
+# Security: allow only alphanumeric browser commands
+safe_command = re.compile('^[A-Za-z0-9]+$').match
 
 
 def log(status, extra=None):
@@ -146,7 +150,7 @@ def error_sleep(message):
     Log error message, sleep a while, get a new challenge.
     """
     if not message[0].isupper():
-        message = message[0].upper + message[1:]
+        message = message[0].upper() + message[1:]
     if not message.endswith('.'):
         message += '.'
     print message
@@ -207,6 +211,9 @@ def _main():
 
             if status == 'OK':
                 print config
+                if not safe_command(config['command']):
+                    raise RuntimeError(
+                        'unsafe command "%s"' % config['command'])
                 challenge = browsershot(options.server, server, config,
                                         challenge, options.password)
             elif status == 'No matching request.':
@@ -214,20 +221,26 @@ def _main():
                 sleep()
             else:
                 error_sleep(status)
+                challenge = None
         except xmlrpclib.ProtocolError:
             error_sleep('XML-RPC protocol error.')
+            challenge = None
         except socket.gaierror, (errno, message):
             error_sleep('Socket gaierror: ' + message)
+            challenge = None
         except socket.timeout:
             error_sleep('Socket timeout.')
+            challenge = None
         except socket.error, error:
             if type(error.args) in (tuple, list):
                 (errno, message) = error.args
             else:
                 message = str(error.args)
             error_sleep('Socket error: ' + message)
+            challenge = None
         except RuntimeError, message:
-            error_sleep(message)
+            error_sleep(str(message))
+            challenge = None
 
 
 if __name__ == '__main__':
