@@ -100,7 +100,7 @@ class X11Gui(BaseGui):
 
     def start_browser(self, config, url):
         """Start browser and load website."""
-        self.shell('%s "%s" &' % (config['binary'], url))
+        self.shell('%s "%s" &' % (config['command'], url))
         time.sleep(24)
         self.maximize()
         time.sleep(4)
