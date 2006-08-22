@@ -60,7 +60,7 @@ class DarwinGui(BaseGui):
         except appscript.specifier.CommandError:
             return None
 
-    def start_browser(self, browser, url):
+    def start_browser(self, config, url):
         """Start browser and load website."""
         self.close()
 

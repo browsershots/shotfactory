@@ -98,13 +98,9 @@ class X11Gui(BaseGui):
         if error:
             raise RuntimeError('screenshot failed')
 
-    def start_browser(self, browser, url):
+    def start_browser(self, config, url):
         """Start browser and load website."""
-        supported = """Firefox Konqueror SeaMonkey Galeon Opera Epiphany Flock
-        Navigator Mozilla BonEcho Firebird Phoenix Dillo""".split()
-        if browser not in supported:
-            raise ValueError("Unsupported browser: %s" % browser)
-        self.shell('%s "%s" &' % (browser.lower(), url))
+        self.shell('%s "%s" &' % (config['binary'], url))
         time.sleep(24)
         self.maximize()
         time.sleep(4)

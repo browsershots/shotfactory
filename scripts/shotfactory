@@ -98,7 +98,7 @@ def browsershot(server_url, server, config, challenge, password):
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (server_url, crypt)
     gui.hide_mouse()
-    gui.start_browser(config['browser'], url)
+    gui.start_browser(config, url)
 
     # Make screenshots
     if os.path.exists(pngfilename):

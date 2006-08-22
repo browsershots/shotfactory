@@ -64,7 +64,7 @@ class WindowsGui(BaseGui):
                                  win32con.SB_LINEDOWN, 0)
         time.sleep(0.1)
 
-    def start_browser(self, browser, url):
+    def start_browser(self, config, url):
         """Start browser and load website."""
         self.close()
         command = 'c:\progra~1\intern~1\iexplore.exe'
