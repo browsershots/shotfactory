@@ -35,7 +35,7 @@ pngfilename = 'browsershot.png'
 
 
 # Security: allow only alphanumeric browser commands
-safe_command = re.compile('^[A-Za-z0-9]+$').match
+safe_command = re.compile('^[A-Za-z0-9\-]+$').match
 
 
 def log(status, extra=None):
