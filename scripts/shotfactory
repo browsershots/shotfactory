@@ -188,6 +188,9 @@ def _main():
     parser.add_option("-f", action="store", dest="factory", type="string",
                       metavar="<name>",
                       help="factory name (default: hostname)")
+    parser.add_option("-P", action="store", dest="proxy", type="string",
+                      metavar="<proxy>",
+                      help="use a HTTP proxy (default: environment)")
     (options, args) = parser.parse_args()
 
     if options.password is None:
@@ -197,10 +200,14 @@ def _main():
     if options.factory is None:
         options.factory = socket.gethostname()
 
+    if options.proxy is None:
+        if 'http_proxy' in os.environ:
+            options.proxy = os.environ['http_proxy']
+
     socket.setdefaulttimeout(60.0)
-    if 'http_proxy' in os.environ:
+    if options.proxy:
         server = xmlrpclib.Server(options.server,
-            transport=ProxyTransport(os.environ['http_proxy']))
+            transport=ProxyTransport(options.proxy))
     else:
         server = xmlrpclib.Server(options.server)
     challenge = server.auth.challenge(options.factory)
