@@ -158,6 +158,19 @@ def error_sleep(message):
     sleep()
 
 
+class ProxyTransport(xmlrpclib.Transport):
+    def __init__(self, proxy):
+        self.proxy = proxy
+    def make_connection(self, host):
+        self.realhost = host
+        import httplib
+        return httplib.HTTP(self.proxy)
+    def send_request(self, connection, handler, request_body):
+        connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
+    def send_host(self, connection, host):
+        connection.putheader('Host', self.realhost)
+
+
 def _main():
     """
     Main loop for screenshot factory.
@@ -185,7 +198,11 @@ def _main():
         options.factory = socket.gethostname()
 
     socket.setdefaulttimeout(60.0)
-    server = xmlrpclib.Server(options.server)
+    if 'http_proxy' in os.environ:
+        server = xmlrpclib.Server(options.server,
+            transport=ProxyTransport(os.environ['http_proxy']))
+    else:
+        server = xmlrpclib.Server(options.server)
     challenge = server.auth.challenge(options.factory)
     crypt = crypt_password(challenge, options.password)
     auth_test = server.auth.test(options.factory, crypt)
