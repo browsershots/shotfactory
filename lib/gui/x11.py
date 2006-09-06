@@ -98,8 +98,28 @@ class X11Gui(BaseGui):
         if error:
             raise RuntimeError('screenshot failed')
 
+    def remove_crash_dialog(self, browser):
+        """Delete evidence of browser crash."""
+        home = os.environ['HOME'].rstrip('/')
+        crashfile = ''
+        if browser == 'Opera':
+            inifile = home + '/.opera/opera6.ini'
+            if os.path.exists(inifile):
+                print 'Removing crash dialog from', inifile
+                os.system("sed -i -e 's/^Run=[0-9]$/Run=0/g' " + inifile)
+            else:
+                print 'file does not exist:', inifile
+        elif browser == 'Galeon':
+            crashfile = home + '/.galeon/session_crashed.xml'
+        elif browser == 'Epiphany':
+            crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
+        if crashfile and os.path.exists(crashfile):
+            print 'Deleting crash file', crashfile
+            os.unlink(crashfile)
+
     def start_browser(self, config, url):
         """Start browser and load website."""
+        self.remove_crash_dialog(config['browser'])
         self.shell('%s "%s" &' % (config['command'], url))
         time.sleep(24)
         self.maximize()
