@@ -42,8 +42,14 @@ class X11Gui(BaseGui):
         self.display = display
         command = ('vncserver :%d -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))
-        error = os.system(command)
-        assert not error
+        for attempts in range(10):
+            error = os.system(command)
+            if not error:
+                break
+            print 'could not start vncserver, trying again in 3 seconds'
+            time.sleep(3)
+        if error:
+            raise RuntimeError('could not start vncserver')
 
     def shell(self, command):
         """Run a shell command on my display."""
@@ -105,7 +111,7 @@ class X11Gui(BaseGui):
         if browser == 'Opera':
             inifile = home + '/.opera/opera6.ini'
             if os.path.exists(inifile):
-                print 'Removing crash dialog from', inifile
+                print 'removing crash dialog from', inifile
                 os.system("sed -i -e 's/^Run=[0-9]$/Run=0/g' " + inifile)
             else:
                 print 'file does not exist:', inifile
@@ -114,7 +120,7 @@ class X11Gui(BaseGui):
         elif browser == 'Epiphany':
             crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
         if crashfile and os.path.exists(crashfile):
-            print 'Deleting crash file', crashfile
+            print 'deleting crash file', crashfile
             os.unlink(crashfile)
 
     def start_browser(self, config, url):
