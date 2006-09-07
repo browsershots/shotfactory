@@ -82,10 +82,16 @@ class DarwinGui(BaseGui):
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
-                if ready_count > 5:
+                print ready_count,
+                if ready_count >= 10:
                     break
-            else:
+            elif ready_count:
+                print 'still loading'
                 ready_count = 0
+        if ready_count >= 10:
+            print 'done'
+        elif ready_count:
+            print 'timeout'
         return True
 
     def ready_state(self):
