@@ -69,7 +69,7 @@ def crypt_password(challenge, password, prefix = ''):
     return crypt
 
 
-def browsershot(server_url, server, config, challenge, password):
+def browsershot(options, server, config, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
@@ -88,7 +88,7 @@ def browsershot(server_url, server, config, challenge, password):
     platform_name = platform.system()
     if platform_name == 'Linux':
         from shotfactory03.gui import x11
-        gui = x11.X11Gui(width, height, bpp, dpi, display=1)
+        gui = x11.X11Gui(width, height, bpp, dpi, display=options.display)
     elif platform_name == 'Darwin':
         from shotfactory03.gui import darwin
         gui = darwin.DarwinGui(width, height, bpp, dpi)
@@ -100,7 +100,7 @@ def browsershot(server_url, server, config, challenge, password):
 
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
-    url = '%s/redirect/%s' % (server_url, crypt)
+    url = '%s/redirect/%s' % (options.server, crypt)
     gui.hide_mouse()
     gui.start_browser(config, url)
 
@@ -182,15 +182,17 @@ def _main():
                       metavar="<password>",
                       help="supply password on command line (insecure)")
     parser.add_option("-s", action="store", dest="server", type="string",
-                      default="http://v03.browsershots.org",
-                      metavar="<url>",
-                      help="server url (default: http://v03.browsershots.org)")
+                      metavar="<url>", default="http://browsershots.org",
+                      help="server url (default: http://browsershots.org)")
     parser.add_option("-f", action="store", dest="factory", type="string",
                       metavar="<name>",
                       help="factory name (default: hostname)")
     parser.add_option("-P", action="store", dest="proxy", type="string",
                       metavar="<proxy>",
                       help="use a HTTP proxy (default: environment)")
+    parser.add_option("-d", action="store", dest="display", type="string",
+                      metavar="<name>", default=":1",
+                      help="run on a different display (default: :1)")
     (options, args) = parser.parse_args()
 
     if options.password is None:
@@ -238,7 +240,7 @@ def _main():
                 if not safe_command(config['command']):
                     raise RuntimeError(
                         'unsafe command "%s"' % config['command'])
-                challenge = browsershot(options.server, server, config,
+                challenge = browsershot(options, server, config,
                                         challenge, options.password)
             elif status == 'No matching request.':
                 print status

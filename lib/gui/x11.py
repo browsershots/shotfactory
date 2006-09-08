@@ -34,13 +34,13 @@ class X11Gui(BaseGui):
     Special functions for the X11 screen.
     """
 
-    def __init__(self, width, height, bpp, dpi, display=1):
+    def __init__(self, width, height, bpp, dpi, display=':1'):
         """
         Start a VNC server.
         """
         BaseGui.__init__(self, width, height, bpp, dpi)
         self.display = display
-        command = ('vncserver :%d -geometry %dx%d -depth %d -dpi %d'
+        command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))
         for attempts in range(10):
             error = os.system(command)
@@ -53,7 +53,7 @@ class X11Gui(BaseGui):
 
     def shell(self, command):
         """Run a shell command on my display."""
-        return os.system('DISPLAY=:%d %s' % (self.display, command))
+        return os.system('DISPLAY=%s %s' % (self.display, command))
 
     def home(self):
         """Scroll to the top."""
@@ -133,7 +133,7 @@ class X11Gui(BaseGui):
 
     def close(self):
         """Shut down the VNC server."""
-        error = os.system('vncserver -kill :%d' % self.display)
+        error = os.system('vncserver -kill %s' % self.display)
         assert not error
         os.system('killall -9 klauncher')
         os.system('killall -9 dcopserver')
