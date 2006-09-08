@@ -42,13 +42,16 @@ class X11Gui(BaseGui):
         self.display = display
         command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))
-        for attempts in range(10):
+        for attempts in range(1, 11):
             error = os.system(command)
             if not error:
                 break
-            print 'could not start vncserver, trying again in 3 seconds'
+            print 'vncserver error (attempt %d out of 10)' % attempts
             time.sleep(3)
         if error:
+            os.system('vncserver -kill %s' % display)
+            time.sleep(10)
+            os.system('killall -9 vncserver')
             raise RuntimeError('could not start vncserver')
 
     def shell(self, command):
