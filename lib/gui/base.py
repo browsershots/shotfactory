@@ -52,9 +52,9 @@ class BaseGui:
         Check if the screenshot file looks ok.
         """
         if not os.path.exists(filename):
-            raise RuntimeError('%s not found' % filename)
+            raise RuntimeError('screenshot file %s not found' % filename)
         if not os.path.getsize(filename):
-            raise RuntimeError('%s is empty' % filename)
+            raise RuntimeError('screenshot file %s is empty' % filename)
 
     def scroll_pages(self, good_offset=300):
         """
