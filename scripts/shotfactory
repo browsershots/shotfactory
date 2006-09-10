@@ -201,6 +201,9 @@ def _main():
 
     if options.factory is None:
         options.factory = socket.gethostname()
+        dot = options.factory.find('.')
+        if dot > -1:
+            options.factory = options.factory[:dot]
 
     if options.proxy is None:
         if 'http_proxy' in os.environ:
