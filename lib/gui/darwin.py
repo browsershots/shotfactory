@@ -57,7 +57,7 @@ class DarwinGui(BaseGui):
         """Run JavaScript in Safari."""
         try:
             return self.safari.do_JavaScript(command, in_=self.safari.documents[0])
-        except appscript.specifier.CommandError:
+        except:
             return None
 
     def start_browser(self, config, url):
