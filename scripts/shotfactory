@@ -111,11 +111,15 @@ def browsershot(options, server, config, challenge, password):
     gui.close()
 
     # Upload PNG file
-    binary = xmlrpclib.Binary(file(pngfilename, 'rb').read())
+    binary_file = file(pngfilename, 'rb')
+    binary = xmlrpclib.Binary(binary_file.read())
+    binary_file.close()
     crypt = crypt_password(challenge, password)
     status, challenge = server.request.upload(binary, crypt)
     print 'uploaded:', status
-    if status != 'OK':
+    if status == 'OK':
+        os.remove(pngfilename)
+    else:
         log(status, config)
     return challenge
 
