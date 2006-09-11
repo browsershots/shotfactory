@@ -78,17 +78,18 @@ class DarwinGui(BaseGui):
         self.js("document.location='%s'" % url)
         ready_count = 0
         max_wait = time.time() + 60
+        min_wait = 20
         while time.time() < max_wait:
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
                 print ready_count,
-                if ready_count >= 10:
+                if ready_count >= min_wait:
                     break
             elif ready_count:
                 print 'still loading'
                 ready_count = 0
-        if ready_count >= 10:
+        if ready_count >= min_wait:
             print 'done'
         elif ready_count:
             print 'timeout'
