@@ -33,7 +33,6 @@ from md5 import md5
 
 pngfilename = 'browsershot.png'
 
-
 # Security: allow only alphanumeric browser commands
 safe_command = re.compile('^[A-Za-z0-9\-]+$').match
 
@@ -162,6 +161,18 @@ def error_sleep(message):
     sleep()
 
 
+def systemload():
+    """
+    Try to get the number of processes in the system run queue,
+    averaged over the last minute. If this info is unavailable,
+    return None.
+    """
+    try:
+        return os.getloadavg()[0]
+    except OSError:
+        return None
+
+
 class ProxyTransport(xmlrpclib.Transport):
     def __init__(self, proxy):
         self.proxy = proxy
@@ -182,21 +193,24 @@ def _main():
     from optparse import OptionParser
     version = '%prog ' + __revision__.strip('$').replace('Rev: ', 'r')
     parser = OptionParser(version=version)
-    parser.add_option("-p", action="store", dest="password", type="string",
+    parser.add_option("-p", dest="password", action="store", type="string",
                       metavar="<password>",
                       help="supply password on command line (insecure)")
-    parser.add_option("-s", action="store", dest="server", type="string",
+    parser.add_option("-s", dest="server", action="store", type="string",
                       metavar="<url>", default="http://browsershots.org",
                       help="server url (default: http://browsershots.org)")
-    parser.add_option("-f", action="store", dest="factory", type="string",
+    parser.add_option("-f", dest="factory", action="store", type="string",
                       metavar="<name>",
                       help="factory name (default: hostname)")
-    parser.add_option("-P", action="store", dest="proxy", type="string",
+    parser.add_option("-P", dest="proxy", action="store", type="string",
                       metavar="<proxy>",
                       help="use a HTTP proxy (default: environment)")
-    parser.add_option("-d", action="store", dest="display", type="string",
+    parser.add_option("-d", dest="display", action="store", type="string",
                       metavar="<name>", default=":1",
                       help="run on a different display (default: :1)")
+    parser.add_option("-l", dest="loadlimit", action="store", type="float",
+                      metavar="<limit>", default=1.0,
+                      help="system load limit (default: 1.0)")
     (options, args) = parser.parse_args()
 
     if options.password is None:
@@ -230,6 +244,12 @@ def _main():
     challenge = None
     while True:
         try:
+            load = systemload()
+            if load > options.loadlimit:
+                challenge = None
+                error_sleep('system load %.2f exceeds limit %.2f, sleeping' %
+                            (load, options.loadlimit))
+                continue
             if not challenge:
                 challenge = server.auth.challenge(options.factory)
             print 'challenge:', challenge
