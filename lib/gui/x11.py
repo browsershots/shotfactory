@@ -137,7 +137,8 @@ class X11Gui(BaseGui):
     def close(self):
         """Shut down the VNC server."""
         error = os.system('vncserver -kill %s' % self.display)
-        assert not error
+        time.sleep(1)
+        os.system('killall -9 firefox-bin')
         os.system('killall -9 klauncher')
         os.system('killall -9 dcopserver')
         os.system('killall -9 kio_http')
