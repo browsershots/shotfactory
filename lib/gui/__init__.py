@@ -29,7 +29,7 @@ from array import array
 from shotfactory03.image import hashmatch
 from shotfactory03.pypng import png
 
-class BaseGui:
+class Gui:
     """
     Base class for all GUI wrappers.
     """

@@ -26,15 +26,15 @@ __author__ = '$Author: johann $'
 
 import os, time, sys
 import win32api, win32gui, win32con
-from shotfactory03.gui import BaseGui
+from shotfactory03 import gui as base
 
-class WindowsGui(BaseGui):
+class Gui(base.Gui):
     """
     Special functions for Windows.
     """
 
     def __init__(self, width, height, bpp, dpi):
-        BaseGui.__init__(self, width, height, bpp, dpi)
+        base.Gui.__init__(self, width, height, bpp, dpi)
         # Set screen resolution with Stefan Tucker's Resolution Changer
         # Freeware, available from http://www.12noon.com/reschange.htm
         self.shell('reschangecon.exe -width=%u -height=%u -depth=%u > NUL'

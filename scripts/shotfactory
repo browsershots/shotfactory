@@ -68,6 +68,28 @@ def crypt_password(challenge, password, prefix = ''):
     return crypt
 
 
+def import_deep(name, parent_levels=0):
+    """
+    Import a module from some.levels.deep and return the module
+    itself, not its uppermost parent. If the module is unavailable,
+    try its parents, up to parent_levels. The default of 0 means no
+    parents are tried.
+    """
+    parts = name.split('.')
+    while len(parts) and parent_levels >= 0:
+        try:
+            print "trying to import", name
+            module = __import__(name)
+            for part in parts[1:]:
+                module = getattr(module, part)
+            return module
+        except ImportError:
+            parts.pop()
+            name = '.'.join(parts)
+            parent_levels -= 1
+    raise ImportError
+
+
 def browsershot(options, server, config, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
@@ -85,17 +107,14 @@ def browsershot(options, server, config, challenge, password):
     dpi = 90
 
     platform_name = platform.system()
-    if platform_name == 'Linux':
-        from shotfactory03.gui import x11
-        gui = x11.X11Gui(width, height, bpp, dpi, display=options.display)
-    elif platform_name == 'Darwin':
-        from shotfactory03.gui import darwin
-        gui = darwin.DarwinGui(width, height, bpp, dpi)
-    elif platform_name == 'Windows':
-        from shotfactory03.gui import windows
-        gui = windows.WindowsGui(width, height, bpp, dpi)
+    if platform_name in ('Linux', 'Darwin', 'Windows'):
+        module_name = 'shotfactory03.gui.%s.%s' % (
+            platform_name.lower(),
+            config['browser'].lower())
     else:
         raise NotImplementedError(platform_name)
+    gui_module = import_deep(module_name, parent_levels=1)
+    gui = gui_module.Gui(width, height, bpp, dpi)
 
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')

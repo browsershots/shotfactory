@@ -26,10 +26,10 @@ __author__ = '$Author$'
 
 
 import os, time
-from shotfactory03.gui import BaseGui
+from shotfactory03 import gui as base
 
 
-class X11Gui(BaseGui):
+class Gui(base.Gui):
     """
     Special functions for the X11 screen.
     """
@@ -38,7 +38,7 @@ class X11Gui(BaseGui):
         """
         Start a VNC server.
         """
-        BaseGui.__init__(self, width, height, bpp, dpi)
+        base.Gui.__init__(self, width, height, bpp, dpi)
         self.display = display
         command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))

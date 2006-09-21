@@ -25,15 +25,15 @@ __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import os, time, appscript, MacOS
-from shotfactory03.gui import BaseGui
+from shotfactory03 import gui as base
 
-class DarwinGui(BaseGui):
+class Gui(base.Gui):
     """
     Special functions for Mac OS X.
     """
 
     def __init__(self, width, height, bpp, dpi):
-        BaseGui.__init__(self, width, height, bpp, dpi)
+        base.Gui.__init__(self, width, height, bpp, dpi)
         self.bottom_skip = 4
         self.safari = None
         # Set screen resolution and color depth with Lynn Pye's cscreen
