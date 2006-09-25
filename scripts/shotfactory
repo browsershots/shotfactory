@@ -32,9 +32,9 @@ from md5 import md5
 
 
 pngfilename = 'browsershot.png'
-
 # Security: allow only alphanumeric browser commands
-safe_command = re.compile('^[A-Za-z0-9\-]+$').match
+# Optionally within a subfolder, relative to working directory
+safe_command = re.compile(r'^[\w_\-]+[\\/]?[\w_\-\.]+$').match
 
 
 def log(status, extra=None):
