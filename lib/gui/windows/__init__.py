@@ -88,21 +88,19 @@ class Gui(base.Gui):
 
     def close(self):
         """Close the browser."""
-        # Using process.exe from beyondlogic.org (freeware):
-        # http://www.beyondlogic.org/solutions/processutil/processutil.htm
         # win32gui.PostMessage(self.msie_window, win32con.WM_CLOSE, 0, 0)
-        os.system("process.exe -k iexplore.exe > NUL")
-
-        # Kill crash report system
-        os.system("process.exe -k dwwin.exe > NUL")
-        os.system("process.exe -k iedw.exe > NUL")
-        os.system("process.exe -k telnet.exe > NUL")
-        # Kill image preview
-        os.system("process.exe -k rundll32.exe > NUL")
-        # Kill Outlook Express internet connection wizard
-        os.system("process.exe -k msimn.exe > NUL")
-        # It would be better to close all open windows except own console,
-        # or maybe kill all processes except those which ran at start.
+        process_names = (
+            'iexplore.exe',
+            'dwwin.exe',
+            'iedw.exe',
+            'telnet.exe',
+            'msimn.exe',
+            )
+        for name in process_names:
+            # Kill all processes matching name, using
+            # pv.exe from teamcti.com (freeware):
+            # http://www.teamcti.com/pview/prcview.htm
+            os.system('pv.exe -kf %s "2>nul" > nul' % name)
 
 
 def enum_classname_hwnd(hwnd, extra):
