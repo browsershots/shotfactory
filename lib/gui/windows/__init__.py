@@ -25,7 +25,7 @@ __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import os, time, sys
-import win32api, win32gui, win32con
+import win32api, win32gui, win32con, pywintypes
 from shotfactory03 import gui as base
 
 class Gui(base.Gui):
@@ -58,10 +58,13 @@ class Gui(base.Gui):
 
     def down(self):
         """Scroll down one line."""
-        if self.scroll_window:
-            win32gui.PostMessage(self.scroll_window,
-                                 win32con.WM_VSCROLL,
-                                 win32con.SB_LINEDOWN, 0)
+        try:
+            if self.scroll_window:
+                win32gui.PostMessage(self.scroll_window,
+                                     win32con.WM_VSCROLL,
+                                     win32con.SB_LINEDOWN, 0)
+        except pywintypes.error:
+            pass
         time.sleep(0.1)
 
     def start_browser(self, config, url):
