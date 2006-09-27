@@ -51,6 +51,7 @@ class Gui(base.Gui):
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
         import ImageGrab
+        import PpmImagePlugin
         im = ImageGrab.grab()
         outfile = open(filename, 'wb')
         im.save(outfile, 'PPM')
