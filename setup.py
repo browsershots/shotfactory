@@ -1,5 +1,8 @@
 from distutils.core import setup
-import py2exe
+
+import sys
+if 'py2exe' in sys.argv:
+    import py2exe
 
 setup(
     name = 'ShotFactory',
