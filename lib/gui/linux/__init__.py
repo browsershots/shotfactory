@@ -42,17 +42,36 @@ class Gui(base.Gui):
         self.display = display
         command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
                    % (display, width, height, bpp, dpi))
-        for attempt in range(1, 11):
+        attempts = 3
+        for attempt in range(attempts):
             error = os.system(command)
             if not error:
                 break
-            print 'vncserver error (attempt %d out of 10)' % attempt
-            time.sleep(3)
+            print 'vncserver error (attempt %d out of %d)' % (
+                attempt + 1, attempts)
+            if attempt + 1 < attempts:
+                time.sleep(5)
         if error:
-            os.system('vncserver -kill %s' % display)
-            time.sleep(10)
-            os.system('killall -9 vncserver')
+            self.force_quit_vnc_server()
             raise RuntimeError('could not start vncserver')
+
+    def force_quit_vnc_server(self):
+        """
+        Try to kill old VNC server on my display.
+        """
+        print "trying to kill old VNC server"
+        os.system('vncserver -kill %s' % self.display)
+        time.sleep(10)
+        os.system('killall -9 vncserver')
+        host, numeric = self.display.rsplit(':', 1)
+        numeric = int(numeric)
+        self.delete_if_exists('/tmp/.X%d-lock' % numeric)
+        self.delete_if_exists('/tmp/.X11-unix/X%d' % numeric)
+
+    def delete_if_exists(self, filename):
+        """Delete file if it exists."""
+        if os.path.exists(filename):
+            os.unlink(filename)
 
     def shell(self, command):
         """Run a shell command on my display."""
