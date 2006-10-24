@@ -145,13 +145,14 @@ class Gui(base.Gui):
             print 'deleting crash file', crashfile
             os.unlink(crashfile)
 
-    def start_browser(self, config, url):
+    def start_browser(self, config, url, options):
         """Start browser and load website."""
         self.remove_crash_dialog(config['browser'])
         self.shell('%s "%s" &' % (config['command'], url))
-        time.sleep(24)
+        print "Sleeping %d seconds while page is loading." % options.wait
+        time.sleep(options.wait - 5)
         self.maximize()
-        time.sleep(4)
+        time.sleep(5)
 
     def close(self):
         """Shut down the VNC server."""

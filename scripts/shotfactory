@@ -126,7 +126,7 @@ def browsershot(options, server, config, challenge, password):
     crypt = crypt_password(challenge, password, 'redirect')
     url = '%s/redirect/%s' % (options.server, crypt)
     gui.hide_mouse()
-    gui.start_browser(config, url)
+    gui.start_browser(config, url, options)
 
     # Make screenshots
     if os.path.exists(pngfilename):
@@ -240,6 +240,9 @@ def _main():
     parser.add_option("-l", dest="loadlimit", action="store", type="float",
                       metavar="<limit>", default=1.0,
                       help="system load limit (default: 1.0)")
+    parser.add_option("-w", dest="wait", action="store", type="int",
+                      metavar="<seconds>", default=30,
+                      help="wait while page is loading (default: 30)")
     (options, args) = parser.parse_args()
 
     if options.password is None:

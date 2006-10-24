@@ -68,14 +68,14 @@ class Gui(base.Gui):
             pass
         time.sleep(0.1)
 
-    def start_browser(self, config, url):
+    def start_browser(self, config, url, options):
         """Start browser and load website."""
         self.close()
         if config['command'] == 'msie':
             command = 'c:\progra~1\intern~1\iexplore.exe'
         else:
             command = config['command']
-        print 'running', command 
+        print 'running', command
         os.spawnl(os.P_DETACH, command, 'iexplore', url)
         self.msie_window = 0
         self.scroll_window = 0
@@ -91,8 +91,8 @@ class Gui(base.Gui):
             print "MSIE is not ready (timeout in %d seconds)." % timeout
             time.sleep(5)
             timeout -= 5
-        print "Sleeping 20 seconds while page is loading."
-        time.sleep(20)
+        print "Sleeping %d seconds while page is loading." % options.wait
+        time.sleep(options.wait)
 
     def close(self):
         """Close the browser."""

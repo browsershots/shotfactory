@@ -60,7 +60,7 @@ class Gui(base.Gui):
         except:
             return None
 
-    def start_browser(self, config, url):
+    def start_browser(self, config, url, options):
         """Start browser and load website."""
         self.close()
 
