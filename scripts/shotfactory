@@ -40,7 +40,7 @@ from md5 import md5
 pngfilename = 'browsershot.png'
 # Security: allow only alphanumeric browser commands
 # Optionally within a subfolder, relative to working directory
-safe_command = re.compile(r'^[\w_\-]+[\\/]?[\w_\-\.]+$').match
+safe_command = re.compile(r'^([\w_\-]+[\\/])*[\w_\-\.]+$').match
 
 
 def log(status, extra=None):
