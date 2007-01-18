@@ -112,24 +112,19 @@ class Gui(base.Gui):
 
 
 def enum_classname_hwnd(hwnd, extra):
+    """Callback for use with EnumWindows and EnumChildWindows."""
     extra[win32gui.GetClassName(hwnd)] = hwnd
 
 
 def window_by_classname(classname):
+    """Find window with matching class name."""
     extra = {}
     win32gui.EnumWindows(enum_classname_hwnd, extra)
     return extra[classname]
 
 
 def child_window_by_classname(hwnd, classname):
+    """Find child window with matching class name."""
     extra = {}
     win32gui.EnumChildWindows(hwnd, enum_classname_hwnd, extra)
     return extra[classname]
-
-
-def enum_print(hwnd, extra):
-    print hwnd, win32gui.GetClassName(hwnd)
-
-
-def print_child_windows(hwnd):
-    win32gui.EnumChildWindows(hwnd, enum_print, 0)
