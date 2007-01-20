@@ -16,7 +16,6 @@ kwargs = {
         'shotfactory03.gui.linux',
         'shotfactory03.gui.windows',
         'shotfactory03.image',
-        'shotfactory03.pypng',
         ],
     'scripts': [
         'scripts/ppmoffset',
