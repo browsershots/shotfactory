@@ -26,8 +26,7 @@ __author__ = '$Author$'
 
 import time, os
 from array import array
-from shotfactory03.image import hashmatch
-from shotfactory03.pypng import png
+from shotfactory03.image import hashmatch, png
 
 class Gui:
     """
