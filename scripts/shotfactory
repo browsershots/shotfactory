@@ -124,7 +124,8 @@ def browsershot(options, server, config, challenge, password):
 
     # Start browser
     crypt = crypt_password(challenge, password, 'redirect')
-    url = '%s/redirect/%s' % (options.server, crypt)
+    url = '/'.join((options.server, 'redirect', crypt,
+                    str(config['request'])))
     gui.hide_mouse()
     gui.start_browser(config, url, options)
 
