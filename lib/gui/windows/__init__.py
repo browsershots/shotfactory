@@ -72,11 +72,13 @@ class Gui(base.Gui):
         """Start browser and load website."""
         self.close()
         if config['command'] == 'msie':
-            command = 'c:\progra~1\intern~1\iexplore.exe'
+            command = r'c:\progra~1\intern~1\iexplore.exe'
+        elif config['command'] == 'firefox':
+            command = r'c:\progra~1\mozill~1\firefox.exe'
         else:
             command = config['command']
         print 'running', command
-        os.spawnl(os.P_DETACH, command, 'iexplore', url)
+        os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
         self.msie_window = 0
         self.scroll_window = 0
         timeout = 20
