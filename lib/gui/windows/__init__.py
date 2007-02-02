@@ -73,8 +73,6 @@ class Gui(base.Gui):
         self.close()
         if config['command'] == 'msie':
             command = r'c:\progra~1\intern~1\iexplore.exe'
-        elif config['command'] == 'firefox':
-            command = r'c:\progra~1\mozill~1\firefox.exe'
         else:
             command = config['command']
         print 'running', command
@@ -101,6 +99,7 @@ class Gui(base.Gui):
         # win32gui.PostMessage(self.msie_window, win32con.WM_CLOSE, 0, 0)
         process_names = (
             'iexplore.exe',
+            'firefox.exe',
             'dwwin.exe',
             'iedw.exe',
             'telnet.exe',
