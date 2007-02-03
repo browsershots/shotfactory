@@ -36,9 +36,13 @@ class Gui(windows.Gui):
 
     def down(self):
         """Scroll down one line."""
-        firefox = self.find_window_by_title_suffix('Firefox')
-        scrollable = win32gui.GetWindow(firefox, win32con.GW_CHILD)
-        self.send_keypress(scrollable, win32con.VK_DOWN)
+        try:
+            firefox = self.find_window_by_title_suffix('Firefox')
+            scrollable = win32gui.GetWindow(firefox, win32con.GW_CHILD)
+            self.send_keypress(scrollable, win32con.VK_DOWN)
+        except pywintypes.error:
+            pass
+        time.sleep(0.1)
 
     def remove_crash_dialog(self, browser):
         """Delete local application data for Firefox."""
