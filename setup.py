@@ -26,13 +26,27 @@ kwargs = {
 
 if 'py2exe' in sys.argv:
     import py2exe
+    # modulefinder can't handle runtime changes to __path__,
+    # but win32com uses them
+    import modulefinder
+    import win32com
+    for path in win32com.__path__[1:]:
+        modulefinder.AddPackagePath("win32com", path)
+    __import__("win32com.shell")
+    m = sys.modules["win32com.shell"]
+    for path in m.__path__[1:]:
+        modulefinder.AddPackagePath("win32com.shell", path)
+    # py2exe configuration
     kwargs['console'] = [{
         'script': 'scripts/shotfactory',
         'icon_resources': [(1, 'favicon.ico')],
         }]
     kwargs['options'] = {
         'py2exe': {
-            'includes': 'shotfactory03.gui.windows',
+            'includes': ','.join([
+                'shotfactory03.gui.windows.msie',
+                'shotfactory03.gui.windows.firefox',
+                ]),
             'dist_dir': 'bin',
             }
         }
