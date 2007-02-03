@@ -77,20 +77,6 @@ class Gui(base.Gui):
             command = config['command']
         print 'running', command
         os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
-        self.msie_window = 0
-        self.scroll_window = 0
-        timeout = 20
-        while timeout > 0:
-            try:
-                self.msie_window = window_by_classname('IEFrame')
-                self.scroll_window = child_window_by_classname(
-                    self.msie_window, 'Internet Explorer_Server')
-                break
-            except KeyError:
-                pass
-            print "MSIE is not ready (timeout in %d seconds)." % timeout
-            time.sleep(5)
-            timeout -= 5
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
 
