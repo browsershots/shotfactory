@@ -35,12 +35,10 @@ class Gui(windows.Gui):
     """
 
     def down(self):
-        """Scroll down half a screen."""
+        """Scroll down one line."""
         firefox = self.find_window_by_title_suffix('Firefox')
         scrollable = win32gui.GetWindow(firefox, win32con.GW_CHILD)
-        for count in range(10):
-            self.send_keypress(scrollable, win32con.VK_DOWN)
-            time.sleep(0.1)
+        self.send_keypress(scrollable, win32con.VK_DOWN)
 
     def remove_crash_dialog(self, browser):
         """Delete local application data for Firefox."""
