@@ -111,21 +111,15 @@ class Gui(base.Gui):
             # http://www.teamcti.com/pview/prcview.htm
             os.system('pv.exe -kf %s "2>nul" > nul' % name)
 
+    def find_window_by_title_suffix(self, suffix):
+        """Find a window on the desktop where the title ends as specified."""
+        desktop = win32gui.GetDesktopWindow()
+        window = win32gui.GetWindow(desktop, win32con.GW_CHILD)
+        while not win32gui.GetWindowText(window).endswith(suffix):
+            window = win32gui.GetWindow(window, win32con.GW_HWNDNEXT)
+        return window
 
-def enum_classname_hwnd(hwnd, extra):
-    """Callback for use with EnumWindows and EnumChildWindows."""
-    extra[win32gui.GetClassName(hwnd)] = hwnd
-
-
-def window_by_classname(classname):
-    """Find window with matching class name."""
-    extra = {}
-    win32gui.EnumWindows(enum_classname_hwnd, extra)
-    return extra[classname]
-
-
-def child_window_by_classname(hwnd, classname):
-    """Find child window with matching class name."""
-    extra = {}
-    win32gui.EnumChildWindows(hwnd, enum_classname_hwnd, extra)
-    return extra[classname]
+    def send_keypress(self, window, key):
+        """Post key down and up events to the specified window."""
+        win32gui.PostMessage(window, win32con.WM_KEYDOWN, key)
+        win32gui.PostMessage(window, win32con.WM_KEYUP, key)
