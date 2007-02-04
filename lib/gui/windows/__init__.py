@@ -121,6 +121,7 @@ class Gui(base.Gui):
         return window
 
     def get_child_window(self, parent, verbose=False):
+        """Wrapper for GetWindow(parent, GW_CHILD)."""
         try:
             window = win32gui.GetWindow(parent, win32con.GW_CHILD)
         except pywintypes.error:
@@ -130,7 +131,7 @@ class Gui(base.Gui):
         return window
 
     def find_window_by_classname(self, classname, verbose=False):
-        """Wrapper for win32gui.FindWindow."""
+        """Wrapper for win32gui.FindWindow(classname, None)."""
         try:
             window = win32gui.FindWindow(classname, None)
         except pywintypes.error:
@@ -140,7 +141,7 @@ class Gui(base.Gui):
         return window
 
     def find_child_window_by_classname(self, parent, classname, verbose=False):
-        """Wrapper for win32gui.FindWindowEx."""
+        """Wrapper for win32gui.FindWindowEx(parent, 0, classname, None)."""
         try:
             window = win32gui.FindWindowEx(parent, 0, classname, None)
         except pywintypes.error:
