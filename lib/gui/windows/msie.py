@@ -24,7 +24,7 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time, sys
+import os, time, sys, shutil
 import win32api, win32gui, win32con, pywintypes
 from win32com.shell import shellcon, shell
 from shotfactory03.gui import windows
@@ -33,6 +33,41 @@ class Gui(windows.Gui):
     """
     Special functions for MSIE on Windows.
     """
+
+    def empty_cache(self, verbose=True):
+        """Delete all files from the browser cache."""
+        cache = shell.SHGetFolderPath(0, shellcon.CSIDL_INTERNET_CACHE, 0, 0)
+        cache = os.path.join(cache, 'Content.IE5')
+        if not os.path.exists(cache):
+            if verbose:
+                print "browser cache not found:", cache
+            return
+        if verbose:
+            print "deleting browser cache:", cache
+        for filename in os.listdir(cache):
+            if verbose:
+                print '   ', filename
+            try:
+                path = os.path.join(cache, filename)
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.unlink(path)
+            except WindowsError, message:
+                print message
+
+    def start_browser(self, config, url, options):
+        """Start browser and load website."""
+        self.close()
+        self.empty_cache()
+        if config['command'] == 'msie':
+            command = r'c:\progra~1\intern~1\iexplore.exe'
+        else:
+            command = config['command']
+        print 'running', command
+        os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
+        print "Sleeping %d seconds while page is loading." % options.wait
+        time.sleep(options.wait)
 
     def down(self, verbose=False):
         """Scroll down one line."""
@@ -45,19 +80,6 @@ class Gui(windows.Gui):
             ieframe, "Shell DocObject View", verbose)
         self.send_keypress(scrollable, win32con.VK_DOWN)
         time.sleep(0.1)
-
-    def start_browser(self, config, url, options):
-        """Start browser and load website."""
-        self.close()
-        # self.remove_crash_dialog(config['browser'])
-        if config['command'] == 'msie':
-            command = r'c:\progra~1\intern~1\iexplore.exe'
-        else:
-            command = config['command']
-        print 'running', command
-        os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
-        print "Sleeping %d seconds while page is loading." % options.wait
-        time.sleep(options.wait)
 
 
 if __name__ == '__main__':
