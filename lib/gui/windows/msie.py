@@ -34,29 +34,6 @@ class Gui(windows.Gui):
     Special functions for MSIE on Windows.
     """
 
-    def find_window_by_classname(self, classname, verbose=False):
-        """Wrapper for win32gui.FindWindow."""
-        window = 0
-        try:
-            window = win32gui.FindWindow(classname, None)
-        except pywintypes.error:
-            pass
-        if verbose:
-            print "FindWindow('%s', None) => %d" % (classname, window)
-        return window
-
-    def find_child_window_by_classname(self, parent, classname, verbose=False):
-        """Wrapper for win32gui.FindWindowEx."""
-        window = 0
-        try:
-            window = win32gui.FindWindowEx(parent, 0, classname, None)
-        except pywintypes.error:
-            pass
-        if verbose:
-            print "FindWindowEx(%d, 0, '%s', None) => %d" % (
-                parent, classname, window)
-        return window
-
     def down(self, verbose=False):
         """Scroll down one line."""
         ieframe = self.find_window_by_classname('IEFrame', verbose)

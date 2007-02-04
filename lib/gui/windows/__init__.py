@@ -97,12 +97,57 @@ class Gui(base.Gui):
             # http://www.teamcti.com/pview/prcview.htm
             os.system('pv.exe -kf %s "2>nul" > nul' % name)
 
-    def find_window_by_title_suffix(self, suffix):
+    def find_window_by_title_suffix(self, suffix, verbose=False):
         """Find a window on the desktop where the title ends as specified."""
-        desktop = win32gui.GetDesktopWindow()
-        window = win32gui.GetWindow(desktop, win32con.GW_CHILD)
-        while not win32gui.GetWindowText(window).endswith(suffix):
-            window = win32gui.GetWindow(window, win32con.GW_HWNDNEXT)
+        try:
+            desktop = win32gui.GetDesktopWindow()
+            if verbose:
+                print "GetDesktopWindow() => %d" % desktop
+            window = win32gui.GetWindow(desktop, win32con.GW_CHILD)
+            if verbose:
+                print "GetWindow(%d, GW_CHILD) => %d" % (desktop, window)
+            while True:
+                title = win32gui.GetWindowText(window)
+                if verbose:
+                    print "GetWindowText(%d) => '%s'" % (window, title)
+                if title.endswith(suffix):
+                    break
+                previous = window
+                window = win32gui.GetWindow(previous, win32con.GW_HWNDNEXT)
+                if verbose:
+                    print "GetWindow(%d, GW_HWNDNEXT) => %d" % (previous, window)
+        except pywintypes.error:
+            window = 0
+        return window
+
+    def get_child_window(self, parent, verbose=False):
+        try:
+            window = win32gui.GetWindow(parent, win32con.GW_CHILD)
+        except pywintypes.error:
+            window = 0
+        if verbose:
+            print "GetWindow(%d, GW_CHILD) => %d" % (parent, window)
+        return window
+
+    def find_window_by_classname(self, classname, verbose=False):
+        """Wrapper for win32gui.FindWindow."""
+        try:
+            window = win32gui.FindWindow(classname, None)
+        except pywintypes.error:
+            window = 0
+        if verbose:
+            print "FindWindow('%s', None) => %d" % (classname, window)
+        return window
+
+    def find_child_window_by_classname(self, parent, classname, verbose=False):
+        """Wrapper for win32gui.FindWindowEx."""
+        try:
+            window = win32gui.FindWindowEx(parent, 0, classname, None)
+        except pywintypes.error:
+            window = 0
+        if verbose:
+            print "FindWindowEx(%d, 0, '%s', None) => %d" % (
+                parent, classname, window)
         return window
 
     def send_keypress(self, window, key):

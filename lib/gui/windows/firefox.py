@@ -34,14 +34,11 @@ class Gui(windows.Gui):
     Special functions for Firefox on Windows.
     """
 
-    def down(self):
+    def down(self, verbose=False):
         """Scroll down one line."""
-        try:
-            firefox = self.find_window_by_title_suffix('Firefox')
-            scrollable = win32gui.GetWindow(firefox, win32con.GW_CHILD)
-            self.send_keypress(scrollable, win32con.VK_DOWN)
-        except pywintypes.error:
-            pass
+        firefox = self.find_window_by_title_suffix(' Firefox', verbose)
+        scrollable = self.get_child_window(firefox, verbose)
+        self.send_keypress(scrollable, win32con.VK_DOWN)
         time.sleep(0.1)
 
     def remove_crash_dialog(self, browser):
@@ -66,3 +63,8 @@ class Gui(windows.Gui):
         os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
+
+
+if __name__ == '__main__':
+    gui = Gui(1024, 768, 24, 90)
+    gui.down(verbose=True)
