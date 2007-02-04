@@ -34,18 +34,39 @@ class Gui(windows.Gui):
     Special functions for MSIE on Windows.
     """
 
-    def down(self):
-        """Scroll down one line."""
+    def find_window_by_classname(self, classname, verbose=False):
+        """Wrapper for win32gui.FindWindow."""
+        window = 0
         try:
-            ieframe = win32gui.FindWindow('IEFrame', None)
-            tabs = win32gui.FindWindowEx(ieframe, 0, "TabWindowClass", None)
-            if tabs != 0:
-                ieframe = tabs
-            scrollable = win32gui.FindWindowEx(
-                ieframe, 0, "Shell DocObject View", None)
-            self.send_keypress(scrollable, win32con.VK_DOWN)
+            window = win32gui.FindWindow(classname, None)
         except pywintypes.error:
             pass
+        if verbose:
+            print "FindWindow('%s', None) => %d" % (classname, window)
+        return window
+
+    def find_child_window_by_classname(self, parent, classname, verbose=False):
+        """Wrapper for win32gui.FindWindowEx."""
+        window = 0
+        try:
+            window = win32gui.FindWindowEx(parent, 0, classname, None)
+        except pywintypes.error:
+            pass
+        if verbose:
+            print "FindWindowEx(%d, 0, '%s', None) => %d" % (
+                parent, classname, window)
+        return window
+
+    def down(self, verbose=False):
+        """Scroll down one line."""
+        ieframe = self.find_window_by_classname('IEFrame', verbose)
+        tabs = self.find_child_window_by_classname(
+            ieframe, "TabWindowClass", verbose)
+        if tabs:
+            ieframe = tabs
+        scrollable = self.find_child_window_by_classname(
+            ieframe, "Shell DocObject View", verbose)
+        self.send_keypress(scrollable, win32con.VK_DOWN)
         time.sleep(0.1)
 
     def start_browser(self, config, url, options):
@@ -60,3 +81,8 @@ class Gui(windows.Gui):
         os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
+
+
+if __name__ == '__main__':
+    gui = Gui(1024, 768, 24, 90)
+    gui.down(verbose=True)
