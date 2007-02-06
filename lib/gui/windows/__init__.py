@@ -37,13 +37,13 @@ class Gui(base.Gui):
         """Run a shell command."""
         return os.system(command)
 
-    def prepare_screen(width, height, bpp, dpi, display):
+    def prepare_screen(self):
         """
         Set screen resolution with Stefan Tucker's Resolution Changer
         Freeware, available from http://www.12noon.com/reschange.htm
         """
         self.shell('reschangecon.exe -width=%u -height=%u -depth=%u > NUL'
-                   % (width, height, bpp))
+                   % (self.width, self.height, self.bpp))
         # Move the mouse cursor out of the way
         win32api.SetCursorPos((0, 0))
 

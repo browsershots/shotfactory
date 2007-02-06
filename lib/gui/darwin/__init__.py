@@ -36,12 +36,13 @@ class Gui(base.Gui):
         """Run a shell command."""
         return os.system(command)
 
-    def prepare_screen(self, width, height, bpp, dpi, display):
+    def prepare_screen(self):
         self.bottom_skip = 4
         self.safari = None
         # Set screen resolution and color depth with Lynn Pye's cscreen
         # Freeware, available from http://www.pyehouse.com/lynn/cscreen.php
-        self.shell('./cscreen -x %d -y %d -d %d -f' % (width, height, bpp))
+        self.shell('./cscreen -x %d -y %d -d %d -f'
+                   % (self.width, self.height, self.bpp))
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""

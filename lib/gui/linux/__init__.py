@@ -34,14 +34,13 @@ class Gui(base.Gui):
     Special functions for the X11 screen.
     """
 
-    def prepare_screen(self, width, height, bpp, dpi, display):
+    def prepare_screen(self):
         """
         Start a VNC server with requested resolution.
         """
-        base.Gui.__init__(self, width, height, bpp, dpi)
-        self.display = display
         command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
-                   % (display, width, height, bpp, dpi))
+                   % (self.display, self.width, self.height,
+                      self.bpp, self.dpi))
         attempts = 3
         for attempt in range(attempts):
             error = os.system(command)

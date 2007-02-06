@@ -100,18 +100,6 @@ def browsershot(options, server, config, challenge, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
-    width = config['width']
-    if not width:
-        width = 1024
-    if width == 1280:
-        height = 1024
-    else:
-        height = width / 4 * 3
-    bpp = config['bpp']
-    if not bpp:
-        bpp = 24
-    dpi = 90
-
     platform_name = platform.system()
     if platform_name in ('Linux', 'Darwin', 'Windows'):
         module_name = 'shotfactory03.gui.%s.%s' % (
@@ -120,7 +108,7 @@ def browsershot(options, server, config, challenge, password):
     else:
         raise NotImplementedError(platform_name)
     gui_module = import_deep(module_name, parent_levels=1)
-    gui = gui_module.Gui()
+    gui = gui_module.Gui(config, options)
 
     # Close old browser instances and helper programs
     gui.close()
@@ -132,8 +120,7 @@ def browsershot(options, server, config, challenge, password):
         print "reset_browser() method is missing in", module_name
 
     # Prepare screen for output
-    gui.prepare_screen(width, height, bpp, dpi, options.display)
-    gui.hide_mouse()
+    gui.prepare_screen()
 
     # Start new browser
     crypt = crypt_password(challenge, password, 'redirect')
