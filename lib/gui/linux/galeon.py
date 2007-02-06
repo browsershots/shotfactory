@@ -34,8 +34,10 @@ class Gui(base.Gui):
     Special functions for Galeon.
     """
 
-    def remove_crash_dialog(self):
-        """Delete evidence of previous browser crash."""
+    def reset_browser(self):
+        """
+        Delete evidence of previous browser crash.
+        """
         home = os.environ['HOME'].rstrip('/')
         crashfile = home + '/.galeon/session_crashed.xml'
         if os.path.exists(crashfile):

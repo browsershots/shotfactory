@@ -120,19 +120,33 @@ def browsershot(options, server, config, challenge, password):
     else:
         raise NotImplementedError(platform_name)
     gui_module = import_deep(module_name, parent_levels=1)
-    gui = gui_module.Gui(width, height, bpp, dpi)
+    gui = gui_module.Gui()
 
-    # Start browser
+    # Close old browser instances and helper programs
+    gui.close()
+
+    # Reset browser (delete cache etc.)
+    if hasattr(gui, 'reset_browser'):
+        gui.reset_browser()
+    else:
+        print "reset_browser() method is missing in", module_name
+
+    # Prepare screen for output
+    gui.prepare_screen(width, height, bpp, dpi, options.display)
+    gui.hide_mouse()
+
+    # Start new browser
     crypt = crypt_password(challenge, password, 'redirect')
     url = '/'.join((options.server, 'redirect', crypt,
                     str(config['request'])))
-    gui.hide_mouse()
     gui.start_browser(config, url, options)
 
     # Make screenshots
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
     gui.browsershot(pngfilename)
+
+    # Close browser and helper programs
     gui.close()
 
     # Upload PNG file

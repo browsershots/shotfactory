@@ -34,11 +34,19 @@ class Gui(base.Gui):
     Special functions for Mozilla Firefox.
     """
 
-    def remove_crash_dialog(self):
-        """Delete evidence of previous browser crash."""
+    def reset_browser(self):
+        """
+        Delete crash dialog and browser cache.
+        """
         home = os.environ['HOME'].rstrip('/')
         dotdir = os.path.join(home, '.mozilla/firefox')
         for profile in os.listdir(dotdir):
+            # Delete cache
+            cachedir = os.path.join(dotdir, profile, 'Cache')
+            if os.path.exists(cachedir):
+                print 'deleting cache', cachedir
+                shutil.rmtree(cachedir)
+            # Delete crash dialog
             crashfile = os.path.join(dotdir, profile, 'sessionstore.js')
             if os.path.exists(crashfile):
                 print 'deleting crash file', crashfile

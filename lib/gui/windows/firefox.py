@@ -34,8 +34,11 @@ class Gui(windows.Gui):
     Special functions for Firefox on Windows.
     """
 
-    def remove_crash_dialog(self, verbose=True):
-        """Delete local application data for Firefox."""
+    def reset_browser(self, verbose=True):
+        """
+        Delete previous session and browser cache.
+        """
+        # Delete old session
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         profiles = os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles')
         for profile in os.listdir(profiles):
@@ -44,9 +47,7 @@ class Gui(windows.Gui):
                 if verbose:
                     print "deleting previous session:", session
                 os.unlink(session)
-
-    def empty_cache(self, verbose=True):
-        """Delete all files from the browser cache."""
+        # Delete all files from the browser cache
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
         profiles = os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles')
         for profile in os.listdir(profiles):
@@ -57,10 +58,9 @@ class Gui(windows.Gui):
                 shutil.rmtree(cache)
 
     def start_browser(self, config, url, options):
-        """Start browser and load website."""
-        self.close()
-        self.remove_crash_dialog()
-        self.empty_cache()
+        """
+        Start browser and load website.
+        """
         if config['command'] == 'firefox':
             command = r'c:\progra~1\mozill~1\firefox.exe'
         else:
@@ -71,13 +71,16 @@ class Gui(windows.Gui):
         time.sleep(options.wait)
 
     def down(self, verbose=False):
-        """Scroll down one line."""
+        """
+        Scroll down one line.
+        """
         firefox = self.find_window_by_title_suffix(' Firefox', verbose)
         scrollable = self.get_child_window(firefox, verbose)
         self.send_keypress(scrollable, win32con.VK_DOWN)
         time.sleep(0.1)
 
 
+# Test scrolling from command line
 if __name__ == '__main__':
     gui = Gui(1024, 768, 24, 90)
     gui.down(verbose=True)

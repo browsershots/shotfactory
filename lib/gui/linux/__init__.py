@@ -34,9 +34,9 @@ class Gui(base.Gui):
     Special functions for the X11 screen.
     """
 
-    def __init__(self, width, height, bpp, dpi, display=':1'):
+    def prepare_screen(self, width, height, bpp, dpi, display):
         """
-        Start a VNC server.
+        Start a VNC server with requested resolution.
         """
         base.Gui.__init__(self, width, height, bpp, dpi)
         self.display = display
@@ -54,6 +54,9 @@ class Gui(base.Gui):
         if error:
             self.force_quit_vnc_server()
             raise RuntimeError('could not start vncserver')
+        # Move the mouse cursor out of the way
+        self.shell('xte "mousemove 400 0"')
+
 
     def force_quit_vnc_server(self):
         """
@@ -113,12 +116,10 @@ class Gui(base.Gui):
         self.shell('xte "key F10"')
         self.shell('xte "keyup Alt_L"')
 
-    def hide_mouse(self):
-        """Move the mouse cursor out of the way."""
-        self.shell('xte "mousemove 400 0"')
-
     def screenshot(self, filename):
-        """Save the full screen to a PPM file."""
+        """
+        Save the full screen to a PPM file.
+        """
         parts = ('xwd -root -silent',
                  'xwdtopnm',
                  'pnmdepth 255 > "%s"' % filename)
@@ -126,13 +127,10 @@ class Gui(base.Gui):
         if error:
             raise RuntimeError('screenshot failed')
 
-    def remove_crash_dialog(self):
-        """Delete evidence of previous browser crash."""
-        pass # Override this method for each specific browser.
-
     def start_browser(self, config, url, options):
-        """Start browser and load website."""
-        self.remove_crash_dialog()
+        """
+        Start browser and load website.
+        """
         self.shell('%s "%s" &' % (config['command'], url))
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait - 5)
@@ -140,7 +138,9 @@ class Gui(base.Gui):
         time.sleep(5)
 
     def close(self):
-        """Shut down the VNC server."""
+        """
+        Shut down the VNC server.
+        """
         error = os.system('vncserver -kill %s' % self.display)
         time.sleep(1)
         os.system('killall -9 firefox-bin')

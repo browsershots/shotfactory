@@ -34,8 +34,10 @@ class Gui(windows.Gui):
     Special functions for MSIE on Windows.
     """
 
-    def empty_cache(self, verbose=True):
-        """Delete all files from the browser cache."""
+    def reset_browser(self, verbose=True):
+        """
+        Delete all files from the browser cache.
+        """
         cache = shell.SHGetFolderPath(0, shellcon.CSIDL_INTERNET_CACHE, 0, 0)
         cache = os.path.join(cache, 'Content.IE5')
         if not os.path.exists(cache):
@@ -57,9 +59,9 @@ class Gui(windows.Gui):
                 print message
 
     def start_browser(self, config, url, options):
-        """Start browser and load website."""
-        self.close()
-        self.empty_cache()
+        """
+        Start browser and load website.
+        """
         if config['command'] == 'msie':
             command = r'c:\progra~1\intern~1\iexplore.exe'
         else:
@@ -70,7 +72,9 @@ class Gui(windows.Gui):
         time.sleep(options.wait)
 
     def down(self, verbose=False):
-        """Scroll down one line."""
+        """
+        Scroll down one line.
+        """
         ieframe = self.find_window_by_classname('IEFrame', verbose)
         tabs = self.find_child_window_by_classname(
             ieframe, "TabWindowClass", verbose)
@@ -82,6 +86,7 @@ class Gui(windows.Gui):
         time.sleep(0.1)
 
 
+# Test scrolling from command line
 if __name__ == '__main__':
     gui = Gui(1024, 768, 24, 90)
     gui.down(verbose=True)

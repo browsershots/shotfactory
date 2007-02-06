@@ -34,8 +34,10 @@ class Gui(base.Gui):
     Special functions for Opera.
     """
 
-    def remove_crash_dialog(self):
-        """Delete evidence of previous browser crash."""
+    def reset_browser(self):
+        """
+        Remove evidence of previous browser crash.
+        """
         home = os.environ['HOME'].rstrip('/')
         inifile = home + '/.opera/opera6.ini'
         if os.path.exists(inifile):

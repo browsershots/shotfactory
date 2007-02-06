@@ -32,21 +32,16 @@ class Gui(base.Gui):
     Special functions for Mac OS X.
     """
 
-    def __init__(self, width, height, bpp, dpi):
-        base.Gui.__init__(self, width, height, bpp, dpi)
+    def shell(self, command):
+        """Run a shell command."""
+        return os.system(command)
+
+    def prepare_screen(self, width, height, bpp, dpi, display):
         self.bottom_skip = 4
         self.safari = None
         # Set screen resolution and color depth with Lynn Pye's cscreen
         # Freeware, available from http://www.pyehouse.com/lynn/cscreen.php
         self.shell('./cscreen -x %d -y %d -d %d -f' % (width, height, bpp))
-
-    def shell(self, command):
-        """Run a shell command."""
-        return os.system(command)
-
-    def hide_mouse(self):
-        """Move the mouse cursor out of the way."""
-        pass
 
     def screenshot(self, filename):
         """Save the full screen to a PPM file."""
@@ -56,14 +51,15 @@ class Gui(base.Gui):
     def js(self, command):
         """Run JavaScript in Safari."""
         try:
-            return self.safari.do_JavaScript(command, in_=self.safari.documents[0])
+            return self.safari.do_JavaScript(
+                command, in_=self.safari.documents[0])
         except:
             return None
 
     def start_browser(self, config, url, options):
-        """Start browser and load website."""
-        self.close()
-
+        """
+        Start browser and load website.
+        """
         try:
             self.safari = appscript.app('Safari')
         except MacOS.Error:

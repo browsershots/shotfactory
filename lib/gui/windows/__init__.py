@@ -33,19 +33,18 @@ class Gui(base.Gui):
     Special functions for Windows.
     """
 
-    def __init__(self, width, height, bpp, dpi):
-        base.Gui.__init__(self, width, height, bpp, dpi)
-        # Set screen resolution with Stefan Tucker's Resolution Changer
-        # Freeware, available from http://www.12noon.com/reschange.htm
-        self.shell('reschangecon.exe -width=%u -height=%u -depth=%u > NUL'
-                   % (width, height, bpp))
-
     def shell(self, command):
         """Run a shell command."""
         return os.system(command)
 
-    def hide_mouse(self):
-        """Move the mouse cursor out of the way."""
+    def prepare_screen(width, height, bpp, dpi, display):
+        """
+        Set screen resolution with Stefan Tucker's Resolution Changer
+        Freeware, available from http://www.12noon.com/reschange.htm
+        """
+        self.shell('reschangecon.exe -width=%u -height=%u -depth=%u > NUL'
+                   % (width, height, bpp))
+        # Move the mouse cursor out of the way
         win32api.SetCursorPos((0, 0))
 
     def screenshot(self, filename):
@@ -59,22 +58,11 @@ class Gui(base.Gui):
 
     def down(self):
         """Scroll down one line."""
-        try:
-            if self.scroll_window:
-                win32gui.PostMessage(self.scroll_window,
-                                     win32con.WM_VSCROLL,
-                                     win32con.SB_LINEDOWN, 0)
-        except pywintypes.error:
-            pass
-        time.sleep(0.1)
+        pass # Override for specific browsers
 
     def start_browser(self, config, url, options):
         """Start browser and load website."""
-        self.close()
-        if config['command'] == 'msie':
-            command = r'c:\progra~1\intern~1\iexplore.exe'
-        else:
-            command = config['command']
+        command = config['command']
         print 'running', command
         os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
         print "Sleeping %d seconds while page is loading." % options.wait
@@ -115,7 +103,8 @@ class Gui(base.Gui):
                 previous = window
                 window = win32gui.GetWindow(previous, win32con.GW_HWNDNEXT)
                 if verbose:
-                    print "GetWindow(%d, GW_HWNDNEXT) => %d" % (previous, window)
+                    print "GetWindow(%d, GW_HWNDNEXT) => %d" % (
+                        previous, window)
         except pywintypes.error:
             window = 0
         return window

@@ -35,7 +35,9 @@ class Gui(base.Gui):
     """
 
     def remove_crash_dialog(self):
-        """Delete evidence of previous browser crash."""
+        """
+        Delete evidence of previous browser crash.
+        """
         home = os.environ['HOME'].rstrip('/')
         crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
         if os.path.exists(crashfile):

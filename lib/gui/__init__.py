@@ -33,15 +33,6 @@ class Gui:
     Base class for all GUI wrappers.
     """
 
-    def __init__(self, width, height, bpp, dpi):
-        """Save arguments and set defaults."""
-        self.width = width
-        self.height = height
-        self.bpp = bpp
-        self.dpi = dpi
-        self.top_skip = 0
-        self.bottom_skip = 0
-
     def page_filename(self, page_number, direction='dn'):
         """Create a PPM filename."""
         return 'pg%s%02d.ppm' % (direction, page_number)
