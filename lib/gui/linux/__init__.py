@@ -126,28 +126,13 @@ class Gui(base.Gui):
         if error:
             raise RuntimeError('screenshot failed')
 
-    def remove_crash_dialog(self, browser):
-        """Delete evidence of browser crash."""
-        home = os.environ['HOME'].rstrip('/')
-        crashfile = ''
-        if browser == 'Opera':
-            inifile = home + '/.opera/opera6.ini'
-            if os.path.exists(inifile):
-                print 'removing crash dialog from', inifile
-                os.system("sed -i -e 's/^Run=[0-9]$/Run=0/g' " + inifile)
-            else:
-                print 'file does not exist:', inifile
-        elif browser == 'Galeon':
-            crashfile = home + '/.galeon/session_crashed.xml'
-        elif browser == 'Epiphany':
-            crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
-        if crashfile and os.path.exists(crashfile):
-            print 'deleting crash file', crashfile
-            os.unlink(crashfile)
+    def remove_crash_dialog(self):
+        """Delete evidence of previous browser crash."""
+        pass # Override this method for each specific browser.
 
     def start_browser(self, config, url, options):
         """Start browser and load website."""
-        self.remove_crash_dialog(config['browser'])
+        self.remove_crash_dialog()
         self.shell('%s "%s" &' % (config['command'], url))
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait - 5)
