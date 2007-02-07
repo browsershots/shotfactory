@@ -32,10 +32,6 @@ class Gui(base.Gui):
     Special functions for Mac OS X.
     """
 
-    def shell(self, command):
-        """Run a shell command."""
-        return os.system(command)
-
     def prepare_screen(self):
         self.bottom_skip = 4
         self.safari = None
@@ -48,61 +44,3 @@ class Gui(base.Gui):
         """Save the full screen to a PPM file."""
         self.shell('screencapture "%s.png"' % filename)
         self.shell('pngtopnm "%s.png" > "%s"' % (filename, filename))
-
-    def js(self, command):
-        """Run JavaScript in Safari."""
-        try:
-            return self.safari.do_JavaScript(
-                command, in_=self.safari.documents[0])
-        except:
-            return None
-
-    def start_browser(self, config, url, options):
-        """
-        Start browser and load website.
-        """
-        try:
-            self.safari = appscript.app('Safari')
-        except MacOS.Error:
-            return False
-
-        self.js("window.moveTo(0,0)")
-        time.sleep(0.1)
-        self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
-        time.sleep(0.1)
-        self.safari.activate()
-        time.sleep(0.1)
-        self.js("document.location='%s'" % url)
-        ready_count = 0
-        max_wait = time.time() + 60
-        min_wait = 20
-        while time.time() < max_wait:
-            time.sleep(1)
-            if self.ready_state():
-                ready_count += 1
-                print ready_count,
-                if ready_count >= min_wait:
-                    break
-            elif ready_count:
-                print 'still loading'
-                ready_count = 0
-        if ready_count >= min_wait:
-            print 'done'
-        elif ready_count:
-            print 'timeout'
-        return True
-
-    def ready_state(self):
-        """Get progress indicator."""
-        state = self.js("document.readyState")
-        # print state
-        return state == 'complete'
-
-    def scroll_down(self, pixels):
-        """Scroll down with AppleScript/JavaScript."""
-        self.js('window.scrollBy(0,%d)' % pixels)
-
-    def close(self):
-        """Close Safari."""
-        self.shell('killall Safari')
-        self.shell('killall UserNotificationCenter')
