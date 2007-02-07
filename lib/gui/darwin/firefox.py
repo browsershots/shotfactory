@@ -60,22 +60,18 @@ class Gui(base.Gui):
         """
         self.shell('/Applications/Firefox.app/Contents/MacOS/firefox "%s" &'
                    % url)
-        #try:
-        #    self.firefox = appscript.app('Firefox')
-        #except MacOS.Error:
-        #    return False
         time.sleep(5)
-        #print "activating browser"
-        #self.firefox.activate()
-        print "maximizing window"
-        self.sysevents = appscript.app('System Events')
+        try:
+            self.sysevents = appscript.app('System Events')
+        except MacOS.Error, error:
+            code, message = error
+            raise RuntimeError(message)
         self.firefox_bin = self.sysevents.processes['firefox-bin']
+        print "maximizing window"
         self.firefox_bin.frontmost.set(True)
         self.window = self.firefox_bin.windows[1]
         self.window.position.set((0, 22))
         self.window.size.set((self.width, self.height - 26))
-        #print "opening URL"
-        #self.firefox.OpenURL(url)
         time.sleep(options.wait)
         return True
 

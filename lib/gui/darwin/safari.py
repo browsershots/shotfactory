@@ -46,9 +46,9 @@ class Gui(base.Gui):
         """
         try:
             self.safari = appscript.app('Safari')
-        except MacOS.Error:
-            return False
-
+        except MacOS.Error, error:
+            code, message = error
+            raise RuntimeError(message)
         self.js("window.moveTo(0,0)")
         time.sleep(0.1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
