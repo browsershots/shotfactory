@@ -32,6 +32,10 @@ class Gui(base.Gui):
     Special functions for Mac OS X.
     """
 
+    def shell(self, command):
+        """Run a shell command."""
+        os.system(command)
+
     def prepare_screen(self):
         self.bottom_skip = 4
         self.safari = None
