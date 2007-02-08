@@ -58,21 +58,26 @@ class Gui(base.Gui):
         """
         Start browser and load website.
         """
-        self.shell('/Applications/Firefox.app/Contents/MacOS/firefox "%s" &'
-                   % url)
-        time.sleep(5)
         try:
             self.sysevents = appscript.app('System Events')
         except MacOS.Error, error:
             code, message = error
             raise RuntimeError(message)
+        if not self.sysevents.UI_elements_enabled():
+            print "Please enable access for assistive devices"
+            print "in System Preferences -> Universal Access"
+            print "http://www.apple.com/applescript/uiscripting/01.html"
+            raise RuntimeError("AppleScript for UI elements not enabled")
+        binary = '/Applications/Firefox.app/Contents/MacOS/firefox'
+        self.shell('%s "%s" &' % (binary, url))
+        time.sleep(5)
         self.firefox_bin = self.sysevents.processes['firefox-bin']
         print "maximizing window"
-        self.firefox_bin.frontmost.set(True)
-        self.window = self.firefox_bin.windows[1]
         retry = 3
         while True:
             try:
+                self.firefox_bin.frontmost.set(True)
+                self.window = self.firefox_bin.windows[1]
                 self.window.position.set((0, 22))
                 self.window.size.set((self.width, self.height - 26))
                 break
@@ -81,11 +86,7 @@ class Gui(base.Gui):
                 time.sleep(10)
                 retry -= 1
             if not retry:
-                raise RuntimeError('\n'.join((
-                    "AppleScript for Firefox failed",
-                    "Please enable access for assistive devices",
-                    "in System Preferences -> Universal Access",
-                    )))
+                raise RuntimeError("AppleScript for Firefox failed")
         time.sleep(options.wait)
         return True
 
