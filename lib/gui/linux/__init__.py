@@ -147,3 +147,4 @@ class Gui(base.Gui):
         os.system('killall -9 dcopserver')
         os.system('killall -9 kio_http')
         os.system('killall -9 artsd')
+        os.system('killall -9 nspluginviewer')
