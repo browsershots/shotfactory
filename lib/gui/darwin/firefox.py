@@ -70,8 +70,22 @@ class Gui(base.Gui):
         print "maximizing window"
         self.firefox_bin.frontmost.set(True)
         self.window = self.firefox_bin.windows[1]
-        self.window.position.set((0, 22))
-        self.window.size.set((self.width, self.height - 26))
+        retry = 3
+        while True:
+            try:
+                self.window.position.set((0, 22))
+                self.window.size.set((self.width, self.height - 26))
+                break
+            except appscript.CommandError:
+                print "Firefox not ready, retrying in 10 seconds..."
+                time.sleep(10)
+                retry -= 1
+            if not retry:
+                raise RuntimeError('\n'.join((
+                    "AppleScript for Firefox failed",
+                    "Please enable access for assistive devices",
+                    "in System Preferences -> Universal Access",
+                    )))
         time.sleep(options.wait)
         return True
 
