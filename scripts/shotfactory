@@ -203,7 +203,8 @@ def systemload():
 class ProxyTransport(xmlrpclib.Transport):
 
     def __init__(self, proxy):
-        xmlrpclib.Transport.__init__(self)
+        if hasattr(xmlrpclib.Transport, '__init__'):
+            xmlrpclib.Transport.__init__(self)
         self.proxy = proxy
 
     def make_connection(self, host):
