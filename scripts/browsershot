@@ -26,12 +26,34 @@ __date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import platform
-from shotfactory03.gui import x11
+import optparse
+import time
 
-system = platform.system()
-if system == 'Linux':
-    gui = x11.X11Gui()
-else:
-    raise NotImplemented(system)
 
-gui.browsershot()
+def _main():
+    from optparse import OptionParser
+    version = '%prog ' + __revision__.strip('$').replace('Rev: ', 'r')
+    parser = OptionParser(version=version)
+    parser.add_option("-d", dest="display", action="store", type="string",
+                      metavar="<name>", default=":0",
+                      help="run on a different display (default :0)")
+    parser.add_option("-w", dest="wait", action="store", type="int",
+                      metavar="<seconds>", default=5,
+                      help="wait before taking screenshots (default 5)")
+    (options, args) = parser.parse_args()
+    config = {'width': 1024, 'bpp': 32}
+
+    system = platform.system()
+    if system == 'Linux':
+        from shotfactory03.gui import linux
+        gui = linux.Gui(config, options)
+    else:
+        raise NotImplemented(system)
+
+    print "Waiting %d seconds, please activate your browser window..." \
+          % options.wait
+    time.sleep(options.wait)
+    gui.browsershot()
+
+if __name__ == '__main__':
+    _main()
