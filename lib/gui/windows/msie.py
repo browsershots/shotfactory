@@ -25,7 +25,7 @@ __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
 import os, time, sys, shutil
-import win32api, win32gui, win32con, pywintypes
+import win32api, win32gui, win32con, pywintypes, _winreg
 from win32com.shell import shellcon, shell
 from shotfactory03.gui import windows
 
@@ -58,10 +58,34 @@ class Gui(windows.Gui):
             except WindowsError, message:
                 print message
 
+    def check_version_override(self, major, minor):
+        """
+        Raise RuntimeError if conditional comments will be broken.
+        """
+        root_key = _winreg.HKEY_LOCAL_MACHINE
+        key_name = r'Software\Microsoft\Internet Explorer\Version Vector'
+        try:
+            key = _winreg.OpenKey(root_key, key_name)
+            registered = _winreg.QueryValueEx(key, 'IE')[0]
+            key.Close()
+        except EnvironmentError:
+            return
+        requested = '%d.%d' % (major, minor)
+        while len(requested) < len(registered):
+            requested += '0'
+        if registered != requested:
+            print "This registry key overrides the browser version:"
+            print r"HKEY_LOCAL_MACHINE\%s\IE" % key_name
+            print "Requested version: %s, Registry override: %s" % (
+                requested, registered)
+            print "Please rename or delete the key 'IE' with regedit."
+            raise RuntimeError("Browser version override in the registry")
+
     def start_browser(self, config, url, options):
         """
         Start browser and load website.
         """
+        self.check_version_override(config['major'], config['minor'])
         if config['command'] == 'msie':
             command = r'c:\progra~1\intern~1\iexplore.exe'
         else:
