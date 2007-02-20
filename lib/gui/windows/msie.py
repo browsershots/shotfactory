@@ -34,7 +34,7 @@ class Gui(windows.Gui):
     Special functions for MSIE on Windows.
     """
 
-    def reset_browser(self, verbose=True):
+    def reset_browser(self, verbose=False):
         """
         Delete all files from the browser cache.
         """
