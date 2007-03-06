@@ -109,7 +109,7 @@ def browsershot(options, server, config, challenge, password):
             platform_name.lower(),
             config['browser'].lower())
     else:
-        raise NotImplementedError(platform_name)
+        raise NotImplementedError("unsupported platform: " + platform_name)
     gui_module = import_deep(module_name, parent_levels=1)
     gui = gui_module.Gui(config, options)
 
