@@ -34,6 +34,7 @@ import xmlrpclib
 import socket
 import platform
 import re
+import traceback
 from md5 import md5
 
 
@@ -179,6 +180,8 @@ def error_sleep(message):
     """
     Log error message, sleep a while, get a new challenge.
     """
+    if not message:
+        message = 'runtime error'
     if not message[0].isupper():
         message = message[0].upper() + message[1:]
     if not message.endswith('.'):
@@ -226,6 +229,8 @@ def _main():
     from optparse import OptionParser
     version = '%prog ' + __revision__.strip('$').replace('Rev: ', 'r')
     parser = OptionParser(version=version)
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+                      help="more output (for trouble-shooting)")
     parser.add_option("-p", dest="password", action="store", type="string",
                       metavar="<password>",
                       help="supply password on command line (insecure)")
@@ -328,6 +333,8 @@ def _main():
             error_sleep('Socket error: ' + message)
             challenge = None
         except RuntimeError, message:
+            if options.verbose:
+                traceback.print_exc()
             error_sleep(str(message))
             challenge = None
 
