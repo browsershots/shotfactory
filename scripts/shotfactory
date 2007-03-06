@@ -102,6 +102,8 @@ def browsershot(options, server, config, challenge, password):
     Process a screenshot request and upload the resulting PNG file.
     """
     platform_name = platform.system()
+    if platform_name == 'Microsoft':
+        platform_name = 'Windows' # For Vista
     if platform_name in ('Linux', 'Darwin', 'Windows'):
         module_name = 'shotfactory03.gui.%s.%s' % (
             platform_name.lower(),
