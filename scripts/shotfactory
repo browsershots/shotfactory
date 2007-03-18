@@ -141,14 +141,21 @@ def browsershot(options, server, config, challenge, password):
 
     # Upload PNG file
     binary_file = file(pngfilename, 'rb')
-    binary = xmlrpclib.Binary(binary_file.read())
+    binary_data = binary_file.read()
+    binary = xmlrpclib.Binary(binary_data)
     binary_file.close()
     crypt = crypt_password(challenge, password)
+    upload_started = time.time()
     status, challenge = server.request.upload(binary, crypt)
-    print 'uploaded:', status
+    seconds = time.time() - upload_started
     if status == 'OK':
+        bytes = len(binary_data) * 8 / 6 # base64 encoding
+        print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
+            bytes, seconds, 8 * bytes / seconds / 1000.0)
         os.remove(pngfilename)
     else:
+        status += " (after %.2f seconds)" % seconds
+        print "upload failed: " + status
         log(status, config)
     return challenge
 
@@ -293,6 +300,7 @@ def _main():
                 error_sleep('system load %.2f exceeds limit %.2f, sleeping' %
                             (load, options.loadlimit))
                 continue
+            print '=' * 64
             if not challenge:
                 challenge = server.auth.challenge(options.factory)
             print 'challenge:', challenge
