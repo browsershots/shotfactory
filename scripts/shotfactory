@@ -277,7 +277,7 @@ def _main():
         if 'http_proxy' in os.environ:
             options.proxy = os.environ['http_proxy']
 
-    socket.setdefaulttimeout(60.0)
+    socket.setdefaulttimeout(180.0)
     if options.proxy:
         server = xmlrpclib.Server(options.server,
             transport=ProxyTransport(options.proxy))
