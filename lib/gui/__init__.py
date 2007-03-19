@@ -73,7 +73,7 @@ class Gui:
         pixels_per_line = 100
         scroll_lines = max(1, good_offset / pixels_per_line)
         offsets = []
-        for page in range(2, 10):
+        for page in range(2, 7):
             if hasattr(self, 'scroll_down'):
                 self.scroll_down(good_offset)
             else:
