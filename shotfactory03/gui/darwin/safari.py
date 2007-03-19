@@ -87,5 +87,5 @@ class Gui(base.Gui):
 
     def close(self):
         """Close Safari."""
-        self.shell('killall Safari > /dev/null')
-        self.shell('killall UserNotificationCenter > /dev/null')
+        self.shell('killall Safari > /dev/null 2&>1')
+        self.shell('killall UserNotificationCenter > /dev/null 2&>1')
