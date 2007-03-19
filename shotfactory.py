@@ -300,7 +300,7 @@ def _main():
                 error_sleep('system load %.2f exceeds limit %.2f, sleeping' %
                             (load, options.loadlimit))
                 continue
-            print '=' * 64
+            print '=' * 32, time.strftime('%H:%M:%S'), '=' * 32
             if not challenge:
                 challenge = server.auth.challenge(options.factory)
             print 'challenge:', challenge
