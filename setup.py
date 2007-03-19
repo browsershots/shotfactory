@@ -8,7 +8,6 @@ kwargs = {
     'author': 'Johann C. Rocholl',
     'author_email': 'johann@browsershots.org',
     'url': 'http://v03.browsershots.org/',
-    'package_dir': {'shotfactory03': 'lib', '': 'pypng'},
     'packages': [
         'shotfactory03',
         'shotfactory03.gui',
@@ -18,9 +17,9 @@ kwargs = {
         'shotfactory03.image',
         ],
     'scripts': [
-        'scripts/ppmoffset',
-        'scripts/shotfactory',
-        'scripts/browsershot',
+        'shotfactory.py',
+        'browsershot.py',
+        'ppmoffset.py',
         ],
     }
 
