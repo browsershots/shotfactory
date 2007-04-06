@@ -47,6 +47,8 @@ class Gui(windows.Gui):
         if verbose:
             print "deleting browser cache:", cache
         for filename in os.listdir(cache):
+	    if filename.lower() == 'index.dat':
+		continue
             if verbose:
                 print '   ', filename
             try:
