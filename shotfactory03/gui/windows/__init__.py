@@ -24,8 +24,13 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time, sys
-import win32api, win32gui, win32con, pywintypes
+import os
+import time
+import sys
+import win32api
+import win32gui
+import win32con
+import pywintypes
 from shotfactory03 import gui as base
 
 class Gui(base.Gui):

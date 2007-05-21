@@ -24,7 +24,11 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time, appscript, MacOS, shutil
+import os
+import time
+import appscript
+import MacOS
+import shutil
 from shotfactory03.gui import darwin as base
 
 class Gui(base.Gui):

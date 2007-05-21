@@ -29,4 +29,5 @@ import sys
 from shotfactory03.image import hashmatch, png
 
 magic, width, height, maxval = hashmatch.read_ppm_header(sys.stdin)
-png.write(sys.stdout, width, height, sys.stdin.read(), '--interlace' in sys.argv)
+png.write(sys.stdout, width, height, sys.stdin.read(),
+          '--interlace' in sys.argv)

@@ -27,8 +27,9 @@ __author__ = '$Author$'
 import re
 
 step = 3*64
-
 header_match = re.compile(r'(P\d) (\d+) (\d+) (\d+)').match
+
+
 def read_ppm_header(infile):
     """
     Read a PPM file header and return magic, width, height, maxval.
@@ -53,6 +54,7 @@ def read_ppm_header(infile):
         elif len(header) >= 4:
             raise SyntaxError("could not parse PPM header")
 
+
 def debug_values(hashtable, minimum = 1):
     """
     Print a hash table sorted by value.
@@ -67,6 +69,7 @@ def debug_values(hashtable, minimum = 1):
     for value, key in pairs:
         if value >= minimum:
             print value, key
+
 
 def build_hash(pixels, start, height, row_skip):
     """
@@ -90,6 +93,7 @@ def build_hash(pixels, start, height, row_skip):
             positions_pop(marker)
     return positions
 
+
 def match_markers(pixels, start, height, row_skip, positions, votes):
     """
     Match markers and collect votes for different offset positions.
@@ -106,6 +110,7 @@ def match_markers(pixels, start, height, row_skip, positions, votes):
         if position > -1:
             offset = position - y
             votes[offset] = votes_get(offset, 0) + 1
+
 
 def winner(votes, minimum):
     """
@@ -129,6 +134,7 @@ def winner(votes, minimum):
             maximum = count
             result = offset
     return result
+
 
 def find_offset(filename1, filename2):
     """
@@ -159,7 +165,8 @@ def find_offset(filename1, filename2):
     return winner(votes, 3*width/step)
 
 if __name__ == '__main__':
-    import sys, doctest
+    import doctest
     errors, tests = doctest.testmod()
     if errors:
+        import sys
         sys.exit(1)

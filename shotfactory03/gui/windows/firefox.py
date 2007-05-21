@@ -24,9 +24,16 @@ __revision__ = '$Rev: 503 $'
 __date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
 __author__ = '$Author: johann $'
 
-import os, time, sys, shutil
-import win32api, win32gui, win32con, pywintypes
-from win32com.shell import shellcon, shell
+import os
+import time
+import sys
+import shutil
+import win32api
+import win32gui
+import win32con
+import pywintypes
+from win32com.shell import shellcon
+from win32com.shell import shell
 from shotfactory03.gui import windows
 
 class Gui(windows.Gui):
@@ -51,7 +58,7 @@ class Gui(windows.Gui):
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
         profiles = os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles')
         for profile in os.listdir(profiles):
-            cache =  os.path.join(profiles, profile, 'Cache')
+            cache = os.path.join(profiles, profile, 'Cache')
             if os.path.exists(cache):
                 if verbose:
                     print "deleting browser cache:", cache

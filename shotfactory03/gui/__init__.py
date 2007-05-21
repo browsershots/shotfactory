@@ -24,7 +24,8 @@ __revision__ = '$Rev$'
 __date__ = '$Date$'
 __author__ = '$Author$'
 
-import time, os
+import time
+import os
 from array import array
 from shotfactory03.image import hashmatch, png
 
@@ -145,7 +146,8 @@ class Gui:
         filename = self.page_filename(1)
         self.screenshot(filename)
         self.check_screenshot(filename)
-        magic, width, height, maxval = hashmatch.read_ppm_header(open(filename, 'rb'))
+        magic, width, height, maxval = hashmatch.read_ppm_header(
+            open(filename, 'rb'))
         assert magic == 'P6'
         assert maxval == 255
 

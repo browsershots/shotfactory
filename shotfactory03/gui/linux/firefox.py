@@ -25,7 +25,9 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 
-import os, time, shutil
+import os
+import time
+import shutil
 from shotfactory03.gui import linux as base
 
 

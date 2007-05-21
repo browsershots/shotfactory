@@ -25,7 +25,8 @@ __date__ = '$Date$'
 __author__ = '$Author$'
 
 
-import os, time
+import os
+import time
 from shotfactory03 import gui as base
 
 
@@ -55,7 +56,6 @@ class Gui(base.Gui):
             raise RuntimeError('could not start vncserver')
         # Move the mouse cursor out of the way
         self.shell('xte "mousemove 400 0"')
-
 
     def force_quit_vnc_server(self):
         """

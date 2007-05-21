@@ -468,8 +468,8 @@ class Reader:
         verify = struct.pack('!i', verify)
         if checksum != verify:
             # print repr(checksum)
-            (a,) = struct.unpack('!I', checksum)
-            (b,) = struct.unpack('!I', verify)
+            (a, ) = struct.unpack('!I', checksum)
+            (b, ) = struct.unpack('!I', verify)
             raise ValueError("Checksum error in %s chunk: 0x%X != 0x%X"
                              % (tag, a, b))
         return tag, data
