@@ -20,9 +20,9 @@
 GUI-specific functions for Safari on Mac OS X.
 """
 
-__revision__ = '$Rev: 503 $'
-__date__ = '$Date: 2006-06-17 08:14:59 +0200 (Sat, 17 Jun 2006) $'
-__author__ = '$Author: johann $'
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import os
 import time

@@ -21,9 +21,9 @@
 Simple converter from PPM to PNG.
 """
 
-__revision__ = '$Rev$'
-__date__ = '$Date$'
-__author__ = '$Author$'
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import sys
 from shotfactory03.image import hashmatch, png
