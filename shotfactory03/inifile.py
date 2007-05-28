@@ -36,7 +36,7 @@ class IniFile:
             filename = self.filename
         if filename is None:
             raise NameError
-        open(self.filename).write(''.join(self.lines))
+        open(self.filename, 'w').write(''.join(self.lines))
 
     def auto_detect_crlf(self):
         if self.lines:
