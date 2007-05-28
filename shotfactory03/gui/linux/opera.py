@@ -45,6 +45,6 @@ class Gui(base.Gui):
         if os.path.exists(inifile):
             print 'removing crash dialog from', inifile
             ini = IniFile(inifile)
-            ini.set(lines, 'User Prefs', 'Run', 0)
-            ini.set(lines, 'User Prefs', 'Show New Opera Dialog', 1)
+            ini.set('State', 'Run', 0)
+            ini.set('User Prefs', 'Show New Opera Dialog', 0)
             ini.save()
