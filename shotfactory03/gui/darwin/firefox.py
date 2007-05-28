@@ -31,6 +31,7 @@ import MacOS
 import shutil
 from shotfactory03.gui import darwin as base
 
+
 class Gui(base.Gui):
     """
     Special functions for Firefox on Mac OS X.

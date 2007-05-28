@@ -30,6 +30,7 @@ import appscript
 import MacOS
 from shotfactory03.gui import darwin as base
 
+
 class Gui(base.Gui):
     """
     Special functions for Safari on Mac OS X.

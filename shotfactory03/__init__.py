@@ -24,4 +24,3 @@ Shotfactory library.
 __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
-

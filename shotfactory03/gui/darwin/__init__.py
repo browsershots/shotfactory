@@ -30,6 +30,7 @@ import appscript
 import MacOS
 from shotfactory03 import gui as base
 
+
 class Gui(base.Gui):
     """
     Special functions for Mac OS X.

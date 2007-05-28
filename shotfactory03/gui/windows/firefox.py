@@ -36,6 +36,7 @@ from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory03.gui import windows
 
+
 class Gui(windows.Gui):
     """
     Special functions for Firefox on Windows.

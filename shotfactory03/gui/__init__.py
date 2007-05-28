@@ -29,6 +29,7 @@ import os
 from array import array
 from shotfactory03.image import hashmatch, png
 
+
 class Gui:
     """
     Base class for all GUI wrappers.

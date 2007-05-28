@@ -95,8 +95,10 @@ def interleave_planes(ipixels, apixels, ipsize, apsize):
         out[i+ipsize:newtotal:newpsize] = apixels[i:atotal:apsize]
     return out
 
+
 class Error(Exception):
     pass
+
 
 class Writer:
     """
@@ -393,6 +395,7 @@ class Writer:
                             pixels[offset+i:end_offset:skip]
                     yield row
 
+
 class _readable:
     """
     A simple file-like interface for strings and arrays.
@@ -408,6 +411,7 @@ class _readable:
             r = r.tostring()
         offset += n
         return r
+
 
 class Reader:
     """

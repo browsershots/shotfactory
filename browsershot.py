@@ -21,9 +21,9 @@
 Make screenshots and combine them into one tall image.
 """
 
-__revision__ = '$Rev: 300 $'
-__date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
-__author__ = '$Author: johann $'
+__revision__ = "$Rev: 300 $"
+__date__ = "$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $"
+__author__ = "$Author: johann $"
 
 import platform
 import optparse

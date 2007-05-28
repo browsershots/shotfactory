@@ -21,9 +21,9 @@
 Find vertical offset between two PPM files.
 """
 
-__revision__ = '$Rev: 300 $'
-__date__ = '$Date: 2006-06-04 23:07:15 +0200 (Sun, 04 Jun 2006) $'
-__author__ = '$Author: johann $'
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import sys
 from shotfactory03.image import hashmatch

@@ -21,11 +21,9 @@
 Screenshot factory.
 """
 
-
-__revision__ = '$Rev$'
-__date__ = '$Date$'
-__author__ = '$Author$'
-
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import sys
 import os
