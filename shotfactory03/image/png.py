@@ -97,6 +97,7 @@ def interleave_planes(ipixels, apixels, ipsize, apsize):
 
 
 class Error(Exception):
+    """Simple exception class."""
     pass
 
 
@@ -406,7 +407,8 @@ class _readable:
         self.offset = 0
 
     def read(self, n):
-        r = buf[offset:offset+n]
+        """Read a number of bytes."""
+        r = self.buf[offset:offset+n]
         if isinstance(r, array):
             r = r.tostring()
         offset += n
