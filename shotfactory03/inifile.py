@@ -15,8 +15,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 # MA 02111-1307, USA.
+
 """
-Very simple .ini file manipulator for Opera
+Very simple .ini file manipulator for Opera.
 
 >>> ini = IniFile()
 >>> ini.lines = []
@@ -29,16 +30,20 @@ Very simple .ini file manipulator for Opera
 >>> ini.set('User Prefs', 'Run', 0)
 >>> ini.lines
 ['[User Prefs]\\n', 'Run=0\\n', 'Show Upgrade Dialog=0\\n']
->>> ini.auto_detect_crlf()
->>> ini.crlf
+>>> ini.detect_crlf()
 '\\n'
 >>> ini.lines.insert(0, '# Comment\\r\\n')
->>> ini.auto_detect_crlf()
->>> ini.crlf
+>>> ini.detect_crlf()
 '\\r\\n'
 """
 
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
+
+
 class IniFile:
+    """Very simple .ini file manipulator for Opera."""
 
     def __init__(self, filename=None):
         self.filename = filename
@@ -46,25 +51,21 @@ class IniFile:
             self.lines = []
         else:
             self.lines = file(filename).readlines()
-        self.auto_detect_crlf()
+        self.crlf = self.detect_crlf()
 
-    def save(self, filename=None):
-        if filename is None:
-            filename = self.filename
-        if filename is None:
-            raise NameError
-        open(self.filename, 'w').write(''.join(self.lines))
-
-    def auto_detect_crlf(self):
+    def detect_crlf(self):
+        """Auto-detect end-of-line sequence."""
         if self.lines:
             line = self.lines[0]
         else:
             line = '\n'
-        self.crlf = line[-1:]
         if line[-2:] == '\r\n':
-            self.crlf = line[-2:]
+            return line[-2:]
+        else:
+            return line[-1:]
 
     def set(self, section, key, value):
+        """Change or add a configuration line."""
         key_value_line = '%s=%s%s' % (key, value, self.crlf)
         start, stop = self.find_section(section)
         if start is None:
@@ -84,6 +85,7 @@ class IniFile:
                 self.lines[index] = key_value_line
 
     def find_section(self, section):
+        """Find the beginning and end of a configuration section."""
         start = None
         for index, line in enumerate(self.lines):
             if line.strip() == '[%s]' % section:
@@ -93,9 +95,18 @@ class IniFile:
         return start, len(self.lines)
 
     def find_key(self, start, stop, key):
+        """Find a key inside a configuration section."""
         for index in range(start, stop):
             if self.lines[index].startswith(key + '='):
                 return index
+
+    def save(self, filename=None):
+        """Write lines back to file."""
+        if filename is None:
+            filename = self.filename
+        if filename is None:
+            raise NameError
+        open(self.filename, 'w').write(''.join(self.lines))
 
 
 if __name__ == '__main__':
