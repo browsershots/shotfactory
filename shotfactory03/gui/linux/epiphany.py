@@ -26,6 +26,7 @@ __author__ = "$Author$"
 
 import os
 import time
+import shutil
 from shotfactory03.gui import linux as base
 
 
@@ -34,11 +35,17 @@ class Gui(base.Gui):
     Special functions for Epiphany.
     """
 
-    def remove_crash_dialog(self):
+    def reset_browser(self):
         """
-        Delete evidence of previous browser crash.
+        Delete browser cache and crash dialog.
         """
         home = os.environ['HOME'].rstrip('/')
+        # Delete cache
+        cachedir = home + '/.gnome2/epiphany/mozilla/epiphany/Cache'
+        if os.path.exists(cachedir):
+            print 'deleting cache', cachedir
+            shutil.rmtree(cachedir)
+        # Delete crash dialog
         crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
         if os.path.exists(crashfile):
             print 'deleting crash file', crashfile
