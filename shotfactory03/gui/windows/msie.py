@@ -66,7 +66,7 @@ class Gui(windows.Gui):
                     shutil.rmtree(path)
                 else:
                     os.unlink(path)
-            except WindowsError, message:
+            except (OSError, WindowsError), message:
                 print message
 
     def check_version_override(self, major, minor):
