@@ -101,5 +101,5 @@ class Gui(base.Gui):
 
     def close(self):
         """Close browser and helper programs."""
-        self.shell('killall firefox-bin > /dev/null 2&>1')
-        self.shell('killall UserNotificationCenter > /dev/null 2&>1')
+        base.Gui.close(self)
+        self.shell('killall firefox-bin > /dev/null 2>&1')

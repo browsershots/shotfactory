@@ -52,3 +52,8 @@ class Gui(base.Gui):
         """Save the full screen to a PPM file."""
         self.shell('screencapture "%s.png"' % filename)
         self.shell('pngtopnm "%s.png" > "%s"' % (filename, filename))
+
+    def close(self):
+        """Kill helper programs."""
+        self.shell('killall UserNotificationCenter > /dev/null 2>&1')
+        self.shell('killall "iCal Helper" > /dev/null 2>&1')
