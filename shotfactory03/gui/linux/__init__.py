@@ -141,7 +141,6 @@ class Gui(base.Gui):
         """
         error = os.system('vncserver -kill %s' % self.display)
         time.sleep(1)
-        os.system('killall -q -9 firefox-bin')
         os.system('killall -q -9 klauncher')
         os.system('killall -q -9 dcopserver')
         os.system('killall -q -9 kio_http')
