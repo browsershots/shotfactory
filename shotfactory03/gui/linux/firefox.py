@@ -41,6 +41,8 @@ class Gui(base.Gui):
         """
         home = os.environ['HOME'].rstrip('/')
         dotdir = os.path.join(home, '.mozilla/firefox')
+        if not os.path.exists(dotdir):
+            return
         for profile in os.listdir(dotdir):
             # Delete cache
             cachedir = os.path.join(dotdir, profile, 'Cache')
