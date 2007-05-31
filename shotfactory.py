@@ -91,8 +91,10 @@ def import_deep(name, parent_levels=0):
         except ImportError:
             parts.pop()
             name = '.'.join(parts)
-            parent_levels -= 1
-    raise ImportError
+            if parent_levels > 0:
+                parent_levels -= 1
+            else:
+                raise
 
 
 def browsershot(options, server, config, challenge, password):
