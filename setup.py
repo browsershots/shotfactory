@@ -37,7 +37,7 @@ if 'py2exe' in sys.argv:
         modulefinder.AddPackagePath("win32com.shell", path)
     # py2exe configuration
     kwargs['console'] = [{
-        'script': 'scripts/shotfactory',
+        'script': 'shotfactory.py',
         'icon_resources': [(1, 'favicon.ico')],
         }]
     kwargs['options'] = {
