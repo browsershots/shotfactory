@@ -208,7 +208,7 @@ def systemload():
     """
     try:
         return max(os.getloadavg())
-    except AttributeError, OSError:
+    except (AttributeError, OSError):
         return None
 
 
