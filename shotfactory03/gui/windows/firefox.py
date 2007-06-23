@@ -90,5 +90,7 @@ class Gui(windows.Gui):
 
 # Test scrolling from command line
 if __name__ == '__main__':
-    gui = Gui(1024, 768, 24, 90)
+    config = {'width': 1024, 'bpp': 24}
+    options = None
+    gui = Gui(config, options)
     gui.down(verbose=True)

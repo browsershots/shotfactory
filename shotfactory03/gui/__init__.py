@@ -50,7 +50,6 @@ class Gui:
         if not self.bpp:
             self.bpp = 24
         self.dpi = 90
-        self.display = options.display
         self.top_skip = 0
         self.bottom_skip = 0
 
