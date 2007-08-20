@@ -39,7 +39,8 @@ class Gui(base.Gui):
         Delete browser cache.
         """
         dotdir = glob(os.path.join(os.environ['HOME'], '.ies4linux', '*',
-            'drive_c', 'windows', 'profiles', '*', '*', 'Temporary Internet Files'))
+            'drive_c', 'windows', 'profiles', '*', '*',
+            'Temporary Internet Files'))
         for cachedir in dotdir:
             while os.path.islink(cachedir):
                 cachedir = os.readlink(cachedir)

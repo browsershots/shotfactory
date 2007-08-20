@@ -30,7 +30,7 @@ from shotfactory04.gui import linux as base
 
 
 class Gui(base.Gui):
-   """
-   Special functions for Dillo.
-   """
-   pass
+    """
+    Special functions for Dillo.
+    """
+    pass

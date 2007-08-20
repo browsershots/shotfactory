@@ -57,7 +57,7 @@ class Gui(windows.Gui):
         # Delete all files from the browser cache
         self.delete_if_exists(
             os.path.join(profile, 'cache4'),
-            message="deleting browser cache:", verbose=verbose)        
+            message="deleting browser cache:", verbose=verbose)
 
     def start_browser(self, config, url, options):
         """

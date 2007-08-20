@@ -30,18 +30,18 @@ from shotfactory04.gui import linux as base
 
 
 class Gui(base.Gui):
-   """
-   Special functions for Netscape Navigator.
-   """
+    """
+    Special functions for Netscape Navigator.
+    """
 
-   def reset_browser(self):
-       """
-       Delete crash dialog and browser cache.
-       """
-       home = os.environ['HOME'].rstrip('/')
-       cachedir = os.path.join(home, '.netscape/cache')
-       if not os.path.exists(cachedir):
-           return
-       if os.path.exists(cachedir):
-           print 'deleting cache', cachedir
-           shutil.rmtree(cachedir)
+    def reset_browser(self):
+        """
+        Delete crash dialog and browser cache.
+        """
+        home = os.environ['HOME'].rstrip('/')
+        cachedir = os.path.join(home, '.netscape/cache')
+        if not os.path.exists(cachedir):
+            return
+        if os.path.exists(cachedir):
+            print 'deleting cache', cachedir
+            shutil.rmtree(cachedir)

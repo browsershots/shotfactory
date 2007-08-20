@@ -30,19 +30,19 @@ from shotfactory04.gui import linux as base
 
 
 class Gui(base.Gui):
-   """
-   Special functions for Flock.
-   """
+    """
+    Special functions for Flock.
+    """
 
-   def reset_browser(self):
-       """
-       Delete crash dialog and browser cache.
-       """
-       home = os.environ['HOME'].rstrip('/')
-       dotdir = os.path.join(home, '.flock/browser')
-       if not os.path.exists(dotdir):
+    def reset_browser(self):
+        """
+        Delete crash dialog and browser cache.
+        """
+        home = os.environ['HOME'].rstrip('/')
+        dotdir = os.path.join(home, '.flock/browser')
+        if not os.path.exists(dotdir):
             return
-       for profile in os.listdir(dotdir):
+        for profile in os.listdir(dotdir):
             # Delete cache
             cachedir = os.path.join(dotdir, profile, 'Cache')
             if os.path.exists(cachedir):

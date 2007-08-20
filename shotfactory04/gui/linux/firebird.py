@@ -22,7 +22,6 @@ __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
 
-
 import os
 import time
 import shutil
@@ -30,21 +29,21 @@ from shotfactory04.gui import linux as base
 
 
 class Gui(base.Gui):
-   """
-   Special functions for Mozilla Firebird.
-   """
+    """
+    Special functions for Mozilla Firebird.
+    """
 
-   def reset_browser(self):
-       """
-       Delete crash dialog and browser cache.
-       """
-       home = os.environ['HOME'].rstrip('/')
-       dotdir = os.path.join(home, '.phoenix/default')
-       if not os.path.exists(dotdir):
-           return
-       for profile in os.listdir(dotdir):
-           # Delete cache
-           cachedir = os.path.join(dotdir, profile, 'Cache')
-           if os.path.exists(cachedir):
-               print 'deleting cache', cachedir
-               shutil.rmtree(cachedir)
+    def reset_browser(self):
+        """
+        Delete crash dialog and browser cache.
+        """
+        home = os.environ['HOME'].rstrip('/')
+        dotdir = os.path.join(home, '.phoenix/default')
+        if not os.path.exists(dotdir):
+            return
+        for profile in os.listdir(dotdir):
+            # Delete cache
+            cachedir = os.path.join(dotdir, profile, 'Cache')
+            if os.path.exists(cachedir):
+                print 'deleting cache', cachedir
+                shutil.rmtree(cachedir)
