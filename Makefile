@@ -3,7 +3,10 @@ pep8 :
 
 pylint :
 	pylint shotfactory04 \
-	| grep -v "test_suite\.test_"
+	| grep -v "image/png\.py:" \
+	| grep -v "Method could be a function" \
+	| grep -v "defined outside __init__" \
+	| grep -v "Too many public methods"
 
 docstrings :
 	-pylint shotserver04 \

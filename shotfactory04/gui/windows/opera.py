@@ -24,11 +24,8 @@ __author__ = "$Author: johann $"
 
 import os
 import time
-import sys
-import win32api
 import win32gui
 import win32con
-import pywintypes
 from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory04.gui import windows
@@ -73,18 +70,18 @@ class Gui(windows.Gui):
         """
         Find the scrollable window.
         """
-        hWnd = win32gui.WindowFromPoint((self.width/2, self.height/2))
+        hwnd = win32gui.WindowFromPoint((self.width/2, self.height/2))
         for parent_level in range(20):
-            if not hWnd:
+            if not hwnd:
                 return None
             if verbose:
-                print 'handle', hWnd
-                print 'classname', win32gui.GetClassName(hWnd)
-                print 'text', win32gui.GetWindowText(hWnd)
+                print 'handle', hwnd
+                print 'classname', win32gui.GetClassName(hwnd)
+                print 'text', win32gui.GetWindowText(hwnd)
                 print
-            if win32gui.GetClassName(hWnd) == 'OperaWindowClass':
-                return hWnd
-            hWnd = win32gui.GetParent(hWnd)
+            if win32gui.GetClassName(hwnd) == 'OperaWindowClass':
+                return hwnd
+            hwnd = win32gui.GetParent(hwnd)
 
     def down(self, verbose=False):
         """

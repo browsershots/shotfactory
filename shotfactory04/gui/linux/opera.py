@@ -24,7 +24,6 @@ __author__ = "$Author$"
 
 
 import os
-import time
 import shutil
 from shotfactory04.gui import linux as base
 from shotfactory04.inifile import IniFile

@@ -24,11 +24,7 @@ __author__ = "$Author$"
 
 import os
 import time
-import sys
-import win32api
-import win32gui
 import win32con
-import pywintypes
 from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory04.gui import windows

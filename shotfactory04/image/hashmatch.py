@@ -24,7 +24,7 @@ __author__ = "$Author$"
 
 import re
 
-step = 3*64
+STEP = 3*64
 header_match = re.compile(r'(P\d) (\d+) (\d+) (\d+)').match
 
 
@@ -77,10 +77,10 @@ def build_hash(pixels, start, height, row_skip):
     positions = {}
     frequencies = {}
     frequencies_get = frequencies.get
-    previous = pixels[start:start+step]
+    previous = pixels[start:start+STEP]
     for y in range(1, height):
         start += row_skip
-        this = pixels[start:start+step]
+        this = pixels[start:start+STEP]
         marker = previous + this
         previous = this
         frequencies[marker] = frequencies_get(marker, 0) + 1
@@ -98,10 +98,10 @@ def match_markers(pixels, start, height, row_skip, positions, votes):
     """
     positions_get = positions.get
     votes_get = votes.get
-    previous = pixels[start:start+step]
+    previous = pixels[start:start+STEP]
     for y in range(1, height):
         start += row_skip
-        this = pixels[start:start+step]
+        this = pixels[start:start+STEP]
         marker = previous + this
         previous = this
         position = positions_get(marker, -1)
@@ -156,15 +156,13 @@ def find_offset(filename1, filename2):
 
     row_skip = 3*width
     votes = {}
-    for start in range(0, row_skip, step):
+    for start in range(0, row_skip, STEP):
         positions = build_hash(pixels1, start, height1, row_skip)
         match_markers(pixels2, start, height2, row_skip, positions, votes)
     # debug_values(votes, minimum = 1)
-    return winner(votes, 3*width/step)
+    return winner(votes, 3*width/STEP)
+
 
 if __name__ == '__main__':
     import doctest
-    errors, tests = doctest.testmod()
-    if errors:
-        import sys
-        sys.exit(1)
+    doctest.testmod()

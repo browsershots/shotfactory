@@ -40,6 +40,9 @@ class Gui(base.Gui):
         os.system(command)
 
     def prepare_screen(self):
+        """
+        Adjust the screen resolution as requested.
+        """
         self.bottom_skip = 4
         self.safari = None
         # Set screen resolution and color depth with Lynn Pye's cscreen

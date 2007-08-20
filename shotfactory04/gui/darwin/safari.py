@@ -22,7 +22,6 @@ __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
 
-import os
 import time
 import appscript
 import MacOS

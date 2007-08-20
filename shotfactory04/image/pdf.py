@@ -44,6 +44,9 @@ filter_match = re.compile(r' /Filter /(\S+) ').search
 
 
 def find_objects(lines):
+    """
+    Find objects in PDF file.
+    """
     for index, line in enumerate(lines):
         match = obj_match(line)
         if match is not None:
@@ -55,6 +58,9 @@ def find_objects(lines):
 
 
 def object_header(lines, start):
+    """
+    Get the object header at a specified line.
+    """
     index = start + 1
     result = lines[index].strip()
     while result.count('<<') > result.count('>>'):
@@ -64,6 +70,9 @@ def object_header(lines, start):
 
 
 def flate_decode(lines, start, stop):
+    """
+    Decompress a data block.
+    """
     assert lines[start].strip() == 'stream'
     assert lines[stop].strip() == 'endstream'
     start += 1
@@ -72,6 +81,9 @@ def flate_decode(lines, start, stop):
 
 
 def read_pdf(filename):
+    """
+    Read an image from a PDF file.
+    """
     lines = file(filename, 'rb').readlines()
     for start, a, b, stop in find_objects(lines):
         # print 'found obj %d: lines %d to %d' % (a, start, stop)
@@ -92,15 +104,18 @@ def read_pdf(filename):
         match = filter_match(header)
         if match is None:
             continue
-        filter = match.group(1)
-        # print '   ', filter
-        if filter == 'FlateDecode':
+        filter_name = match.group(1)
+        # print '   ', filter_name
+        if filter_name == 'FlateDecode':
             image = flate_decode(lines, header_index + 1, stop - 1)
             return width, height, image
     raise NotImplementedError
 
 
 def write_ppm(width, height, image, filename=None):
+    """
+    Output image as PPM file.
+    """
     if filename is None:
         outfile = sys.stdout
     else:
@@ -109,8 +124,15 @@ def write_ppm(width, height, image, filename=None):
     outfile.write(image)
 
 
-if __name__ == '__main__':
+def _main():
+    """
+    Convert PDF file specified on command line to PPM.
+    """
     assert len(sys.argv) == 2
     filename = sys.argv[1]
     width, height, image = read_pdf(filename)
     write_ppm(width, height, image)
+
+
+if __name__ == '__main__':
+    _main()

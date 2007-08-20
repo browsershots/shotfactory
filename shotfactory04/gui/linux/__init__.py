@@ -145,7 +145,7 @@ class Gui(base.Gui):
         """
         Shut down the VNC server.
         """
-        error = os.system('vncserver -kill %s' % self.display)
+        os.system('vncserver -kill %s' % self.display)
         time.sleep(1)
         os.system('killall -q -9 klauncher')
         os.system('killall -q -9 dcopserver')

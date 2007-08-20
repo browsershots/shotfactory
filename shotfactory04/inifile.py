@@ -43,6 +43,9 @@ __author__ = "$Author$"
 
 
 class IniFile:
+    """
+    Manipulate Opera's configuration file.
+    """
 
     def __init__(self, filename=None):
         self.filename = filename
@@ -50,9 +53,13 @@ class IniFile:
             self.lines = []
         else:
             self.lines = file(filename).readlines()
+        self.crlf = '\n'
         self.auto_detect_crlf()
 
     def save(self, filename=None):
+        """
+        Save configuration back to file.
+        """
         if filename is None:
             filename = self.filename
         if filename is None:
@@ -60,6 +67,9 @@ class IniFile:
         open(self.filename, 'w').write(''.join(self.lines))
 
     def auto_detect_crlf(self):
+        """
+        Detect line ending style.
+        """
         if self.lines:
             line = self.lines[0]
         else:
@@ -69,6 +79,9 @@ class IniFile:
             self.crlf = line[-2:]
 
     def set(self, section, key, value):
+        """
+        Set a configuration value.
+        """
         key_value_line = '%s=%s%s' % (key, value, self.crlf)
         start, stop = self.find_section(section)
         if start is None:
@@ -88,6 +101,9 @@ class IniFile:
                 self.lines[index] = key_value_line
 
     def find_section(self, section):
+        """
+        Find a section in the config file.
+        """
         start = None
         for index, line in enumerate(self.lines):
             if line.strip() == '[%s]' % section:
@@ -97,6 +113,9 @@ class IniFile:
         return start, len(self.lines)
 
     def find_key(self, start, stop, key):
+        """
+        Find a key in a config file section.
+        """
         for index in range(start, stop):
             if self.lines[index].startswith(key + '='):
                 return index
