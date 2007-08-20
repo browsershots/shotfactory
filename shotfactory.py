@@ -1,21 +1,19 @@
 #!/usr/bin/env python
-# browsershots.org ShotFactory 0.3-beta1
+# browsershots.org - Test your web design in different browsers
 # Copyright (C) 2007 Johann C. Rocholl <johann@browsershots.org>
 #
-# This program is free software; you can redistribute it and/or modify
+# Browsershots is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, but
+# Browsershots is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-# MA 02111-1307, USA.
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 Screenshot factory.
@@ -34,22 +32,25 @@ import platform
 import re
 import traceback
 from md5 import md5
-
+from sha import sha
+from xmlrpclib import Fault
 
 pngfilename = 'browsershot.png'
+default_server_url = 'http://api.browsershots.org/'
+
 # Security: allow only alphanumeric browser commands
 # Optionally within a subfolder, relative to working directory
 safe_command = re.compile(r'^([\w_\-]+[\\/])*[\w_\-\.]+$').match
 
 
-def log(status, extra=None):
+def log(message, extra=None):
     """
     Add a line to the log file.
     """
     logfile = open('shotfactory.log', 'a')
     logfile.write(time.strftime('%Y-%m-%d %H:%M:%S'))
     logfile.write(' ')
-    logfile.write(status)
+    logfile.write(message)
     if extra is not None:
         logfile.write(' ')
         logfile.write(str(extra))
@@ -62,55 +63,37 @@ def sleep():
     time.sleep(60)
 
 
-def crypt_password(challenge, password, prefix = ''):
+def encrypt_password(challenge, password):
     """
     Encrypt a password for transmission.
     """
-    salt = challenge[:4]
-    nonce = challenge[4:]
-    crypt = md5(salt + password).hexdigest()
-    crypt = md5(prefix + crypt + nonce).hexdigest()
-    return crypt
+    if challenge['algorithm'] == 'md5':
+        inner = md5(challenge['salt'] + password).hexdigest()
+    elif challenge['algorithm'] == 'sha1':
+        inner = sha(challenge['salt'] + password).hexdigest()
+    else:
+        raise NotImplemented(
+            "Password encryption algorithm '%s' not implemented." %
+            challenge['algorithm'])
+    return md5(inner + challenge['nonce']).hexdigest()
 
 
-def import_deep(name, parent_levels=0):
-    """
-    Import a module from some.levels.deep and return the module
-    itself, not its uppermost parent. If the module is unavailable,
-    try its parents, up to parent_levels. The default of 0 means no
-    parents are tried.
-    """
-    parts = name.split('.')
-    while len(parts) and parent_levels >= 0:
-        try:
-            print "trying to import", name
-            module = __import__(name)
-            for part in parts[1:]:
-                module = getattr(module, part)
-            return module
-        except ImportError:
-            parts.pop()
-            name = '.'.join(parts)
-            if parent_levels > 0:
-                parent_levels -= 1
-            else:
-                raise
-
-
-def browsershot(options, server, config, challenge, password):
+def browsershot(options, server, config, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
+    browser_module = config['browser'].lower()
+    if browser_module == 'internet explorer':
+        browser_module = 'msie'
     platform_name = platform.system()
     if platform_name in ('Microsoft', 'Microsoft Windows'):
         platform_name = 'Windows'
     if platform_name in ('Linux', 'Darwin', 'Windows'):
-        module_name = 'shotfactory03.gui.%s.%s' % (
-            platform_name.lower(),
-            config['browser'].lower())
+        module_name = 'shotfactory04.gui.%s.%s' % (
+            platform_name.lower(), browser_module)
     else:
         raise NotImplementedError("unsupported platform: " + platform_name)
-    gui_module = import_deep(module_name, parent_levels=1)
+    gui_module = __import__(module_name, globals(), locals(), ['non-empty'])
     gui = gui_module.Gui(config, options)
 
     # Close old browser instances and helper programs
@@ -126,9 +109,10 @@ def browsershot(options, server, config, challenge, password):
     gui.prepare_screen()
 
     # Start new browser
-    crypt = crypt_password(challenge, password, 'redirect')
-    url = '/'.join((options.server, 'redirect', crypt,
-                    str(config['request'])))
+    challenge = server.nonces.challenge(options.factory)
+    encrypted = encrypt_password(challenge, password)
+    url = '/'.join((options.server.rstrip('/'), 'redirect',
+                    options.factory, encrypted, str(config['request']), ''))
     gui.start_browser(config, url, options)
 
     # Make screenshots
@@ -144,42 +128,35 @@ def browsershot(options, server, config, challenge, password):
     binary_data = binary_file.read()
     binary = xmlrpclib.Binary(binary_data)
     binary_file.close()
-    crypt = crypt_password(challenge, password)
+    challenge = server.nonces.challenge(options.factory)
+    encrypted = encrypt_password(challenge, password)
     upload_started = time.time()
-    status, challenge = server.request.upload(binary, crypt)
+    server.screenshots.upload(
+        options.factory, encrypted, config['request'], binary)
     seconds = time.time() - upload_started
-    if status == 'OK':
-        bytes = len(binary_data) * 8 / 6 # base64 encoding
-        print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
-            bytes, seconds, 8 * bytes / seconds / 1000.0)
-        os.remove(pngfilename)
-    else:
-        status += " (after %.2f seconds)" % seconds
-        print "upload failed: " + status
-        log(status, config)
-    return challenge
+    bytes = len(binary_data) * 8 / 6 # base64 encoding
+    print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
+        bytes, seconds, 8 * bytes / seconds / 1000.0)
+    os.remove(pngfilename)
 
 
-def debug_factory_features(server, factory):
+def debug_factory_features(features):
     """
     Print the SQL WHERE clause for a given factory, with linebreaks.
     """
-    features = server.factory.features(factory)
     start = 0
     nested = 0
     for index in range(len(features)):
         if features[index] == '(':
             nested += 1
-            if nested <= 2 and index > 0:
-                stop = index
-                print features[start:stop].strip()
-                start = stop
+            if nested <= 4 and index > 0:
+                print features[start:index].strip()
+                start = index
         elif features[index] == ')':
             nested -= 1
             if nested == 0 and features[index - 1] == ')':
-                stop = index
-                print features[start:stop].strip()
-                start = stop
+                print features[start:index].strip()
+                start = index
     rest = features[start:].strip()
     if rest:
         print rest
@@ -187,7 +164,7 @@ def debug_factory_features(server, factory):
 
 def error_sleep(message):
     """
-    Log error message, sleep a while, get a new challenge.
+    Log error message, sleep a while.
     """
     if not message:
         message = 'runtime error'
@@ -196,7 +173,8 @@ def error_sleep(message):
     if not message.endswith('.'):
         message += '.'
     print message
-    log(message)
+    if not message.startswith('204 '):
+        log(message)
     sleep()
 
 
@@ -231,6 +209,16 @@ class ProxyTransport(xmlrpclib.Transport):
         connection.putheader('Host', self.realhost)
 
 
+def user_agent():
+    return ' '.join((
+        'ShotFactory/0.4',
+        'r%s' % __revision__.strip('$').replace('Rev:', '').strip(),
+        'Python/%s' % (platform.python_version()),
+        '%s/%s' % (platform.system(), platform.release()),
+        platform.machine(),
+        ))
+
+
 def _main():
     """
     Main loop for screenshot factory.
@@ -244,8 +232,8 @@ def _main():
                       metavar="<password>",
                       help="supply password on command line (insecure)")
     parser.add_option("-s", dest="server", action="store", type="string",
-                      metavar="<url>", default="http://browsershots.org",
-                      help="server url (default: http://browsershots.org)")
+                      metavar="<url>", default=default_server_url,
+                      help="server url (%s)" % default_server_url)
     parser.add_option("-f", dest="factory", action="store", type="string",
                       metavar="<name>",
                       help="factory name (default: hostname)")
@@ -266,87 +254,71 @@ def _main():
     if options.password is None:
         from getpass import getpass
         options.password = getpass('Factory password: ')
-
     if options.factory is None:
-        options.factory = socket.gethostname()
-        dot = options.factory.find('.')
-        if dot > -1:
-            options.factory = options.factory[:dot]
-
+        options.factory = socket.gethostname().split('.')[0].lower()
     if options.proxy is None:
         if 'http_proxy' in os.environ:
             options.proxy = os.environ['http_proxy']
+    if not options.server.startswith('http://'):
+        options.server = 'http://' + options.server
 
     socket.setdefaulttimeout(180.0)
+    xmlrpc_url = options.server.rstrip('/') + '/xmlrpc/'
     if options.proxy:
-        server = xmlrpclib.Server(options.server,
-            transport=ProxyTransport(options.proxy))
+        transport = ProxyTransport(options.proxy)
     else:
-        server = xmlrpclib.Server(options.server)
-    challenge = server.auth.challenge(options.factory)
-    crypt = crypt_password(challenge, options.password)
-    auth_test = server.auth.test(options.factory, crypt)
-    if not auth_test == 'OK':
-        print auth_test
-        sys.exit(1)
+        transport = xmlrpclib.Transport()
+    transport.user_agent = user_agent()
+    server = xmlrpclib.Server(xmlrpc_url, transport)
+    challenge = server.nonces.challenge(options.factory)
+    encrypted = encrypt_password(challenge, options.password)
+    server.nonces.verify(options.factory, encrypted)
 
-    debug_factory_features(server, options.factory)
-    challenge = None
+    features = server.factories.features(options.factory)
+    if options.verbose:
+        debug_factory_features(features)
+
     while True:
         try:
             load = systemload()
             if load > options.loadlimit:
-                challenge = None
                 error_sleep('system load %.2f exceeds limit %.2f, sleeping' %
                             (load, options.loadlimit))
                 continue
             print '=' * 32, time.strftime('%H:%M:%S'), '=' * 32
-            if not challenge:
-                challenge = server.auth.challenge(options.factory)
-            print 'challenge:', challenge
-            crypt = crypt_password(challenge, options.password)
-            challenge = None
+            challenge = server.nonces.challenge(options.factory)
+            encrypted = encrypt_password(challenge, options.password)
 
             poll_start = time.time()
-            status, challenge, config = server.request.poll(
-                options.factory, crypt)
-            poll_latency = time.time() - poll_start
-            print 'server poll latency: %.2f seconds' % poll_latency
+            try:
+                config = server.requests.poll(options.factory, encrypted)
+            finally:
+                poll_latency = time.time() - poll_start
+                print 'server poll latency: %.2f seconds' % poll_latency
 
-            if status == 'OK':
-                print config
-                if not safe_command(config['command']):
-                    raise RuntimeError(
-                        'unsafe command "%s"' % config['command'])
-                challenge = browsershot(options, server, config,
-                                        challenge, options.password)
-            elif status == 'No matching request.':
-                print status
-                sleep()
-            else:
-                error_sleep(status)
-                challenge = None
+            print config
+            if config['command'] and not safe_command(config['command']):
+                raise RuntimeError(
+                    'unsafe command "%s"' % config['command'])
+            browsershot(options, server, config, options.password)
         except xmlrpclib.ProtocolError:
             error_sleep('XML-RPC protocol error.')
-            challenge = None
         except socket.gaierror, (errno, message):
             error_sleep('Socket gaierror: ' + message)
-            challenge = None
         except socket.timeout:
             error_sleep('Socket timeout.')
-            challenge = None
         except socket.error, error:
             if type(error.args) in (tuple, list):
                 (errno, message) = error.args
             else:
                 message = str(error.args)
             error_sleep('Socket error: ' + message)
-            challenge = None
+        except Fault, fault:
+            error_sleep('%d %s' % (fault.faultCode, fault.faultString))
         except RuntimeError, message:
             if options.verbose:
                 traceback.print_exc()
             error_sleep(str(message))
-            challenge = None
 
 
 if __name__ == '__main__':

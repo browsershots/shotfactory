@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # browsershots.org - Test your web design in different browsers
 # Copyright (C) 2007 Johann C. Rocholl <johann@browsershots.org>
 #
@@ -16,15 +15,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-Find vertical offset between two PPM files.
+Image recognition and overlap matching.
 """
 
 __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
-
-import sys
-from shotfactory04.image import hashmatch
-
-arg0, filename1, filename2 = sys.argv
-print hashmatch.find_offset(filename1, filename2)

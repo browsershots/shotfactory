@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # browsershots.org - Test your web design in different browsers
 # Copyright (C) 2007 Johann C. Rocholl <johann@browsershots.org>
 #
@@ -16,15 +15,36 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-Find vertical offset between two PPM files.
+GUI-specific interface functions for X11.
 """
 
 __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
 
-import sys
-from shotfactory04.image import hashmatch
 
-arg0, filename1, filename2 = sys.argv
-print hashmatch.find_offset(filename1, filename2)
+import os
+import time
+import shutil
+from shotfactory04.gui import linux as base
+
+
+class Gui(base.Gui):
+   """
+   Special functions for Kazehakase.
+   """
+
+   def reset_browser(self):
+       """
+       Delete browser cache.
+       """
+       home = os.environ['HOME'].rstrip('/')
+       dotdir = os.path.join(home, '.kazehakase/mozilla')
+       if not os.path.exists(dotdir):
+           return
+       for profile in os.listdir(dotdir):
+           # Delete cache
+           cachedir = os.path.join(dotdir, profile, 'Cache')
+           if os.path.exists(cachedir):
+               print 'deleting cache', cachedir
+               shutil.rmtree(cachedir)
