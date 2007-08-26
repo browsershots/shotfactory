@@ -86,8 +86,12 @@ class Gui(base.Gui):
         return state == 'complete'
 
     def scroll_down(self, pixels):
-        """Scroll down with AppleScript/JavaScript."""
+        """Scroll down by specified number of pixels."""
         self.js('window.scrollBy(0,%d)' % pixels)
+
+    def scroll_bottom(self):
+        """Scroll to the bottom of the page."""
+        self.js('window.scrollTo(0,99999)')
 
     def close(self):
         """Close Safari."""

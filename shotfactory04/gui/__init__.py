@@ -28,6 +28,8 @@ import shutil
 from array import array
 from shotfactory04.image import hashmatch, png
 
+MAX_PAGES = 7
+
 
 class Gui:
     """
@@ -86,15 +88,16 @@ class Gui:
         if not os.path.getsize(filename):
             raise RuntimeError('screenshot file %s is empty' % filename)
 
-    def scroll_pages(self, good_offset=300):
+    def scroll_pages(self, height):
         """
         Take screenshots and scroll down between them.
         """
+        good_offset = height / 2 - 40 # Constant browser chrome
         filename = self.page_filename(1)
         pixels_per_line = 100
         scroll_lines = max(1, good_offset / pixels_per_line)
         offsets = []
-        for page in range(2, 7):
+        for page in range(2, MAX_PAGES):
             if hasattr(self, 'scroll_down'):
                 self.scroll_down(good_offset)
             else:
@@ -114,13 +117,31 @@ class Gui:
 
             apparently = offset / scroll_lines
             if apparently == 0:
-                print ("apparently no offset per keypress: %d/%d=%d"
-                       %(offset, scroll_lines, apparently))
+                print "apparently no offset per keypress: %d/%d=%d" % (
+                    offset, scroll_lines, apparently)
             elif apparently != pixels_per_line:
                 pixels_per_line = apparently
                 scroll_lines = max(1, min(good_offset / pixels_per_line, 40))
-                print ("%d pixels/keypress, %d keypresses/scroll"
-                       % (pixels_per_line, scroll_lines))
+                print "%d pixels/keypress, %d keypresses/scroll" % (
+                    pixels_per_line, scroll_lines)
+        else:
+            if not hasattr(self, 'scroll_bottom'):
+                return offsets
+            self.scroll_bottom()
+            time.sleep(0.5)
+            previous2 = previous
+            previous = filename
+            filename = self.page_filename(MAX_PAGES)
+            self.screenshot(filename)
+            self.check_screenshot(filename)
+            offset = hashmatch.find_offset(previous, filename)
+            if offset:
+                # Just another page.
+                offsets.append(offset)
+            else:
+                if not hashmatch.find_offset(previous2, filename):
+                    # Bottom page, just tack it on.
+                    offsets.append(height - 200)
         return offsets
 
     def scanlines(self, width, height, offsets):
@@ -169,8 +190,7 @@ class Gui:
         assert magic == 'P6'
         assert maxval == 255
 
-        good_offset = height / 2 - 40 # Constant browser chrome
-        offsets = self.scroll_pages(good_offset)
+        offsets = self.scroll_pages(height)
         total = height + sum(offsets) - self.top_skip - self.bottom_skip
         print 'total:', total
         scanlines = self.scanlines(width, height, offsets)
