@@ -84,11 +84,11 @@ class Gui(base.Gui):
                 command = '%s >/dev/null 2>/dev/null' % command
         return os.system('DISPLAY=%s %s' % (self.display, command))
 
-    def home(self):
+    def scroll_top(self):
         """Scroll to the top."""
         self.shell('xte "key Home"')
 
-    def end(self):
+    def scroll_bottom(self):
         """Scroll to the bottom."""
         self.shell('xte "key End"')
 
