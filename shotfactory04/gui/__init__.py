@@ -136,9 +136,12 @@ class Gui:
             self.check_screenshot(filename)
             offset = hashmatch.find_offset(previous, filename)
             if offset:
-                # Just another page.
-                offsets.append(offset)
+                # Need enough overlap to avoid browser chrome between pages.
+                if offset < height - 200:
+                    # Just another page.
+                    offsets.append(offset)
             else:
+                # Check that it's not the same bottom page as before.
                 if not hashmatch.find_offset(previous2, filename):
                     # Bottom page, just tack it on.
                     offsets.append(height - 200)
