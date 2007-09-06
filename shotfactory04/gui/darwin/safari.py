@@ -27,6 +27,10 @@ import appscript
 import MacOS
 from shotfactory04.gui import darwin as base
 
+MIN_WAIT = 10 # seconds
+# Shotfactory will auto-detect when Safari is ready
+# if it says it's finished loading for 10 seconds.
+
 
 class Gui(base.Gui):
     """
@@ -62,18 +66,17 @@ class Gui(base.Gui):
         self.js("document.location='%s'" % url)
         ready_count = 0
         max_wait = time.time() + 60
-        min_wait = 20
         while time.time() < max_wait:
             time.sleep(1)
             if self.ready_state():
                 ready_count += 1
                 print ready_count,
-                if ready_count >= min_wait:
+                if ready_count >= MIN_WAIT:
                     break
             elif ready_count:
                 print 'still loading'
                 ready_count = 0
-        if ready_count >= min_wait:
+        if ready_count >= MIN_WAIT:
             print 'done'
         elif ready_count:
             print 'timeout'
