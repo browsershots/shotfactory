@@ -219,6 +219,17 @@ def user_agent():
         ))
 
 
+def check_dir(parser, dirname):
+    if not os.path.exists(dirname):
+        parser.error("directory doesn't exist: %s" % dirname)
+    if not os.path.isdir(dirname):
+        parser.error("not a directory: %s" % dirname)
+    if not os.access(dirname, os.R_OK):
+        parser.error("directory not readable: %s" % dirname)
+    if not os.access(dirname, os.W_OK):
+        parser.error("directory not writable: %s" % dirname)
+
+
 def _main():
     """
     Main loop for screenshot factory.
@@ -249,34 +260,57 @@ def _main():
     parser.add_option("-w", "--wait", action="store", type="int",
                       metavar="<seconds>", default=30,
                       help="wait while page is loading (default: 30)")
+    parser.add_option("-q", "--queue", action="store", type="string",
+                      metavar="<directory>",
+                      help="get requests from files, don't poll server")
+    parser.add_option("-o", "--output", action="store", type="string",
+                      metavar="<directory>",
+                      help="save screenshots locally, don't upload")
     (options, args) = parser.parse_args()
 
-    if options.password is None:
-        from getpass import getpass
-        options.password = getpass('Factory password: ')
     if options.factory is None:
         options.factory = socket.gethostname().split('.')[0].lower()
-    if options.proxy is None:
-        if 'http_proxy' in os.environ:
-            options.proxy = os.environ['http_proxy']
-    if not options.server.startswith('http://'):
-        options.server = 'http://' + options.server
 
-    socket.setdefaulttimeout(180.0)
-    xmlrpc_url = options.server.rstrip('/') + '/xmlrpc/'
-    if options.proxy:
-        transport = ProxyTransport(options.proxy)
+    if options.queue and options.output:
+        options.server = None
+        server = None
+        options.queue = os.path.abspath(options.queue)
+        check_dir(parser, options.queue)
+        options.output = os.path.abspath(options.output)
+        check_dir(parser, options.output)
+    elif options.queue:
+        parser.error("--queue also requires --output")
+    elif options.output:
+        parser.error("--output also requires --queue")
     else:
-        transport = xmlrpclib.Transport()
-    transport.user_agent = user_agent()
-    server = xmlrpclib.Server(xmlrpc_url, transport)
-    challenge = server.nonces.challenge(options.factory)
-    encrypted = encrypt_password(challenge, options.password)
-    server.nonces.verify(options.factory, encrypted)
+        options.queue = None
+        options.output = None
 
-    features = server.factories.features(options.factory)
-    if options.verbose:
-        debug_factory_features(features)
+    if options.server:
+        if not options.server.startswith('http://'):
+            options.server = 'http://' + options.server
+        if options.password is None:
+            from getpass import getpass
+            options.password = getpass('Factory password: ')
+        if options.proxy is None:
+            if 'http_proxy' in os.environ:
+                options.proxy = os.environ['http_proxy']
+
+        socket.setdefaulttimeout(180.0)
+        xmlrpc_url = options.server.rstrip('/') + '/xmlrpc/'
+        if options.proxy:
+            transport = ProxyTransport(options.proxy)
+        else:
+            transport = xmlrpclib.Transport()
+        transport.user_agent = user_agent()
+        server = xmlrpclib.Server(xmlrpc_url, transport)
+        challenge = server.nonces.challenge(options.factory)
+        encrypted = encrypt_password(challenge, options.password)
+        server.nonces.verify(options.factory, encrypted)
+
+        if options.verbose:
+            features = server.factories.features(options.factory)
+            debug_factory_features(features)
 
     while True:
         try:
