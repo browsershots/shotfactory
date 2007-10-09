@@ -228,25 +228,25 @@ def _main():
     parser = OptionParser(version=version)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
                       help="more output (for trouble-shooting)")
-    parser.add_option("-p", dest="password", action="store", type="string",
+    parser.add_option("-p", "--password", action="store", type="string",
                       metavar="<password>",
                       help="supply password on command line (insecure)")
-    parser.add_option("-s", dest="server", action="store", type="string",
+    parser.add_option("-s", "--server", action="store", type="string",
                       metavar="<url>", default=default_server_url,
                       help="server url (%s)" % default_server_url)
-    parser.add_option("-f", dest="factory", action="store", type="string",
+    parser.add_option("-f", "--factory", action="store", type="string",
                       metavar="<name>",
                       help="factory name (default: hostname)")
-    parser.add_option("-P", dest="proxy", action="store", type="string",
+    parser.add_option("-P", "--proxy", action="store", type="string",
                       metavar="<proxy>",
                       help="use a HTTP proxy (default: environment)")
-    parser.add_option("-d", dest="display", action="store", type="string",
+    parser.add_option("-d", "--display", action="store", type="string",
                       metavar="<name>", default=":1",
                       help="run on a different display (default: :1)")
-    parser.add_option("-l", dest="loadlimit", action="store", type="float",
+    parser.add_option("-l", "--loadlimit", action="store", type="float",
                       metavar="<limit>", default=1.0,
                       help="system load limit (default: 1.0)")
-    parser.add_option("-w", dest="wait", action="store", type="int",
+    parser.add_option("-w", "--wait", action="store", type="int",
                       metavar="<seconds>", default=30,
                       help="wait while page is loading (default: 30)")
     (options, args) = parser.parse_args()
