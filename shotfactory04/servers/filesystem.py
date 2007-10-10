@@ -3,7 +3,7 @@ import re
 from xmlrpclib import Fault
 from shotfactory04.servers import Server
 
-INTEGER_KEYS = 'request width height bpp major minor'.split()
+INTEGER_KEYS = 'width height bpp major minor'.split()
 
 config_line_match = re.compile(r'(\w+)\s*(.*)').match
 
@@ -72,7 +72,7 @@ class FileSystemServer(Server):
     def upload_png(self, config, pngfilename):
         os.unlink(os.path.join(self.queue, self.request_filename))
         if 'request' in config:
-            filename = '%d.png' % config['request']
+            filename = '%s.png' % config['request']
         else:
             filename = config['filename'] + '.png'
         os.rename(pngfilename, os.path.join(self.output, filename))
