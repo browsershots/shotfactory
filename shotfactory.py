@@ -26,14 +26,11 @@ __author__ = "$Author$"
 import sys
 import os
 import time
-import xmlrpclib
+import re
 import socket
 import platform
-import re
 import traceback
-from md5 import md5
-from sha import sha
-from xmlrpclib import Fault
+import xmlrpclib
 
 pngfilename = 'browsershot.png'
 default_server_url = 'http://api.browsershots.org/'
@@ -61,21 +58,6 @@ def log(message, extra=None):
 def sleep():
     """Sleep a while to wait for new requests."""
     time.sleep(60)
-
-
-def encrypt_password(challenge, password):
-    """
-    Encrypt a password for transmission.
-    """
-    if challenge['algorithm'] == 'md5':
-        inner = md5(challenge['salt'] + password).hexdigest()
-    elif challenge['algorithm'] == 'sha1':
-        inner = sha(challenge['salt'] + password).hexdigest()
-    else:
-        raise NotImplemented(
-            "Password encryption algorithm '%s' not implemented." %
-            challenge['algorithm'])
-    return md5(inner + challenge['nonce']).hexdigest()
 
 
 def browsershot(options, server, config, password):
@@ -109,10 +91,7 @@ def browsershot(options, server, config, password):
     gui.prepare_screen()
 
     # Start new browser
-    challenge = server.nonces.challenge(options.factory)
-    encrypted = encrypt_password(challenge, password)
-    url = '/'.join((options.server.rstrip('/'), 'redirect',
-                    options.factory, encrypted, str(config['request']), ''))
+    url = server.get_request_url()
     gui.start_browser(config, url, options)
 
     # Make screenshots
@@ -124,42 +103,8 @@ def browsershot(options, server, config, password):
     gui.close()
 
     # Upload PNG file
-    binary_file = file(pngfilename, 'rb')
-    binary_data = binary_file.read()
-    binary = xmlrpclib.Binary(binary_data)
-    binary_file.close()
-    challenge = server.nonces.challenge(options.factory)
-    encrypted = encrypt_password(challenge, password)
-    upload_started = time.time()
-    server.screenshots.upload(
-        options.factory, encrypted, config['request'], binary)
-    seconds = time.time() - upload_started
-    bytes = len(binary_data) * 8 / 6 # base64 encoding
-    print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
-        bytes, seconds, 8 * bytes / seconds / 1000.0)
+    server.upload_png(pngfilename)
     os.remove(pngfilename)
-
-
-def debug_factory_features(features):
-    """
-    Print the SQL WHERE clause for a given factory, with linebreaks.
-    """
-    start = 0
-    nested = 0
-    for index in range(len(features)):
-        if features[index] == '(':
-            nested += 1
-            if nested <= 4 and index > 0:
-                print features[start:index].strip()
-                start = index
-        elif features[index] == ')':
-            nested -= 1
-            if nested == 0 and features[index - 1] == ')':
-                print features[start:index].strip()
-                start = index
-    rest = features[start:].strip()
-    if rest:
-        print rest
 
 
 def error_sleep(message):
@@ -190,35 +135,6 @@ def systemload():
         return None
 
 
-class ProxyTransport(xmlrpclib.Transport):
-
-    def __init__(self, proxy):
-        if hasattr(xmlrpclib.Transport, '__init__'):
-            xmlrpclib.Transport.__init__(self)
-        self.proxy = proxy
-
-    def make_connection(self, host):
-        self.realhost = host
-        import httplib
-        return httplib.HTTP(self.proxy)
-
-    def send_request(self, connection, handler, request_body):
-        connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
-
-    def send_host(self, connection, host):
-        connection.putheader('Host', self.realhost)
-
-
-def user_agent():
-    return ' '.join((
-        'ShotFactory/0.4',
-        'r%s' % __revision__.strip('$').replace('Rev:', '').strip(),
-        'Python/%s' % (platform.python_version()),
-        '%s/%s' % (platform.system(), platform.release()),
-        platform.machine(),
-        ))
-
-
 def check_dir(parser, dirname):
     if not os.path.exists(dirname):
         parser.error("directory doesn't exist: %s" % dirname)
@@ -235,7 +151,8 @@ def _main():
     Main loop for screenshot factory.
     """
     from optparse import OptionParser
-    version = '%prog ' + __revision__.strip('$').replace('Rev: ', 'r')
+    revision = __revision__.strip('$').replace('Rev: ', 'r')
+    version = '%prog ' + revision
     parser = OptionParser(version=version)
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
                       help="more output (for trouble-shooting)")
@@ -267,17 +184,19 @@ def _main():
                       metavar="<directory>",
                       help="save screenshots locally, don't upload")
     (options, args) = parser.parse_args()
+    options.revision = revision
 
     if options.factory is None:
         options.factory = socket.gethostname().split('.')[0].lower()
 
     if options.queue and options.output:
         options.server = None
-        server = None
         options.queue = os.path.abspath(options.queue)
         check_dir(parser, options.queue)
         options.output = os.path.abspath(options.output)
         check_dir(parser, options.output)
+        from shotfactory04.servers.filesystem import FileSystemServer
+        server = FileSystemServer(options)
     elif options.queue:
         parser.error("--queue also requires --output")
     elif options.output:
@@ -285,8 +204,6 @@ def _main():
     else:
         options.queue = None
         options.output = None
-
-    if options.server:
         if not options.server.startswith('http://'):
             options.server = 'http://' + options.server
         if options.password is None:
@@ -295,22 +212,10 @@ def _main():
         if options.proxy is None:
             if 'http_proxy' in os.environ:
                 options.proxy = os.environ['http_proxy']
-
-        socket.setdefaulttimeout(180.0)
-        xmlrpc_url = options.server.rstrip('/') + '/xmlrpc/'
-        if options.proxy:
-            transport = ProxyTransport(options.proxy)
-        else:
-            transport = xmlrpclib.Transport()
-        transport.user_agent = user_agent()
-        server = xmlrpclib.Server(xmlrpc_url, transport)
-        challenge = server.nonces.challenge(options.factory)
-        encrypted = encrypt_password(challenge, options.password)
-        server.nonces.verify(options.factory, encrypted)
-
+        from shotfactory04.servers.xmlrpc import XMLRPCServer
+        server = XMLRPCServer(options)
         if options.verbose:
-            features = server.factories.features(options.factory)
-            debug_factory_features(features)
+            server.debug_factory_features()
 
     while True:
         try:
@@ -320,23 +225,12 @@ def _main():
                             (load, options.loadlimit))
                 continue
             print '=' * 32, time.strftime('%H:%M:%S'), '=' * 32
-            challenge = server.nonces.challenge(options.factory)
-            encrypted = encrypt_password(challenge, options.password)
-
-            poll_start = time.time()
-            try:
-                config = server.requests.poll(options.factory, encrypted)
-            finally:
-                poll_latency = time.time() - poll_start
-                print 'server poll latency: %.2f seconds' % poll_latency
-
+            config = server.poll()
             print config
             if config['command'] and not safe_command(config['command']):
                 raise RuntimeError(
                     'unsafe command "%s"' % config['command'])
             browsershot(options, server, config, options.password)
-        except xmlrpclib.ProtocolError:
-            error_sleep('XML-RPC protocol error.')
         except socket.gaierror, (errno, message):
             error_sleep('Socket gaierror: ' + message)
         except socket.timeout:
@@ -347,7 +241,9 @@ def _main():
             else:
                 message = str(error.args)
             error_sleep('Socket error: ' + message)
-        except Fault, fault:
+        except xmlrpclib.ProtocolError:
+            error_sleep('XML-RPC protocol error.')
+        except xmlrpclib.Fault, fault:
             error_sleep('%d %s' % (fault.faultCode, fault.faultString))
         except RuntimeError, message:
             if options.verbose:
