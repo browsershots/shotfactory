@@ -91,7 +91,7 @@ def browsershot(options, server, config, password):
     gui.prepare_screen()
 
     # Start new browser
-    url = server.get_request_url()
+    url = server.get_request_url(config)
     gui.start_browser(config, url, options)
 
     # Make screenshots
@@ -103,7 +103,7 @@ def browsershot(options, server, config, password):
     gui.close()
 
     # Upload PNG file
-    server.upload_png(pngfilename)
+    server.upload_png(config, pngfilename)
     os.remove(pngfilename)
 
 

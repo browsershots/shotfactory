@@ -59,13 +59,13 @@ class XMLRPCServer(Server):
                 challenge['algorithm'])
         return md5(inner + challenge['nonce']).hexdigest()
 
-    def get_request_url(self):
+    def get_request_url(self, config):
         challenge = self.server.nonces.challenge(self.factory)
         encrypted = self.encrypt_password(challenge)
         return '/'.join((self.server_url, 'redirect',
-            self.factory, encrypted, str(self.request), ''))
+            self.factory, encrypted, config['request'], ''))
 
-    def upload_png(self, pngfilename):
+    def upload_png(self, config, pngfilename):
         binary_file = file(pngfilename, 'rb')
         binary_data = binary_file.read()
         binary = xmlrpclib.Binary(binary_data)
@@ -75,7 +75,7 @@ class XMLRPCServer(Server):
         encrypted = self.encrypt_password(challenge)
         upload_started = time.time()
         self.server.screenshots.upload(
-            self.factory, encrypted, self.request, binary)
+            self.factory, encrypted, config['request'], binary)
         seconds = time.time() - upload_started
         bytes = len(binary_data) * 8 / 6 # base64 encoding
         print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
@@ -112,5 +112,4 @@ class XMLRPCServer(Server):
         finally:
             poll_latency = time.time() - poll_start
             print 'server poll latency: %.2f seconds' % poll_latency
-        self.request = config['request']
         return config
