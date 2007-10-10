@@ -63,7 +63,7 @@ class XMLRPCServer(Server):
         challenge = self.server.nonces.challenge(self.factory)
         encrypted = self.encrypt_password(challenge)
         return '/'.join((self.server_url, 'redirect',
-            self.factory, encrypted, config['request'], ''))
+            self.factory, encrypted, str(config['request']), ''))
 
     def upload_png(self, config, pngfilename):
         binary_file = file(pngfilename, 'rb')
@@ -75,7 +75,7 @@ class XMLRPCServer(Server):
         encrypted = self.encrypt_password(challenge)
         upload_started = time.time()
         self.server.screenshots.upload(
-            self.factory, encrypted, config['request'], binary)
+            self.factory, encrypted, int(config['request']), binary)
         seconds = time.time() - upload_started
         bytes = len(binary_data) * 8 / 6 # base64 encoding
         print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
