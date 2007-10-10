@@ -104,7 +104,8 @@ def browsershot(options, server, config, password):
 
     # Upload PNG file
     server.upload_png(config, pngfilename)
-    os.remove(pngfilename)
+    if os.path.exists(pngfilename):
+        os.remove(pngfilename)
 
 
 def error_sleep(message):

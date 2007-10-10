@@ -45,7 +45,13 @@ class FileSystemServer(Server):
                 os.rename(os.path.join(self.queue, oldest), fullpath)
             except OSError:
                 continue # Somebody else locked this request already.
-            config = {}
+            config = {
+                'filename': oldest,
+                'browser': 'Firefox',
+                'width': 1024,
+                'bpp': 24,
+                'command': '',
+                }
             for line in open(fullpath).readlines():
                 line = line.strip()
                 if not len(line):
@@ -58,9 +64,15 @@ class FileSystemServer(Server):
                 if key in INTEGER_KEYS:
                     value = int(value)
                 config[key] = value
-            if 'width' not in config: config['width'] = 1024
-            if 'bpp' not in config: config['bpp'] = 24
             return config
 
     def get_request_url(self, config):
         return config['url']
+
+    def upload_png(self, config, pngfilename):
+        os.unlink(os.path.join(self.queue, self.request_filename))
+        if 'request' in config:
+            filename = '%d.png' % config['request']
+        else:
+            filename = config['filename'] + '.png'
+        os.rename(pngfilename, os.path.join(self.output, filename))
