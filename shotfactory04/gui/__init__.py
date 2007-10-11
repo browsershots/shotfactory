@@ -190,8 +190,8 @@ class Gui:
         self.check_screenshot(filename)
         magic, width, height, maxval = hashmatch.read_ppm_header(
             open(filename, 'rb'))
-        assert magic == 'P6'
-        assert maxval == 255
+        assert magic == 'P6', "%s isn't a PPM file with 24 bpp" % filename
+        assert maxval == 255, "%s doesn't have 24 bits per pixel" % filename
 
         offsets = self.scroll_pages(height)
         total = height + sum(offsets) - self.top_skip - self.bottom_skip
