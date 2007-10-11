@@ -34,7 +34,7 @@ from shotfactory04.inifile import IniFile
 
 class Gui(windows.Gui):
     """
-    Special functions for Safari on Windows.
+    Special functions for Opera on Windows.
     """
 
     def reset_browser(self, verbose=True):
@@ -42,9 +42,6 @@ class Gui(windows.Gui):
         Disable crash dialog and delete browser cache.
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-        """
-        Find profile-paths for several Opera installations. WORKAROUND
-        """
         profiles = os.path.join(appdata, 'Opera')
         for profile in os.listdir(profiles):
             profile = os.path.join(appdata, 'Opera', profile, 'profile')
