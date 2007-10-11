@@ -28,8 +28,6 @@ import shutil
 from array import array
 from shotfactory04.image import hashmatch, png
 
-MAX_PAGES = 7
-
 
 class Gui:
     """
@@ -55,6 +53,7 @@ class Gui:
             self.display = options.display
         if hasattr(options, 'verbose'):
             self.verbose = options.verbose
+        self.max_pages = options.max_pages
         self.top_skip = 0
         self.bottom_skip = 0
 
@@ -97,7 +96,10 @@ class Gui:
         pixels_per_line = 100
         scroll_lines = max(1, good_offset / pixels_per_line)
         offsets = []
-        for page in range(2, MAX_PAGES):
+        top_pages = self.max_pages
+        if top_pages > 2 and hasattr(self, 'scroll_bottom'):
+            top_pages -= 1 # enable jump to last page
+        for page in range(2, top_pages + 1):
             if hasattr(self, 'scroll_down'):
                 self.scroll_down(good_offset)
             else:
@@ -125,13 +127,13 @@ class Gui:
                 print "%d pixels/keypress, %d keypresses/scroll" % (
                     pixels_per_line, scroll_lines)
         else:
-            if not hasattr(self, 'scroll_bottom'):
+            if top_pages == self.max_pages:
                 return offsets
             self.scroll_bottom()
             time.sleep(0.5)
             previous2 = previous
             previous = filename
-            filename = self.page_filename(MAX_PAGES)
+            filename = self.page_filename(self.max_pages)
             self.screenshot(filename)
             self.check_screenshot(filename)
             offset = hashmatch.find_offset(previous, filename)

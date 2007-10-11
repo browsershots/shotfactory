@@ -184,6 +184,9 @@ def _main():
     parser.add_option("-o", "--output", action="store", type="string",
                       metavar="<directory>",
                       help="save screenshots locally, don't upload")
+    parser.add_option("-m", "--max-pages", action="store", type="int",
+                      metavar="<count>", default=7,
+                      help="scroll down and merge screenshots (default: 7)")
     (options, args) = parser.parse_args()
     options.revision = revision
 
