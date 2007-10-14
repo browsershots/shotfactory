@@ -184,6 +184,9 @@ def _main():
     parser.add_option("-o", "--output", action="store", type="string",
                       metavar="<directory>",
                       help="save screenshots locally, don't upload")
+    parser.add_option("-r", "--resize-output", action="append", nargs=2,
+                      metavar="<width> <folder>", default=[],
+                      help="scale screenshots and save locally")
     parser.add_option("-m", "--max-pages", action="store", type="int",
                       metavar="<count>", default=7,
                       help="scroll down and merge screenshots (default: 7)")
@@ -193,18 +196,27 @@ def _main():
     if options.factory is None:
         options.factory = socket.gethostname().split('.')[0].lower()
 
-    if options.queue and options.output:
+    if options.queue and (options.output or options.resize_output):
         options.server = None
         options.queue = os.path.abspath(options.queue)
         check_dir(parser, options.queue)
-        options.output = os.path.abspath(options.output)
-        check_dir(parser, options.output)
+        if options.output:
+            options.output = os.path.abspath(options.output)
+            check_dir(parser, options.output)
+        for index in range(len(options.resize_output)):
+            width, folder = options.resize_output[index]
+            width = int(width)
+            folder = os.path.abspath(folder)
+            check_dir(parser, folder)
+            options.resize_output[index] = (width, folder)
         from shotfactory04.servers.filesystem import FileSystemServer
         server = FileSystemServer(options)
     elif options.queue:
-        parser.error("--queue also requires --output")
+        parser.error("--queue also requires --output or --resize-output")
     elif options.output:
         parser.error("--output also requires --queue")
+    elif options.resize_output:
+        parser.error("--resize-output also requires --queue")
     else:
         options.queue = None
         options.output = None

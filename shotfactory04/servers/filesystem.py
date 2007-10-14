@@ -1,8 +1,11 @@
 import os
 import re
+import time
 from xmlrpclib import Fault
 from shotfactory04.servers import Server
 
+EXPIRE_SECONDS = 300 # request lock expiration timeout
+LOCKTIME_FORMAT = '%y%m%d-%H%M%S'
 INTEGER_KEYS = 'width height bpp major minor'.split()
 
 config_line_match = re.compile(r'(\w+)\s*(.*)').match
@@ -15,15 +18,27 @@ class FileSystemServer(Server):
         self.factory = options.factory
         self.queue = options.queue
         self.output = options.output
+        self.resize = options.resize_output
+
+    def parse_locktime(self, filename):
+        parts = filename.split('-')
+        timestamp = '-'.join(parts[-2:])
+        try:
+            return time.mktime(time.strptime(timestamp, LOCKTIME_FORMAT))
+        except ValueError:
+            return time.time()
 
     def get_oldest_filename(self):
         mtimes = []
+        expire = time.time() - EXPIRE_SECONDS
         for filename in os.listdir(self.queue):
             fullpath = os.path.join(self.queue, filename)
             if not os.path.isfile(fullpath):
                 continue
             if 'locked' in filename:
-                continue
+                locktime = self.parse_locktime(filename)
+                if locktime > expire:
+                    continue
             try:
                 mtime = os.stat(fullpath).st_mtime
             except OSError:
@@ -39,14 +54,20 @@ class FileSystemServer(Server):
             oldest = self.get_oldest_filename()
             if oldest is None:
                 raise Fault(204, 'No matching request.')
-            self.request_filename = oldest + '-locked-' + self.factory
+            filename = oldest
+            pos = filename.find('-locked-')
+            if pos > -1:
+                filename = filename[:pos]
+            self.request_filename = '-'.join((
+                filename, 'locked', self.factory,
+                time.strftime(LOCKTIME_FORMAT)))
             fullpath = os.path.join(self.queue, self.request_filename)
             try:
                 os.rename(os.path.join(self.queue, oldest), fullpath)
             except OSError:
                 continue # Somebody else locked this request already.
             config = {
-                'filename': oldest,
+                'filename': filename,
                 'browser': 'Firefox',
                 'width': 1024,
                 'bpp': 24,
@@ -72,7 +93,11 @@ class FileSystemServer(Server):
     def upload_png(self, config, pngfilename):
         os.unlink(os.path.join(self.queue, self.request_filename))
         if 'request' in config:
-            filename = '%s.png' % config['request']
+            filename = config['request'] + '.png'
         else:
             filename = config['filename'] + '.png'
-        os.rename(pngfilename, os.path.join(self.output, filename))
+        for width, folder in self.resize:
+            os.system('pngtopnm "%s" | pnmscale -width %d | pnmtopng > "%s"' %
+                      (pngfilename, width, os.path.join(folder, filename)))
+        if self.output:
+            os.rename(pngfilename, os.path.join(self.output, filename))
