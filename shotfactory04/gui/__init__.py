@@ -65,6 +65,9 @@ class Gui:
         delete Firefox sessions for all profiles.
         """
         for filename in glob(pattern):
+            filename = os.path.realpath(filename)
+            if not os.path.exists(filename):
+                continue
             if self.verbose and message:
                 print message, filename
             if os.path.isdir(filename):
