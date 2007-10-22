@@ -73,7 +73,7 @@ class Gui:
                 delete = os.unlink
             try:
                 delete(filename)
-            except (OSError, WindowsError), error:
+            except OSError, error:
                 print error
 
     def page_filename(self, page_number, direction='dn'):
