@@ -142,8 +142,8 @@ class Gui(base.Gui):
         """
         self.shell('vncserver -kill %s' % self.display)
         time.sleep(1)
+        self.shell('killall -q -9 nspluginviewer')
         self.shell('killall -q -9 klauncher')
         self.shell('killall -q -9 dcopserver')
         self.shell('killall -q -9 kio_http')
         self.shell('killall -q -9 artsd')
-        self.shell('killall -q -9 nspluginviewer')
