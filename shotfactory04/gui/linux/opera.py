@@ -45,9 +45,13 @@ class Gui(base.Gui):
         self.delete_if_exists(
             os.path.join(home, '.opera', 'opcache'),
             message='deleting cache')
+        self.delete_if_exists(
+            os.path.join(home, '.opera', 'images'),
+            message='deleting icon cache')
         inifile = os.path.join(home, '.opera', 'opera6.ini')
         if os.path.exists(inifile):
-            print 'removing crash dialog from', inifile
+            if self.verbose:
+                print 'removing crash dialog from', inifile
             ini = IniFile(inifile)
             ini.set('State', 'Run', 0)
             ini.set('User Prefs', 'Show New Opera Dialog', 0)
