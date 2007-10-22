@@ -37,14 +37,10 @@ class Gui(base.Gui):
         """
         Delete browser cache and crash dialog.
         """
-        home = os.environ['HOME'].rstrip('/')
-        # Delete cache
-        cachedir = home + '/.gnome2/epiphany/mozilla/epiphany/Cache'
-        if os.path.exists(cachedir):
-            print 'deleting cache', cachedir
-            shutil.rmtree(cachedir)
-        # Delete crash dialog
-        crashfile = home + '/.gnome2/epiphany/session_crashed.xml'
-        if os.path.exists(crashfile):
-            print 'deleting crash file', crashfile
-            os.unlink(crashfile)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.gnome2', 'epiphany', 'mozilla', '*', 'Cache'),
+            message='deleting cache')
+        self.delete_if_exists(
+            os.path.join(home, '.gnome2', 'epiphany', 'session_crashed.xml'),
+            message='deleting previous session')

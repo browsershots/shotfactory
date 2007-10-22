@@ -70,11 +70,6 @@ class Gui(base.Gui):
         self.delete_if_exists('/tmp/.X%d-lock' % numeric)
         self.delete_if_exists('/tmp/.X11-unix/X%d' % numeric)
 
-    def delete_if_exists(self, filename):
-        """Delete file if it exists."""
-        if os.path.exists(filename):
-            os.unlink(filename)
-
     def shell(self, command):
         """Run a shell command on my display."""
         if self.verbose is None:

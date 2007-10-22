@@ -35,24 +35,18 @@ class Gui(windows.Gui):
     Special functions for Firefox on Windows.
     """
 
-    def reset_browser(self, verbose=True):
+    def reset_browser(self):
         """
         Delete previous session and browser cache.
         """
-        # Delete old session
-        appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-        profiles = os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles')
-        for profile in os.listdir(profiles):
-            self.delete_if_exists(
-                os.path.join(profiles, profile, 'sessionstore.js'),
-                message="deleting old session:", verbose=verbose)
-        # Delete all files from the browser cache
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
-        profiles = os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles')
-        for profile in os.listdir(profiles):
-            self.delete_if_exists(
-                os.path.join(profiles, profile, 'Cache'),
-                message="deleting browser cache:", verbose=verbose)
+        self.delete_if_exists(
+            os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles', '*',
+            'Cache'), message='deleting cache')
+        appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
+        self.delete_if_exists(
+            os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles', '*',
+            'sessionstore.js'), message="deleting previous session")
 
     def start_browser(self, config, url, options):
         """

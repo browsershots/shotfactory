@@ -37,17 +37,10 @@ class Gui(base.Gui):
         """
         Delete crash file and browser cache.
         """
-        home = os.environ['HOME'].rstrip('/')
-        crashfile = home + '/.galeon/session_crashed.xml'
-        if os.path.exists(crashfile):
-            print 'deleting crash file', crashfile
-            os.unlink(crashfile)
-        dotdir = os.path.join(home, '.galeon/mozilla')
-        if not os.path.exists(dotdir):
-            return
-        for profile in os.listdir(dotdir):
-            # Delete cache
-            cachedir = os.path.join(dotdir, profile, 'Cache')
-            if os.path.exists(cachedir):
-                print 'deleting cache', cachedir
-                shutil.rmtree(cachedir)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.galeon', 'mozilla', '*', 'Cache'),
+            message='deleting cache')
+        self.delete_if_exists(
+            os.path.join(home, '.galeon', 'session_crashed.xml'),
+            message='deleting previous session')

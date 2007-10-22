@@ -37,26 +37,21 @@ class Gui(windows.Gui):
     Special functions for Opera on Windows.
     """
 
-    def reset_browser(self, verbose=True):
+    def reset_browser(self):
         """
         Disable crash dialog and delete browser cache.
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-        profiles = os.path.join(appdata, 'Opera')
-        for profile in os.listdir(profiles):
-            profile = os.path.join(appdata, 'Opera', profile, 'profile')
-            # Disable crash dialog
-            inifile = os.path.join(profile, 'opera6.ini')
-            if os.path.exists(inifile):
-                print 'removing crash dialog from', inifile
-                ini = IniFile(inifile)
-                ini.set('State', 'Run', 0)
-                ini.set('User Prefs', 'Show New Opera Dialog', 0)
-                ini.save()
-            # Delete all files from the browser cache
-            self.delete_if_exists(
-                os.path.join(profile, 'cache4'),
-                message="deleting browser cache:", verbose=verbose)
+        profile = os.path.join(appdata, 'Opera', '*', 'profile')
+        self.delete_if_exists(
+            os.path.join(profile, 'cache4'),
+            message='deleting cache')
+        for inifile in glob(os.path.join(profile, 'opera6.ini')):
+            print 'removing crash dialog from', inifile
+            ini = IniFile(inifile)
+            ini.set('State', 'Run', 0)
+            ini.set('User Prefs', 'Show New Opera Dialog', 0)
+            ini.save()
 
     def start_browser(self, config, url, options):
         """

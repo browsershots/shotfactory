@@ -37,13 +37,7 @@ class Gui(base.Gui):
         """
         Delete crash dialog and browser cache.
         """
-        home = os.environ['HOME'].rstrip('/')
-        dotdir = os.path.join(home, '.phoenix/default')
-        if not os.path.exists(dotdir):
-            return
-        for profile in os.listdir(dotdir):
-            # Delete cache
-            cachedir = os.path.join(dotdir, profile, 'Cache')
-            if os.path.exists(cachedir):
-                print 'deleting cache', cachedir
-                shutil.rmtree(cachedir)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.phoenix', 'default', '*', 'Cache'),
+            message='deleting cache')

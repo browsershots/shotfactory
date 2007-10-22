@@ -39,23 +39,15 @@ class Gui(base.Gui):
         """
         Delete crash dialog and browser cache.
         """
-        home = os.environ['HOME'].rstrip('/')
-        # Delete cache
-        profiles = os.path.join(home,
-            'Library', 'Caches', 'Firefox', 'Profiles')
-        for profile in os.listdir(profiles):
-            cachedir = os.path.join(profiles, profile, 'Cache')
-            if os.path.exists(cachedir):
-                print 'deleting cache', cachedir
-                shutil.rmtree(cachedir)
-        # Delete crash dialog
-        profiles = os.path.join(home,
-            'Library', 'Application Support', 'Firefox', 'Profiles')
-        for profile in os.listdir(profiles):
-            crashfile = os.path.join(profiles, profile, 'sessionstore.js')
-            if os.path.exists(crashfile):
-                print 'deleting crash file', crashfile
-                os.unlink(crashfile)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, 'Library', 'Caches', 'Firefox',
+                         'Profiles', '*', 'Cache'),
+            message='deleting cache')
+        self.delete_if_exists(
+            os.path.join(home, 'Library', 'Application Support', 'Firefox',
+                         'Profiles', '*', 'sessionstore.js'),
+            message='deleting cache')
 
     def start_browser(self, config, url, options):
         """

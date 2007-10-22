@@ -26,6 +26,7 @@ import time
 import os
 import shutil
 from array import array
+from glob import glob
 from shotfactory04.image import hashmatch, png
 
 
@@ -57,22 +58,23 @@ class Gui:
         self.top_skip = 0
         self.bottom_skip = 0
 
-    def delete_if_exists(self, path, message=None, verbose=True):
+    def delete_if_exists(self, pattern, message=None):
         """
-        Print a message and delete a file, if the file exists.
+        Print a message and delete files and folders matching pattern,
+        e.g. /home/shotfactory1/.mozilla/firefox/*/sessionstore.js to
+        delete Firefox sessions for all profiles.
         """
-        if not os.path.exists(path):
-            return
-        if verbose and message:
-            print message, path
-        if os.path.isdir(path):
-            delete = shutil.rmtree
-        else:
-            delete = os.unlink
-        try:
-            delete(path)
-        except (OSError, WindowsError), message:
-            print message
+        for filename in glob(pattern):
+            if self.verbose and message:
+                print message, path
+            if os.path.isdir(path):
+                delete = shutil.rmtree
+            else:
+                delete = os.unlink
+            try:
+                delete(path)
+            except (OSError, WindowsError), error:
+                print error
 
     def page_filename(self, page_number, direction='dn'):
         """Create a PPM filename."""

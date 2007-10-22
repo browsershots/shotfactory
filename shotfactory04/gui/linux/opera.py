@@ -38,23 +38,17 @@ class Gui(base.Gui):
         """
         Reset crashed state and delete browser cache.
         """
-        home = os.environ['HOME'].rstrip('/')
-        inifile = home + '/.opera/opera6.ini'
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.opera', 'cache4'),
+            message='deleting cache')
+        self.delete_if_exists(
+            os.path.join(home, '.opera', 'opcache'),
+            message='deleting cache')
+        inifile = os.path.join(home, '.opera', 'opera6.ini')
         if os.path.exists(inifile):
             print 'removing crash dialog from', inifile
             ini = IniFile(inifile)
             ini.set('State', 'Run', 0)
             ini.set('User Prefs', 'Show New Opera Dialog', 0)
             ini.save()
-        cachedir = os.path.join(home, '.opera/cache4')
-        if not os.path.exists(cachedir):
-            return
-        if os.path.exists(cachedir):
-            print 'deleting cache', cachedir
-            shutil.rmtree(cachedir)
-        cachedir = os.path.join(home, '.opera/opcache')
-        if not os.path.exists(cachedir):
-            return
-        if os.path.exists(cachedir):
-            print 'deleting cache', cachedir
-            shutil.rmtree(cachedir)

@@ -36,17 +36,17 @@ class Gui(windows.Gui):
     Special functions for Safari on Windows.
     """
 
-    def reset_browser(self, verbose=True):
+    def reset_browser(self):
         """
         Delete browser cache.
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
         self.delete_if_exists(
             os.path.join(appdata, 'Apple Computer', 'Safari', 'Cache.db'),
-            message="deleting browser cache:", verbose=verbose)
+            message="deleting cache")
         self.delete_if_exists(
             os.path.join(appdata, 'Apple Computer', 'Safari', 'icon.db'),
-            message="deleting icon cache:", verbose=verbose)
+            message="deleting icon cache")
 
     def start_browser(self, config, url, options):
         """

@@ -36,7 +36,7 @@ class Gui(windows.Gui):
     Special functions for MSIE on Windows.
     """
 
-    def reset_browser(self, verbose=True):
+    def reset_browser(self):
         """
         Delete all files from the browser cache.
         """
@@ -44,11 +44,12 @@ class Gui(windows.Gui):
         cache = os.path.join(cache, 'Content.IE5')
         if not os.path.exists(cache):
             return
-        if verbose:
-            print "deleting browser cache:", cache
+        if self.verbose:
+            print 'deleting cache', cache
         for filename in os.listdir(cache):
             if filename.lower() != 'index.dat':
-                self.delete_if_exists(os.path.join(cache, filename))
+                self.delete_if_exists(
+                    os.path.join(cache, filename))
 
     def check_version_override(self, major, minor):
         """

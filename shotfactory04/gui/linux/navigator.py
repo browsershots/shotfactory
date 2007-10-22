@@ -37,10 +37,7 @@ class Gui(base.Gui):
         """
         Delete crash dialog and browser cache.
         """
-        home = os.environ['HOME'].rstrip('/')
-        cachedir = os.path.join(home, '.netscape/cache')
-        if not os.path.exists(cachedir):
-            return
-        if os.path.exists(cachedir):
-            print 'deleting cache', cachedir
-            shutil.rmtree(cachedir)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.netscape', 'cache'),
+            message='deleting cache')

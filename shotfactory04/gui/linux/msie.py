@@ -38,12 +38,9 @@ class Gui(base.Gui):
         """
         Delete browser cache.
         """
-        dotdir = glob(os.path.join(os.environ['HOME'], '.ies4linux', '*',
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.ies4linux', '*',
             'drive_c', 'windows', 'profiles', '*', '*',
-            'Temporary Internet Files'))
-        for cachedir in dotdir:
-            while os.path.islink(cachedir):
-                cachedir = os.readlink(cachedir)
-            if os.path.exists(cachedir):
-                print 'deleting cache', cachedir
-                shutil.rmtree(cachedir)
+            'Temporary Internet Files'),
+            message='deleting cache')

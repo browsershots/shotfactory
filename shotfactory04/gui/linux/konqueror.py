@@ -38,10 +38,7 @@ class Gui(base.Gui):
         """
         Delete browser cache.
         """
-        dotdir = os.path.join(os.environ['HOME'], '.kde')
-        for cachedir in glob(os.path.join(dotdir, 'cache-*')):
-            while os.path.islink(cachedir):
-                cachedir = os.readlink(cachedir)
-            if os.path.exists(cachedir):
-                print 'deleting cache', cachedir
-                shutil.rmtree(cachedir)
+        home = os.environ['HOME']
+        self.delete_if_exists(
+            os.path.join(home, '.kde', 'cache-*'),
+            message='deleting cache')
