@@ -72,11 +72,11 @@ class Gui(base.Gui):
 
     def shell(self, command):
         """Run a shell command on my display."""
-        if self.verbose is None:
-            if command.endswith(' &'):
-                command = '%s >/dev/null 2>/dev/null &' % command[:-2]
+        if self.verbose < 3:
+            if command.endswith('&'):
+                command = command[:-1].rstrip() + ' >/dev/null 2>/dev/null &'
             else:
-                command = '%s >/dev/null 2>/dev/null' % command
+                command += ' >/dev/null 2>/dev/null'
         return os.system('DISPLAY=%s %s' % (self.display, command))
 
     def scroll_top(self):
@@ -140,10 +140,10 @@ class Gui(base.Gui):
         """
         Shut down the VNC server.
         """
-        os.system('vncserver -kill %s' % self.display)
+        self.shell('vncserver -kill %s' % self.display)
         time.sleep(1)
-        os.system('killall -q -9 klauncher')
-        os.system('killall -q -9 dcopserver')
-        os.system('killall -q -9 kio_http')
-        os.system('killall -q -9 artsd')
-        os.system('killall -q -9 nspluginviewer')
+        self.shell('killall -q -9 klauncher')
+        self.shell('killall -q -9 dcopserver')
+        self.shell('killall -q -9 kio_http')
+        self.shell('killall -q -9 artsd')
+        self.shell('killall -q -9 nspluginviewer')
