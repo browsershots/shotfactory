@@ -124,13 +124,15 @@ class Gui:
 
             apparently = offset / scroll_lines
             if apparently == 0:
-                print "apparently no offset per keypress: %d/%d=%d" % (
-                    offset, scroll_lines, apparently)
+                if self.verbose:
+                    print "Apparently no offset per keypress: %d/%d=%d" % (
+                        offset, scroll_lines, apparently)
             elif apparently != pixels_per_line:
                 pixels_per_line = apparently
                 scroll_lines = max(1, min(good_offset / pixels_per_line, 40))
-                print "%d pixels/keypress, %d keypresses/scroll" % (
-                    pixels_per_line, scroll_lines)
+                if self.verbose:
+                    print "%d pixels/keypress, %d keypresses/scroll" % (
+                        pixels_per_line, scroll_lines)
         else:
             if top_pages == self.max_pages:
                 return offsets
@@ -159,8 +161,8 @@ class Gui:
         Merge multi-page screenshots and yield scanlines.
         """
         overlaps = [height - offset for offset in offsets]
-        print 'offsets: ', offsets
-        print 'overlaps:', overlaps
+        # print 'offsets: ', offsets
+        # print 'overlaps:', overlaps
         total = 0
         row_bytes = 3*width
         for index in range(0, len(overlaps) + 1):
@@ -202,7 +204,7 @@ class Gui:
 
         offsets = self.scroll_pages(height)
         total = height + sum(offsets) - self.top_skip - self.bottom_skip
-        print 'total:', total
+        # print 'total:', total
         scanlines = self.scanlines(width, height, offsets)
 
         outfile = file(pngfilename, 'wb')

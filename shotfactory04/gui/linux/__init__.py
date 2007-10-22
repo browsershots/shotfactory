@@ -61,7 +61,7 @@ class Gui(base.Gui):
         """
         Try to kill old VNC server on my display.
         """
-        print "trying to kill old VNC server"
+        print "Trying to kill old VNC server"
         os.system('vncserver -kill %s' % self.display)
         time.sleep(10)
         os.system('killall -q -9 vncserver')
@@ -129,7 +129,7 @@ class Gui(base.Gui):
         """
         command = config['command'] or config['browser'].lower()
         command = '%s "%s" &' % (command, url)
-        print 'running', command
+        print 'Running', command
         self.shell(command)
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait - 5)

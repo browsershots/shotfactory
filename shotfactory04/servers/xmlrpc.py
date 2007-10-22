@@ -78,7 +78,7 @@ class XMLRPCServer(Server):
             self.factory, encrypted, int(config['request']), binary)
         seconds = time.time() - upload_started
         bytes = len(binary_data) * 8 / 6 # base64 encoding
-        print "uploaded %d bytes in %.2f seconds (%.2f kbps)" % (
+        print "Uploaded %d bytes in %.2f seconds (%.2f kbps)." % (
             bytes, seconds, 8 * bytes / seconds / 1000.0)
 
     def debug_factory_features(self):
