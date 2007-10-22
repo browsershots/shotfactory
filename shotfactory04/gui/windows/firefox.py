@@ -40,13 +40,11 @@ class Gui(windows.Gui):
         Delete previous session and browser cache.
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
-        self.delete_if_exists(
-            os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles', '*',
-            'Cache'), message='deleting cache')
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'Cache'))
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-        self.delete_if_exists(
-            os.path.join(appdata, 'Mozilla', 'Firefox', 'Profiles', '*',
-            'sessionstore.js'), message="deleting previous session")
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'sessionstore.js'))
 
     def start_browser(self, config, url, options):
         """

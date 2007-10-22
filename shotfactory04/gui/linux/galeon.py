@@ -38,9 +38,7 @@ class Gui(base.Gui):
         Delete crash file and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, '.galeon', 'mozilla', '*', 'Cache'),
-            message='deleting cache')
-        self.delete_if_exists(
-            os.path.join(home, '.galeon', 'session_crashed.xml'),
-            message='deleting previous session')
+        self.delete_if_exists(os.path.join(
+            home, '.galeon', 'mozilla', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.galeon', 'session_crashed.xml'))

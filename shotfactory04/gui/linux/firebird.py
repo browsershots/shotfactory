@@ -37,6 +37,5 @@ class Gui(base.Gui):
         Delete crash dialog and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, '.phoenix', 'default', '*', 'Cache'),
-            message='deleting cache')
+        self.delete_if_exists(os.path.join(
+            home, '.phoenix', 'default', '*', 'Cache'))

@@ -43,11 +43,10 @@ class Gui(windows.Gui):
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         profile = os.path.join(appdata, 'Opera', '*', 'profile')
-        self.delete_if_exists(
-            os.path.join(profile, 'cache4'),
-            message='deleting cache')
+        self.delete_if_exists(os.path.join(profile, 'cache4'))
         for inifile in glob(os.path.join(profile, 'opera6.ini')):
-            print 'removing crash dialog from', inifile
+            if self.verbose:
+                print 'Removing crash dialog from', inifile
             ini = IniFile(inifile)
             ini.set('State', 'Run', 0)
             ini.set('User Prefs', 'Show New Opera Dialog', 0)

@@ -39,6 +39,4 @@ class Gui(base.Gui):
         Delete browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, '.kde', 'cache-*'),
-            message='deleting cache')
+        self.delete_if_exists(os.path.join(home, '.kde', 'cache-*'))

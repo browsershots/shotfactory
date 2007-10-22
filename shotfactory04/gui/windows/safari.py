@@ -41,12 +41,10 @@ class Gui(windows.Gui):
         Delete browser cache.
         """
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
-        self.delete_if_exists(
-            os.path.join(appdata, 'Apple Computer', 'Safari', 'Cache.db'),
-            message="deleting cache")
-        self.delete_if_exists(
-            os.path.join(appdata, 'Apple Computer', 'Safari', 'icon.db'),
-            message="deleting icon cache")
+        self.delete_if_exists(os.path.join(
+            appdata, 'Apple Computer', 'Safari', 'Cache.db'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Apple Computer', 'Safari', 'icon.db'))
 
     def start_browser(self, config, url, options):
         """

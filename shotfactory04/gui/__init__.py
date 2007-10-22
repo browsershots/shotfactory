@@ -58,7 +58,7 @@ class Gui:
         self.top_skip = 0
         self.bottom_skip = 0
 
-    def delete_if_exists(self, pattern, message=None):
+    def delete_if_exists(self, pattern):
         """
         Print a message and delete files and folders matching pattern,
         e.g. /home/shotfactory1/.mozilla/firefox/*/sessionstore.js to
@@ -68,8 +68,8 @@ class Gui:
             filename = os.path.realpath(filename)
             if not os.path.exists(filename):
                 continue
-            if self.verbose and message:
-                print message, filename
+            if self.verbose:
+                print 'Deleting', filename
             if os.path.isdir(filename):
                 delete = shutil.rmtree
             else:

@@ -48,8 +48,7 @@ class Gui(windows.Gui):
             print 'deleting cache', cache
         for filename in os.listdir(cache):
             if filename.lower() != 'index.dat':
-                self.delete_if_exists(
-                    os.path.join(cache, filename))
+                self.delete_if_exists(os.path.join(cache, filename))
 
     def check_version_override(self, major, minor):
         """

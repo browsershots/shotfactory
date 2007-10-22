@@ -38,9 +38,7 @@ class Gui(base.Gui):
         Delete browser cache and crash dialog.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, '.gnome2', 'epiphany', 'mozilla', '*', 'Cache'),
-            message='deleting cache')
-        self.delete_if_exists(
-            os.path.join(home, '.gnome2', 'epiphany', 'session_crashed.xml'),
-            message='deleting previous session')
+        self.delete_if_exists(os.path.join(
+            home, '.gnome2', 'epiphany', 'mozilla', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.gnome2', 'epiphany', 'session_crashed.xml'))

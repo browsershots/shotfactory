@@ -40,14 +40,11 @@ class Gui(base.Gui):
         Delete crash dialog and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, 'Library', 'Caches', 'Firefox',
-                         'Profiles', '*', 'Cache'),
-            message='deleting cache')
-        self.delete_if_exists(
-            os.path.join(home, 'Library', 'Application Support', 'Firefox',
-                         'Profiles', '*', 'sessionstore.js'),
-            message='deleting cache')
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Caches', 'Firefox', 'Profiles', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Application Support', 'Firefox',
+            'Profiles', '*', 'sessionstore.js'))
 
     def start_browser(self, config, url, options):
         """

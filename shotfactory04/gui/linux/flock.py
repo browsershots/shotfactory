@@ -38,9 +38,7 @@ class Gui(base.Gui):
         Delete crash dialog and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(
-            os.path.join(home, '.flock', 'browser', '*', 'Cache'),
-            message='deleting cache')
-        self.delete_if_exists(
-            os.path.join(home, '.flock', 'browser', '*', 'sessionstore.js'),
-            message='deleting previous session')
+        self.delete_if_exists(os.path.join(
+            home, '.flock', 'browser', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.flock', 'browser', '*', 'sessionstore.js'))
