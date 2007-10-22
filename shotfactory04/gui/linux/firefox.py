@@ -44,3 +44,9 @@ class Gui(base.Gui):
         self.delete_if_exists(
             os.path.join(home, '.mozilla', 'firefox', '*', 'sessionstore.js'),
             message='deleting previous session')
+        self.delete_if_exists(
+            os.path.join(home, '.mozilla', 'firefox', '*', 'history.dat'),
+            message='deleting history')
+        self.delete_if_exists(
+            os.path.join(home, '.mozilla', 'firefox', '*', 'cookies.txt'),
+            message='deleting cookies')
