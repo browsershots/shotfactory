@@ -66,13 +66,13 @@ class Gui:
         """
         for filename in glob(pattern):
             if self.verbose and message:
-                print message, path
-            if os.path.isdir(path):
+                print message, filename
+            if os.path.isdir(filename):
                 delete = shutil.rmtree
             else:
                 delete = os.unlink
             try:
-                delete(path)
+                delete(filename)
             except (OSError, WindowsError), error:
                 print error
 
