@@ -85,10 +85,12 @@ class Gui(base.Gui):
     def down(self):
         """Scroll down one line."""
         self.sysevents.key_code(125)
+        time.sleep(0.1)
 
     def scroll_bottom(self):
         """Scroll down to the bottom of the page."""
         self.sysevents.key_code(119)
+        time.sleep(0.2)
 
     def close(self):
         """Close browser and helper programs."""
