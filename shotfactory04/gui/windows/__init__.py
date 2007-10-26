@@ -152,6 +152,11 @@ class Gui(base.Gui):
         win32gui.PostMessage(window, win32con.WM_KEYUP, key)
         time.sleep(0.1)
 
+    def find_scrollable(self):
+        """Subclasses must override this method."""
+        raise NotImplementedError(
+            '%s.find_scrollable()' % self.__class__)
+
     def down(self):
         """Scroll down one line."""
         self.send_keypress(self.find_scrollable(), win32con.VK_DOWN)

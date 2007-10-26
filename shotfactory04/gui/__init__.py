@@ -92,6 +92,26 @@ class Gui:
         if not os.path.getsize(filename):
             raise RuntimeError('screenshot file %s is empty' % filename)
 
+    def down(self):
+        """Scroll down one line."""
+        raise NotImplementedError(
+            '%s.down()' % self.__class__)
+
+    def scroll_down(self, offset):
+        """Scroll down by a specified number of pixels."""
+        raise NotImplementedError(
+            '%s.scroll_down(offset)' % self.__class__)
+
+    def scroll_bottom(self):
+        """Scroll down to the bottom of the page."""
+        raise NotImplementedError(
+            '%s.scroll_bottom()' % self.__class__)
+
+    def screenshot(self, filename):
+        """Take a screenshot and save it to a PPM file."""
+        raise NotImplementedError(
+            '%s.screenshot(filename)' % self.__class__)
+
     def scroll_pages(self, height):
         """
         Take screenshots and scroll down between them.
@@ -102,7 +122,7 @@ class Gui:
         scroll_lines = max(1, good_offset / pixels_per_line)
         offsets = []
         top_pages = self.max_pages
-        if top_pages > 2 and hasattr(self, 'scroll_bottom'):
+        if top_pages > 2:
             top_pages -= 1 # enable jump to last page
         for page in range(2, top_pages + 1):
             if hasattr(self, 'scroll_down'):
