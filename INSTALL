@@ -30,3 +30,7 @@ to see if there's a problem.
 screenshot requests.
  * If you use '''screen -L''', the file '''screenlog.0''' will contain the 
 full output of the shotfactory script.
+ * On Windows, if you run '''shotfactory.exe''' directly with a double 
+click, the terminal window may be closed immediately when an error occurs. 
+Try to start the terminal first and then run the program from the command 
+line to avoid this issue.
