@@ -24,7 +24,6 @@ __author__ = "$Author$"
 
 
 import os
-import shutil
 from shotfactory04.gui import linux as base
 
 

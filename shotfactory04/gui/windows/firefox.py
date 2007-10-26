@@ -24,7 +24,6 @@ __author__ = "$Author$"
 
 import os
 import time
-import win32con
 from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory04.gui import windows
@@ -57,6 +56,7 @@ class Gui(windows.Gui):
         time.sleep(options.wait)
 
     def find_scrollable(self):
+        """Find scrollable window."""
         firefox = self.find_window_by_title_suffix(' Firefox')
         return self.get_child_window(firefox)
 

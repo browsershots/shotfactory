@@ -1,3 +1,27 @@
+# browsershots.org - Test your web design in different browsers
+# Copyright (C) 2007 Johann C. Rocholl <johann@browsershots.org>
+#
+# Browsershots is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Browsershots is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+Simple queue on local filesystem (or NFS).
+"""
+
+__revision__ = "$Rev: 1464 $"
+__date__ = "$Date: 2007-06-08 22:12:43 +0200 (Fri, 08 Jun 2007) $"
+__author__ = "$Author: johann $"
+
 import os
 import re
 import time
@@ -12,6 +36,9 @@ config_line_match = re.compile(r'(\w+)\s*(.*)').match
 
 
 class FileSystemServer(Server):
+    """
+    Simple queue on local filesystem (or NFS).
+    """
 
     def __init__(self, options):
         Server.__init__(self, options)
@@ -21,6 +48,9 @@ class FileSystemServer(Server):
         self.resize = options.resize_output
 
     def parse_locktime(self, filename):
+        """
+        Parse the lock timestamp from the filename.
+        """
         parts = filename.split('-')
         timestamp = '-'.join(parts[-2:])
         try:
@@ -29,6 +59,9 @@ class FileSystemServer(Server):
             return time.time()
 
     def get_oldest_filename(self):
+        """
+        Find the oldest file in the queue (by mtime) that isn't locked yet.
+        """
         mtimes = []
         expire = time.time() - EXPIRE_SECONDS
         for filename in os.listdir(self.queue):
@@ -50,6 +83,9 @@ class FileSystemServer(Server):
         return mtimes[0][1]
 
     def poll(self):
+        """
+        Get the next screenshot request from the queue.
+        """
         while True:
             oldest = self.get_oldest_filename()
             if oldest is None:
@@ -88,9 +124,15 @@ class FileSystemServer(Server):
             return config
 
     def get_request_url(self, config):
+        """
+        Get the URL for the screenshot request.
+        """
         return config['url']
 
     def upload_png(self, config, pngfilename):
+        """
+        Store PNG file in the output folder(s), possibly resizing it.
+        """
         os.unlink(os.path.join(self.queue, self.request_filename))
         if 'request' in config:
             filename = config['request'] + '.png'

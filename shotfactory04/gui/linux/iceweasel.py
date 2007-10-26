@@ -23,8 +23,6 @@ __date__ = "$Date$"
 __author__ = "$Author$"
 
 
-import os
-import shutil
 from shotfactory04.gui.linux import firefox as base
 
 

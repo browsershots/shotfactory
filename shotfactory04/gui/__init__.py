@@ -184,7 +184,7 @@ class Gui:
             infile = open(filename, 'rb')
             hashmatch.read_ppm_header(infile)
             infile.seek(top*row_bytes, 1)
-            for y in range(top, bottom):
+            for dummy in range(top, bottom):
                 scanline = array('B')
                 scanline.fromfile(infile, row_bytes)
                 yield scanline

@@ -24,8 +24,6 @@ __author__ = "$Author$"
 
 
 import os
-import shutil
-from glob import glob
 from shotfactory04.gui import linux as base
 
 

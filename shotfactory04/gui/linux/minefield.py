@@ -23,8 +23,6 @@ __date__ = "$Date: 2007-07-13 21:46:12 +0200 (Fri, 13 Jul 2007) $"
 __author__ = "$Author: johann $"
 
 
-import os
-import shutil
 from shotfactory04.gui.linux import firefox as base
 
 

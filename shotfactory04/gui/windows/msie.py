@@ -24,7 +24,6 @@ __author__ = "$Author$"
 
 import os
 import time
-import win32con
 import _winreg
 from win32com.shell import shellcon
 from win32com.shell import shell

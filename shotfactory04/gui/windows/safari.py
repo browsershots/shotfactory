@@ -25,7 +25,6 @@ __author__ = "$Author$"
 import os
 import time
 import win32gui
-import win32con
 from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory04.gui import windows
@@ -61,7 +60,7 @@ class Gui(windows.Gui):
         Find the scrollable window.
         """
         hwnd = win32gui.WindowFromPoint((self.width/2, self.height/2))
-        for parent_level in range(20):
+        for dummy in range(20):
             if not hwnd:
                 return None
             if self.verbose >= 3:

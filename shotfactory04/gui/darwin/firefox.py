@@ -26,7 +26,6 @@ import os
 import time
 import appscript
 import MacOS
-import shutil
 from shotfactory04.gui import darwin as base
 
 

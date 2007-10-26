@@ -1,3 +1,27 @@
+# browsershots.org - Test your web design in different browsers
+# Copyright (C) 2007 Johann C. Rocholl <johann@browsershots.org>
+#
+# Browsershots is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Browsershots is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+XML-RPC interface to the ShotServer.
+"""
+
+__revision__ = "$Rev: 1464 $"
+__date__ = "$Date: 2007-06-08 22:12:43 +0200 (Fri, 08 Jun 2007) $"
+__author__ = "$Author: johann $"
+
 import xmlrpclib
 import socket
 import time
@@ -7,6 +31,9 @@ from shotfactory04.servers import Server
 
 
 class ProxyTransport(xmlrpclib.Transport):
+    """
+    Support for HTTP proxy.
+    """
 
     def __init__(self, proxy):
         if hasattr(xmlrpclib.Transport, '__init__'):
@@ -14,18 +41,24 @@ class ProxyTransport(xmlrpclib.Transport):
         self.proxy = proxy
 
     def make_connection(self, host):
+        """Make a connection through the proxy."""
         self.realhost = host
         import httplib
         return httplib.HTTP(self.proxy)
 
     def send_request(self, connection, handler, request_body):
+        """Send a request through the proxy."""
         connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
 
     def send_host(self, connection, host):
+        """Send the stored real host as a HTTP header."""
         connection.putheader('Host', self.realhost)
 
 
 class XMLRPCServer(Server):
+    """
+    XML-RPC interface to the ShotServer.
+    """
 
     def __init__(self, options):
         Server.__init__(self, options)
@@ -60,12 +93,18 @@ class XMLRPCServer(Server):
         return md5(inner + challenge['nonce']).hexdigest()
 
     def get_request_url(self, config):
+        """
+        Get the URL for this screenshot request.
+        """
         challenge = self.server.nonces.challenge(self.factory)
         encrypted = self.encrypt_password(challenge)
         return '/'.join((self.server_url, 'redirect',
             self.factory, encrypted, str(config['request']), ''))
 
     def upload_png(self, config, pngfilename):
+        """
+        Upload PNG file to server.
+        """
         binary_file = file(pngfilename, 'rb')
         binary_data = binary_file.read()
         binary = xmlrpclib.Binary(binary_data)
@@ -104,6 +143,9 @@ class XMLRPCServer(Server):
             print rest
 
     def poll(self):
+        """
+        Get the next screenshot request from the server.
+        """
         challenge = self.server.nonces.challenge(self.factory)
         encrypted = self.encrypt_password(challenge)
         poll_start = time.time()
