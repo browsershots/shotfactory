@@ -25,6 +25,11 @@ properties :
 
 documentation :
 	wget -O - http://trac.browsershots.org/wiki/FrequentlyAskedQuestions?format=txt | fold -s -w 76 > FAQ
+	wget -O - http://trac.browsershots.org/wiki/InstallFactory?format=txt \
+	| sed s/InstallFactoryLinux/INSTALL.LINUX/ \
+	| sed s/InstallFactoryWindows/INSTALL.WIN/ \
+	| sed s/InstallFactoryMac/INSTALL.MAC/ \
+	| fold -s -w 76 > INSTALL
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryLinux?format=txt | fold -s -w 76 > INSTALL.LINUX
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryWindows?format=txt | fold -s -w 76 > INSTALL.WIN
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryMac?format=txt | fold -s -w 76 > INSTALL.MAC
