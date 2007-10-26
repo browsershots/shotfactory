@@ -18,9 +18,9 @@
 XML-RPC interface to the ShotServer.
 """
 
-__revision__ = "$Rev: 1464 $"
-__date__ = "$Date: 2007-06-08 22:12:43 +0200 (Fri, 08 Jun 2007) $"
-__author__ = "$Author: johann $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import xmlrpclib
 import socket

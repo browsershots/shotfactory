@@ -18,9 +18,9 @@
 GUI-specific interface functions for Opera on Microsoft Windows.
 """
 
-__revision__ = "$Rev: 1850 $"
-__date__ = "$Date: 2007-07-12 17:53:13 +0100 (Do, 12 Jul 2007) $"
-__author__ = "$Author: johann $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import os
 import time

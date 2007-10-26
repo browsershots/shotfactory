@@ -18,9 +18,9 @@
 GUI-specific interface functions for X11.
 """
 
-__revision__ = "$Rev: 1866 $"
-__date__ = "$Date: 2007-07-13 21:46:12 +0200 (Fri, 13 Jul 2007) $"
-__author__ = "$Author: johann $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 
 from shotfactory04.gui.linux import firefox as base

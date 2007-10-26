@@ -22,6 +22,9 @@ headers :
 properties :
 	find -name "*.py" | xargs svn propset svn:keywords "Rev Date Author"
 	find -name "*.py" | xargs svn propset svn:eol-style native
+	find -maxdepth 1 -type f \
+	| grep -v \\.ico | grep -v \\.ppm | grep -v \\.log | grep -v \\.png \
+	| xargs svn propset svn:eol-style native
 
 documentation :
 	wget -O - http://trac.browsershots.org/wiki/InstallFactory?format=txt \
