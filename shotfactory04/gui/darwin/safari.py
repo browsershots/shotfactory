@@ -22,6 +22,7 @@ __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
 
+import os
 import time
 import appscript
 import MacOS
@@ -36,6 +37,20 @@ class Gui(base.Gui):
     """
     Special functions for Safari on Mac OS X.
     """
+
+    def reset_browser(self):
+        """
+        Delete crash dialog and browser cache.
+        """
+        home = os.environ['HOME']
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Caches', 'Safari'))
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Safari', 'Icons'))
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Safari', 'History.plist'))
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Cookies', 'Cookies.plist'))
 
     def js(self, command):
         """Run JavaScript in Safari."""
