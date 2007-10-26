@@ -2,11 +2,13 @@
 
 == Install prerequisites ==
 
- * [http://www.codingmonkeys.de/mbo/ Subversion Binaries]
- * [http://netpbm.sourceforge.net/ NetPBM tools]
+ * [http://www.codingmonkeys.de/mbo/ Subversion Binaries] (or '''sudo port 
+install subversion''')
+ * [http://netpbm.sourceforge.net/ NetPBM tools] (or '''sudo port install 
+netpbm''')
  * [http://www.versiontracker.com/dyn/moreinfo/macosx/19753 cscreen] to 
 change screen resolution 
-([http://browsershots.org/downloads/thirdparty/cscreen.dmg mirror])
+([http://download.browsershots.org/thirdparty/cscreen.dmg mirror])
  * [http://appscript.sourceforge.net/download.html Python appscript module]
 
 And if you want to support more media formats:
@@ -34,5 +36,7 @@ setup.py install''' is no longer required.
 
 {{{
 cd shotfactory
-pythonw shotfactory.py
+python shotfactory.py
 }}}
+
+See InstallFactory for registration and troubleshooting tips.
