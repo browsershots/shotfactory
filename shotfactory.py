@@ -82,10 +82,7 @@ def browsershot(options, server, config, password):
     gui.close()
 
     # Reset browser (delete cache etc.)
-    if hasattr(gui, 'reset_browser'):
-        gui.reset_browser()
-    else:
-        print "reset_browser() method is missing in", module_name
+    gui.reset_browser()
 
     # Prepare screen for output
     gui.prepare_screen()

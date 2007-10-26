@@ -155,7 +155,7 @@ class Gui(base.Gui):
     def find_scrollable(self):
         """Subclasses must override this method."""
         raise NotImplementedError(
-            '%s.find_scrollable()' % self.__class__)
+            '%s.find_scrollable() is not implemented' % self.__class__)
 
     def down(self):
         """Scroll down one line."""

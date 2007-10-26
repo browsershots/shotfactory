@@ -92,20 +92,25 @@ class Gui:
         if not os.path.getsize(filename):
             raise RuntimeError('screenshot file %s is empty' % filename)
 
+    def reset_browser(self):
+        """Delete cache, history, cookies, previous sessions..."""
+        raise NotImplementedError(
+            '%s.reset_browser() is not implemented' % self.__class__)
+
     def down(self):
         """Scroll down one line."""
         raise NotImplementedError(
-            '%s.down()' % self.__class__)
+            '%s.down() is not implemented' % self.__class__)
 
     def scroll_bottom(self):
         """Scroll down to the bottom of the page."""
         raise NotImplementedError(
-            '%s.scroll_bottom()' % self.__class__)
+            '%s.scroll_bottom() is not implemented' % self.__class__)
 
     def screenshot(self, filename):
         """Take a screenshot and save it to a PPM file."""
         raise NotImplementedError(
-            '%s.screenshot(filename)' % self.__class__)
+            '%s.screenshot(filename) is not implemented' % self.__class__)
 
     def scroll_pages(self, height):
         """
