@@ -97,11 +97,6 @@ class Gui:
         raise NotImplementedError(
             '%s.down()' % self.__class__)
 
-    def scroll_down(self, offset):
-        """Scroll down by a specified number of pixels."""
-        raise NotImplementedError(
-            '%s.scroll_down(offset)' % self.__class__)
-
     def scroll_bottom(self):
         """Scroll down to the bottom of the page."""
         raise NotImplementedError(
