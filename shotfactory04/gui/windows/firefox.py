@@ -67,8 +67,10 @@ if __name__ == '__main__':
         'width': 1024,
         'bpp': 24,
         }
+
     class Options:
         verbose = 3
+
     gui = Gui(config, Options())
     gui.down()
     time.sleep(1)

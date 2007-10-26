@@ -86,8 +86,10 @@ if __name__ == '__main__':
         'width': 1024,
         'bpp': 24,
         }
+
     class Options:
         verbose = 3
+
     gui = Gui(config, Options())
     print "Press Alt+Tab now!"
     time.sleep(2)
