@@ -39,4 +39,4 @@ cd shotfactory
 python shotfactory.py
 }}}
 
-See InstallFactory for registration and troubleshooting tips.
+See INSTALL for registration and troubleshooting tips.

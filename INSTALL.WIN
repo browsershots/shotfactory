@@ -25,7 +25,7 @@ libraries are included.
  * Extract the zip file somewhere (e.g. to a folder on the Desktop)
  * Double click on '''shotfactory.exe''', or run it from the command line
 
-See InstallFactory for registration and troubleshooting tips.
+See INSTALL for registration and troubleshooting tips.
 
 == Advanced method: source code from the Subversion repository ==
 
@@ -47,4 +47,4 @@ setup.py install''' is no longer required
  * Open a terminal, enter the source folder ('''cd shotfactory''') and run 
 '''python shotfactory.py'''
 
-See InstallFactory for registration and troubleshooting tips.
+See INSTALL for registration and troubleshooting tips.
