@@ -21,9 +21,9 @@ headers :
 
 properties :
 	find -name "*.py" | xargs svn propset svn:keywords "Rev Date Author"
-	find -name "*.py" | xargs svn propset svn:eol-style native
-	find -maxdepth 1 -type f \
-	| grep -v \\.ico | grep -v \\.ppm | grep -v \\.log | grep -v \\.png \
+	find -type f | grep -v \\.svn | grep -v \\.log \
+	| grep -v \\.bz2 | grep -v \\.gz | grep -v \\.pyc \
+	| grep -v \\.png | grep -v \\.ico | grep -v \\.jpg | grep -v \\.ppm \
 	| xargs svn propset svn:eol-style native
 
 documentation :
