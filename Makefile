@@ -28,18 +28,20 @@ documentation :
 	| sed s/InstallFactoryLinux/INSTALL.LINUX/ \
 	| sed s/InstallFactoryWindows/INSTALL.WIN/ \
 	| sed s/InstallFactoryMac/INSTALL.MAC/ \
-	| fold -s -w 76 > INSTALL
+	| recode CR-LF..data | fold -s -w 76 > INSTALL
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryLinux?format=txt \
 	| sed s/InstallFactory/INSTALL/ \
-	| fold -s -w 76 > INSTALL.LINUX
+	| recode CR-LF..data | fold -s -w 76 > INSTALL.LINUX
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryWindows?format=txt \
 	| sed s/InstallFactory/INSTALL/ \
-	| fold -s -w 76 > INSTALL.WIN
+	| recode CR-LF..data | fold -s -w 76 > INSTALL.WIN
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryMac?format=txt \
 	| sed s/InstallFactory/INSTALL/ \
-	| fold -s -w 76 > INSTALL.MAC
+	| recode CR-LF..data | fold -s -w 76 > INSTALL.MAC
 	wget -O - http://trac.browsershots.org/wiki/ShotFactoryStandalone?format=txt \
 	| sed s/InstallFactory/INSTALL/ \
-	| fold -s -w 76 > STANDALONE
-	wget -O - http://trac.browsershots.org/wiki/FrequentlyAskedQuestions?format=txt | fold -s -w 76 > FAQ
-	wget -O - http://trac.browsershots.org/wiki/Authors?format=txt | fold -s -w 76 > AUTHORS
+	| recode CR-LF..data | fold -s -w 76 > STANDALONE
+	wget -O - http://trac.browsershots.org/wiki/FrequentlyAskedQuestions?format=txt \
+	| recode CR-LF..data | fold -s -w 76 > FAQ
+	wget -O - http://trac.browsershots.org/wiki/Authors?format=txt \
+	| recode CR-LF..data | fold -s -w 76 > AUTHORS
