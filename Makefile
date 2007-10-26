@@ -38,6 +38,8 @@ documentation :
 	wget -O - http://trac.browsershots.org/wiki/InstallFactoryMac?format=txt \
 	| sed s/InstallFactory/INSTALL/ \
 	| fold -s -w 76 > INSTALL.MAC
-	wget -O - http://trac.browsershots.org/wiki/ShotFactoryStandalone?format=txt | fold -s -w 76 > STANDALONE
+	wget -O - http://trac.browsershots.org/wiki/ShotFactoryStandalone?format=txt \
+	| sed s/InstallFactory/INSTALL/ \
+	| fold -s -w 76 > STANDALONE
 	wget -O - http://trac.browsershots.org/wiki/FrequentlyAskedQuestions?format=txt | fold -s -w 76 > FAQ
 	wget -O - http://trac.browsershots.org/wiki/Authors?format=txt | fold -s -w 76 > AUTHORS

@@ -14,8 +14,7 @@ $ mkdir queue output
 
 == Install the !ShotFactory and run it ==
 
-Follow the installation instructions for your platform: InstallFactoryLinux 
-/ InstallFactoryWindows / InstallFactoryMac.
+See INSTALL for installation instructions.
 
 When you run it, specify the queue and output folders on the command line. 
 The folders used below are examples. They can be anywhere, but the 
