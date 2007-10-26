@@ -2,20 +2,25 @@
 
 == Install prerequisites ==
 
- * [http://www.codingmonkeys.de/mbo/ Subversion Binaries] (or '''sudo port 
-install subversion''')
- * [http://netpbm.sourceforge.net/ NetPBM tools] (or '''sudo port install 
-netpbm''')
- * [http://www.versiontracker.com/dyn/moreinfo/macosx/19753 cscreen] to 
-change screen resolution 
-([http://download.browsershots.org/thirdparty/cscreen.dmg mirror])
+ * [http://www.codingmonkeys.de/mbo/ Subversion Binaries]
+   (or '''sudo port install subversion''')
+ * [http://netpbm.sourceforge.net/ NetPBM tools]
+   (or '''sudo port install netpbm''', or 
+ 
+[http://sourceforge.net/project/showfiles.php?group_id=7130&package_id=14464
+ binaries from Gallery])
+ * [http://www.versiontracker.com/dyn/moreinfo/macosx/19753 cscreen]
+   to change screen resolution
+   ([http://download.browsershots.org/thirdparty/cscreen.dmg mirror])
  * [http://appscript.sourceforge.net/download.html Python appscript module]
 
 And if you want to support more media formats:
 
- * 
+ * Windows Media Player
+ 
 [http://www.apple.com/downloads/macosx/video/windowsmediaplayerformacosx.htm
-l Windows Media Player for Mac OS X] 
+l for Mac OS X]
+ 
 ([http://www.microsoft.com/mac/otherproducts/otherproducts.aspx?pid=windowsm
 edia alternate link, also for Mac OS 8.1-9])
 
