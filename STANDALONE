@@ -1,0 +1,68 @@
+= Running the !ShotFactory without a !ShotServer =
+
+Since milestone:0.4-beta2 it is possible to run the ShotFactory without a 
+ShotServer installation.
+
+== Create queue and output folder ==
+
+Create two folders, one for the screenshot request queue, and one for the 
+resulting PNG files.
+
+{{{
+$ mkdir queue output
+}}}
+
+== Install the !ShotFactory and run it ==
+
+Follow the installation instructions for your platform: InstallFactoryLinux 
+/ InstallFactoryWindows / InstallFactoryMac.
+
+When you run it, specify the queue and output folders on the command line. 
+The folders used below are examples. They can be anywhere, but the 
+ShotFactory must have read and write access to both of them.
+
+{{{
+shotfactory.py --queue /var/spool/shotfactory/queue --output /var/www/png
+}}}
+
+== Parallel operation == 
+
+On Linux, you can run several screenshot factories on the same machine 
+(using separate user accounts).
+
+If you store the queue and output folders on a NFS share, several machines 
+can work together. The file system must support atomic renames to avoid 
+race conditions. Otherwise, two factories may process the same screenshot 
+request.
+
+== Request screenshots ==
+
+Now you can request screenshots by creating files in the queue directory, 
+like this:
+
+{{{
+$ echo url http://www.example.com/ > queue/123
+$ echo url http://www.example.org/ > queue/abc
+}}}
+
+If everything works, the ShotFactory will create the screenshot files 
+'''123.png''' and '''abc.png''' in the output folder.
+
+Here's a more complete example for a screenshot request file:
+
+{{{
+request 123
+url http://www.example.com/
+width 1024
+height 768
+bpp 24
+browser Firefox
+command firefox
+}}}
+
+If the '''request''' parameter is given, its value will be the name of the 
+screenshot file, with '''.png''' appended. Otherwise, the name of the 
+screenshot request file will be used, also with '''.png''' added to it.
+
+All other parameters except '''url''' are optional. Their default values 
+are as in the example above.
