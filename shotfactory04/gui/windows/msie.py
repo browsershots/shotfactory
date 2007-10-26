@@ -84,24 +84,28 @@ class Gui(windows.Gui):
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
 
-    def down(self, verbose=False):
+    def find_scrollable(self):
         """
-        Scroll down one line.
+        Find the scrollable window.
         """
-        ieframe = self.find_window_by_classname('IEFrame', verbose)
+        ieframe = self.find_window_by_classname('IEFrame')
         tabs = self.find_child_window_by_classname(
-            ieframe, "TabWindowClass", verbose)
+            ieframe, "TabWindowClass")
         if tabs:
             ieframe = tabs
-        scrollable = self.find_child_window_by_classname(
-            ieframe, "Shell DocObject View", verbose)
-        self.send_keypress(scrollable, win32con.VK_DOWN)
-        time.sleep(0.1)
+        return self.find_child_window_by_classname(
+            ieframe, "Shell DocObject View")
 
 
 # Test scrolling from command line
 if __name__ == '__main__':
-    config = {'width': 1024, 'bpp': 24}
-    options = None
-    gui = Gui(config, options)
-    gui.down(verbose=True)
+    config = {
+        'width': 1024,
+        'bpp': 24,
+        }
+    class Options:
+        verbose = 3
+    gui = Gui(config, Options())
+    gui.down()
+    time.sleep(1)
+    gui.scroll_bottom()

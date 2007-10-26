@@ -56,7 +56,7 @@ class Gui(windows.Gui):
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
 
-    def find_scrollable(self, verbose=False):
+    def find_scrollable(self):
         """
         Find the scrollable window.
         """
@@ -64,7 +64,7 @@ class Gui(windows.Gui):
         for parent_level in range(20):
             if not hwnd:
                 return None
-            if verbose:
+            if self.verbose >= 3:
                 print 'handle', hwnd
                 print 'classname', win32gui.GetClassName(hwnd)
                 print 'text', win32gui.GetWindowText(hwnd)
@@ -73,21 +73,16 @@ class Gui(windows.Gui):
                 return hwnd
             hwnd = win32gui.GetParent(hwnd)
 
-    def down(self, verbose=False):
-        """
-        Scroll down one line.
-        """
-        scrollable = self.find_scrollable(verbose)
-        if not scrollable:
-            return
-        win32gui.PostMessage(scrollable, win32con.WM_KEYDOWN, win32con.VK_DOWN)
-        win32gui.PostMessage(scrollable, win32con.WM_KEYUP, win32con.VK_DOWN)
-        time.sleep(0.1)
-
 
 # Test scrolling from command line
 if __name__ == '__main__':
-    config = {'width': 1024, 'bpp': 24}
-    options = None
-    gui = Gui(config, options)
-    gui.down(verbose=True)
+    config = {
+        'width': 1024,
+        'bpp': 24,
+        }
+    class Options:
+        verbose = 3
+    gui = Gui(config, Options())
+    gui.down()
+    time.sleep(1)
+    gui.scroll_bottom()

@@ -60,10 +60,6 @@ class Gui(base.Gui):
         im.save(outfile, 'PPM')
         outfile.close()
 
-    def down(self):
-        """Scroll down one line."""
-        pass # Override for specific browsers
-
     def start_browser(self, config, url, options):
         """Start browser and load website."""
         command = config['command']
@@ -91,62 +87,75 @@ class Gui(base.Gui):
             # http://www.teamcti.com/pview/prcview.htm
             os.system('pv.exe -kf %s "2>nul" > nul' % name)
 
-    def find_window_by_title_suffix(self, suffix, verbose=False):
+    def find_window_by_title_suffix(self, suffix):
         """Find a window on the desktop where the title ends as specified."""
         try:
             desktop = win32gui.GetDesktopWindow()
-            if verbose:
+            if self.verbose >= 3:
                 print "GetDesktopWindow() => %d" % desktop
             window = win32gui.GetWindow(desktop, win32con.GW_CHILD)
-            if verbose:
+            if self.verbose >= 3:
                 print "GetWindow(%d, GW_CHILD) => %d" % (desktop, window)
             while True:
                 title = win32gui.GetWindowText(window)
-                if verbose:
+                if self.verbose >= 3:
                     print "GetWindowText(%d) => '%s'" % (window, title)
                 if title.endswith(suffix):
                     break
                 previous = window
                 window = win32gui.GetWindow(previous, win32con.GW_HWNDNEXT)
-                if verbose:
+                if self.verbose >= 3:
                     print "GetWindow(%d, GW_HWNDNEXT) => %d" % (
                         previous, window)
         except pywintypes.error:
             window = 0
         return window
 
-    def get_child_window(self, parent, verbose=False):
+    def get_child_window(self, parent):
         """Wrapper for GetWindow(parent, GW_CHILD)."""
         try:
             window = win32gui.GetWindow(parent, win32con.GW_CHILD)
         except pywintypes.error:
             window = 0
-        if verbose:
+        if self.verbose >= 3:
             print "GetWindow(%d, GW_CHILD) => %d" % (parent, window)
         return window
 
-    def find_window_by_classname(self, classname, verbose=False):
+    def find_window_by_classname(self, classname):
         """Wrapper for win32gui.FindWindow(classname, None)."""
         try:
             window = win32gui.FindWindow(classname, None)
         except pywintypes.error:
             window = 0
-        if verbose:
+        if self.verbose >= 3:
             print "FindWindow('%s', None) => %d" % (classname, window)
         return window
 
-    def find_child_window_by_classname(self, parent, classname, verbose=False):
+    def find_child_window_by_classname(self, parent, classname):
         """Wrapper for win32gui.FindWindowEx(parent, 0, classname, None)."""
         try:
             window = win32gui.FindWindowEx(parent, 0, classname, None)
         except pywintypes.error:
             window = 0
-        if verbose:
+        if self.verbose >= 3:
             print "FindWindowEx(%d, 0, '%s', None) => %d" % (
                 parent, classname, window)
         return window
 
     def send_keypress(self, window, key):
-        """Post key down and up events to the specified window."""
+        """
+        Post key down and up events to the specified window.
+        """
+        if not window:
+            return
         win32gui.PostMessage(window, win32con.WM_KEYDOWN, key)
         win32gui.PostMessage(window, win32con.WM_KEYUP, key)
+        time.sleep(0.1)
+
+    def down(self):
+        """Scroll down one line."""
+        self.send_keypress(self.find_scrollable(), win32con.VK_DOWN)
+
+    def scroll_bottom(self):
+        """Scroll down to the bottom of the page."""
+        self.send_keypress(self.find_scrollable(), win32con.VK_END)
