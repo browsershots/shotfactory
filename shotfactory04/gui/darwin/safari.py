@@ -33,6 +33,19 @@ MIN_WAIT = 10 # seconds
 # if it says it's finished loading for 10 seconds.
 
 
+def retry(func, *args, **kwargs):
+    retry = 5
+    while True:
+        try:
+            func(*args, **kwargs)
+        except (appscript.CommandError, AttributeError):
+            print "Safari not ready, retrying in 3 seconds..."
+            time.sleep(3)
+            retry -= 1
+        if not retry:
+            raise RuntimeError("Could not run appscript in Safari")
+
+
 class Gui(base.Gui):
     """
     Special functions for Safari on Mac OS X.
@@ -54,11 +67,8 @@ class Gui(base.Gui):
 
     def js(self, command):
         """Run JavaScript in Safari."""
-        try:
-            return self.safari.do_JavaScript(
-                command, in_=self.safari.documents[0])
-        except:
-            return None
+        return retry(self.safari.do_JavaScript,
+                     command, in_=self.safari.documents[0])
 
     def start_browser(self, config, url, options):
         """
@@ -69,14 +79,11 @@ class Gui(base.Gui):
         except MacOS.Error, error:
             code, message = error
             raise RuntimeError(message)
+        retry(self.safari.activate)
+        time.sleep(0.1)
         self.js("window.moveTo(0,0)")
         time.sleep(0.1)
         self.js("window.resizeTo(screen.availWidth,screen.availHeight)")
-        time.sleep(0.1)
-        try:
-            self.safari.activate()
-        except:
-            raise RuntimeError("Could not activate Safari.")
         time.sleep(0.1)
         self.js("document.location='%s'" % url)
         ready_count = 0
