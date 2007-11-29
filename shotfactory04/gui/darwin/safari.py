@@ -35,17 +35,16 @@ MIN_WAIT = 10 # seconds
 
 def retry(func, *args, **kwargs):
     retry = 5
-    while True:
+    while retry > 0:
         try:
             return func(*args, **kwargs)
         except (appscript.CommandError, AttributeError), error:
             print error
-            print "Safari not ready, retrying in 3 seconds..."
-            time.sleep(3)
-            retry -= 1
-        if not retry:
-            self.close()
-            raise RuntimeError("Could not run appscript in Safari")
+        print "Safari not ready, retrying in 3 seconds..."
+        time.sleep(3)
+        retry -= 1
+    self.close()
+    raise RuntimeError("Could not run appscript in Safari")
 
 
 class Gui(base.Gui):
