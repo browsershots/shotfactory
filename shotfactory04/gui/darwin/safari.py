@@ -38,11 +38,13 @@ def retry(func, *args, **kwargs):
     while True:
         try:
             func(*args, **kwargs)
-        except (appscript.CommandError, AttributeError):
+        except (appscript.CommandError, AttributeError), error:
+            print error
             print "Safari not ready, retrying in 3 seconds..."
             time.sleep(3)
             retry -= 1
         if not retry:
+	    self.close()
             raise RuntimeError("Could not run appscript in Safari")
 
 
