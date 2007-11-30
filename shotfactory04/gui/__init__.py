@@ -142,6 +142,8 @@ class Gui:
                 offset = hashmatch.find_offset(previous, filename)
                 if offset:
                     break
+                if attempt + 1 < attempts:
+                    os.rename(filename, previous)
             if not offset:
                 break
             offsets.append(offset)
