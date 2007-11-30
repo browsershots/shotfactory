@@ -132,9 +132,9 @@ class Gui(base.Gui):
         print 'Running', command
         self.shell(command)
         print "Sleeping %d seconds while page is loading." % options.wait
-        time.sleep(options.wait - 5)
+        time.sleep(options.wait - 10)
         self.maximize()
-        time.sleep(5)
+        time.sleep(10)
 
     def close(self):
         """
