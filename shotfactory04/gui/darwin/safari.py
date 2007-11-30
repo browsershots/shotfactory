@@ -68,8 +68,12 @@ class Gui(base.Gui):
 
     def js(self, command):
         """Run JavaScript in Safari."""
-        return retry(self.safari.do_JavaScript,
-                     command, in_=self.safari.documents[0])
+	try:
+            return retry(self.safari.do_JavaScript,
+                         command, in_=self.safari.documents[0])
+        except RuntimeError:
+            self.close()
+            raise
 
     def start_browser(self, config, url, options):
         """
@@ -77,10 +81,13 @@ class Gui(base.Gui):
         """
         try:
             self.safari = appscript.app('Safari')
+            retry(self.safari.activate)
         except MacOS.Error, error:
             code, message = error
             raise RuntimeError(message)
-        retry(self.safari.activate)
+        except RuntimeError:
+            self.close()
+            raise
         time.sleep(0.1)
         self.js("window.moveTo(0,0)")
         time.sleep(0.1)
