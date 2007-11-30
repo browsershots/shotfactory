@@ -125,19 +125,23 @@ class Gui:
         if top_pages > 2:
             top_pages -= 1 # enable jump to last page
         for page in range(2, top_pages + 1):
-            if hasattr(self, 'scroll_down'):
-                self.scroll_down(good_offset)
-            else:
-                for dummy in range(scroll_lines):
-                    self.down()
-            time.sleep(0.5)
-
             previous = filename
             filename = self.page_filename(page)
-            self.screenshot(filename)
-            self.check_screenshot(filename)
-            offset = hashmatch.find_offset(previous, filename)
-
+            attempts = 1
+            if hasattr(self, 'scroll_attempts'):
+                attempts = self.scroll_attempts
+            for attempt in range(attempts):
+                if hasattr(self, 'scroll_down'):
+                    self.scroll_down(good_offset)
+                else:
+                    for dummy in range(scroll_lines):
+                        self.down()
+                time.sleep(0.5)
+                self.screenshot(filename)
+                self.check_screenshot(filename)
+                offset = hashmatch.find_offset(previous, filename)
+                if offset:
+                    break
             if not offset:
                 break
             offsets.append(offset)
