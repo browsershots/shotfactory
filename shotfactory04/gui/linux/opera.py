@@ -49,3 +49,10 @@ class Gui(base.Gui):
             ini.set('State', 'Run', 0)
             ini.set('User Prefs', 'Show New Opera Dialog', 0)
             ini.save()
+
+    def focus_browser(self):
+        """
+        Focus on the browser window.
+        """
+        self.shell('xte "mousemove 400 4"')
+        self.shell('xte "mouseclick 1"')

@@ -220,6 +220,9 @@ class Gui:
         """
         Take a number of screenshots and merge them into one tall image.
         """
+        if hasattr(self, 'focus_browser'):
+            self.focus_browser()
+
         filename = self.page_filename(1)
         self.screenshot(filename)
         self.check_screenshot(filename)
