@@ -77,6 +77,7 @@ class Gui(base.Gui):
             'safari.exe',
             'opera.exe',
             'dwwin.exe',
+            'dw15.exe',
             'iedw.exe',
             'telnet.exe',
             'msimn.exe',
