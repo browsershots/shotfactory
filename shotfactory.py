@@ -245,7 +245,7 @@ def _main():
             one_hour_ago = time.time() - 3600
             upload_log = [log for log in upload_log if log[0] > one_hour_ago]
             if upload_log:
-                bytes_uploaded = sum(log[1] for log in upload_log)
+                bytes_uploaded = sum([log[1] for log in upload_log])
                 seconds = max(60, time.time() - upload_log[0][0])
                 bytes_per_hour = bytes_uploaded / seconds * 3600
                 if bytes_per_hour > options.upload_limit * 1024 * 1024:
