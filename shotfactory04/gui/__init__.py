@@ -91,6 +91,18 @@ class Gui:
             raise RuntimeError('screenshot file %s not found' % filename)
         if not os.path.getsize(filename):
             raise RuntimeError('screenshot file %s is empty' % filename)
+        magic, width, height, maxval = hashmatch.read_ppm_header(
+            open(filename, 'rb'))
+        if magic != 'P6':
+            raise RuntimeError("%s isn't a PPM file with 24 bpp" % filename)
+        if width != self.width or height != self.height:
+            raise RuntimeError(
+                "%s has %dx%d pixels, not the requested size %dx%d" %
+                (filename, width, height, self.width, self.height))
+        if maxval != 255:
+            raise RuntimeError(
+                "%s has maxval %d, but only maxval 255 is supported" %
+                (maxval, filename))
 
     def reset_browser(self):
         """Delete cache, history, cookies, previous sessions..."""
@@ -182,15 +194,15 @@ class Gui:
                     offsets.append(height - 200)
         return offsets
 
-    def scanlines(self, width, height, offsets):
+    def scanlines(self, offsets):
         """
         Merge multi-page screenshots and yield scanlines.
         """
-        overlaps = [height - offset for offset in offsets]
+        overlaps = [self.height - offset for offset in offsets]
         # print 'offsets: ', offsets
         # print 'overlaps:', overlaps
         total = 0
-        row_bytes = 3*width
+        row_bytes = 3 * self.width
         for index in range(0, len(overlaps) + 1):
             top = 0
             bottom = 0
@@ -202,7 +214,7 @@ class Gui:
                 bottom = self.bottom_skip
             else:
                 bottom = overlap_bottom(overlaps[index])
-            bottom = height - bottom
+            bottom = self.height - bottom
             segment = bottom - top
             total += segment
             filename = self.page_filename(index+1)
@@ -222,23 +234,17 @@ class Gui:
         """
         if hasattr(self, 'focus_browser'):
             self.focus_browser()
-
+        # Screenshot of the first page.
         filename = self.page_filename(1)
         self.screenshot(filename)
         self.check_screenshot(filename)
-        magic, width, height, maxval = hashmatch.read_ppm_header(
-            open(filename, 'rb'))
-        assert magic == 'P6', "%s isn't a PPM file with 24 bpp" % filename
-        assert maxval == 255, "%s doesn't have 24 bits per pixel" % filename
-
-        offsets = self.scroll_pages(height)
-        total = height + sum(offsets) - self.top_skip - self.bottom_skip
-        # print 'total:', total
-        scanlines = self.scanlines(width, height, offsets)
-
+        # Scroll down and take more screenshots.
+        offsets = self.scroll_pages(self.height)
+        total = self.height + sum(offsets) - self.top_skip - self.bottom_skip
+        # Create PNG file.
         outfile = file(pngfilename, 'wb')
-        writer = png.Writer(width, total)
-        writer.write(outfile, scanlines)
+        writer = png.Writer(self.width, total)
+        writer.write(outfile, self.scanlines(offsets))
         outfile.close()
 
 
