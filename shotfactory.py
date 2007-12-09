@@ -32,7 +32,6 @@ import platform
 import traceback
 import xmlrpclib
 
-pngfilename = 'browsershot.png'
 default_server_url = 'http://api.browsershots.org/'
 
 # Security: allow only alphanumeric browser commands
@@ -92,6 +91,7 @@ def browsershot(options, server, config, password):
     gui.start_browser(config, url, options)
 
     # Make screenshots
+    pngfilename = '%s.png' % config['request']
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
     gui.browsershot(pngfilename)
@@ -100,9 +100,10 @@ def browsershot(options, server, config, password):
     gui.close()
 
     # Upload PNG file
-    server.upload_png(config, pngfilename)
+    bytes = server.upload_png(config, pngfilename)
     if os.path.exists(pngfilename):
         os.remove(pngfilename)
+    return bytes
 
 
 def error_sleep(message):
@@ -169,12 +170,15 @@ def _main():
     parser.add_option("-d", "--display", action="store", type="string",
                       metavar="<name>", default=":1",
                       help="run on a different display (default: :1)")
-    parser.add_option("-l", "--loadlimit", action="store", type="float",
-                      metavar="<limit>", default=1.0,
-                      help="system load limit (default: 1.0)")
     parser.add_option("-w", "--wait", action="store", type="int",
                       metavar="<seconds>", default=30,
                       help="wait while page is loading (default: 30)")
+    parser.add_option("-l", "--load-limit", action="store", type="float",
+                      metavar="<limit>", default=1.0,
+                      help="system load limit (default: 1.0)")
+    parser.add_option("-u", "--upload-limit", action="store", type="float",
+                      metavar="<megabytes>", default=100,
+                      help="maximum megabytes per hour (default: 100)")
     parser.add_option("-q", "--queue", action="store", type="string",
                       metavar="<directory>",
                       help="get requests from files, don't poll server")
@@ -230,20 +234,33 @@ def _main():
         if options.verbose:
             server.debug_factory_features()
 
+    upload_log = []
     while True:
         try:
             load = systemload()
-            if load > options.loadlimit:
-                error_sleep('system load %.2f exceeds limit %.2f, sleeping' %
-                            (load, options.loadlimit))
+            if load > options.load_limit:
+                error_sleep("system load %.2f exceeds limit %.2f, sleeping" %
+                            (load, options.load_limit))
                 continue
+            one_hour_ago = time.time() - 3600
+            upload_log = [log for log in upload_log if log[0] > one_hour_ago]
+            if upload_log:
+                bytes_uploaded = sum(log[1] for log in upload_log)
+                seconds = max(60, time.time() - upload_log[0][0])
+                bytes_per_hour = bytes_uploaded / seconds * 3600
+                if bytes_per_hour > options.upload_limit * 1024 * 1024:
+                    error_sleep(' '.join((
+"estimated %.2f MB per hour" % (bytes_per_hour / 1024.0 / 1024.0),
+"exceeds upload limit %.2f MB, sleeping" % options.upload_limit)))
+                    continue
             print '=' * 32, time.strftime('%H:%M:%S'), '=' * 32
             config = server.poll()
             print config
             if config['command'] and not safe_command(config['command']):
                 raise RuntimeError(
                     'unsafe command "%s"' % config['command'])
-            browsershot(options, server, config, options.password)
+            bytes = browsershot(options, server, config, options.password)
+            upload_log.append((time.time(), bytes))
         except socket.gaierror, (errno, message):
             error_sleep('Socket gaierror: ' + message)
         except socket.timeout:
