@@ -141,5 +141,7 @@ class FileSystemServer(Server):
         for width, folder in self.resize:
             os.system('pngtopnm "%s" | pnmscale -width %d | pnmtopng > "%s"' %
                       (pngfilename, width, os.path.join(folder, filename)))
+        bytes = os.path.getsize(pngfilename)
         if self.output:
             os.rename(pngfilename, os.path.join(self.output, filename))
+        return bytes

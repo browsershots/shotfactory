@@ -119,6 +119,7 @@ class XMLRPCServer(Server):
         bytes = len(binary_data) * 8 / 6 # base64 encoding
         print "Uploaded %d bytes in %.2f seconds (%.2f kbps)." % (
             bytes, seconds, 8 * bytes / seconds / 1000.0)
+        return bytes
 
     def debug_factory_features(self):
         """
