@@ -121,6 +121,8 @@ class FileSystemServer(Server):
                 if key in INTEGER_KEYS:
                     value = int(value)
                 config[key] = value
+            if 'request' not in config:
+                config['request'] = config['filename']
             return config
 
     def get_request_url(self, config):
@@ -133,15 +135,12 @@ class FileSystemServer(Server):
         """
         Store PNG file in the output folder(s), possibly resizing it.
         """
-        os.unlink(os.path.join(self.queue, self.request_filename))
-        if 'request' in config:
-            filename = config['request'] + '.png'
-        else:
-            filename = config['filename'] + '.png'
+        filename = config['request'] + '.png'
         for width, folder in self.resize:
             os.system('pngtopnm "%s" | pnmscale -width %d | pnmtopng > "%s"' %
                       (pngfilename, width, os.path.join(folder, filename)))
         bytes = os.path.getsize(pngfilename)
         if self.output:
             os.rename(pngfilename, os.path.join(self.output, filename))
+        os.unlink(os.path.join(self.queue, self.request_filename))
         return bytes
