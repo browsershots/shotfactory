@@ -39,6 +39,7 @@ class Gui:
         """
         Save settings for internal use later.
         """
+        self.request = config['request']
         self.width = config['width']
         if not self.width:
             self.width = 1024
@@ -81,7 +82,7 @@ class Gui:
 
     def page_filename(self, page_number, direction='dn'):
         """Create a PPM filename."""
-        return 'pg%s%02d.ppm' % (direction, page_number)
+        return '%s-pg%s%02d.ppm' % (self.request, direction, page_number)
 
     def check_screenshot(self, filename):
         """
@@ -246,6 +247,11 @@ class Gui:
         writer = png.Writer(self.width, total)
         writer.write(outfile, self.scanlines(offsets))
         outfile.close()
+        # Delete all page screenshots.
+        for page in range(1, len(offsets) + 3):
+            filename = self.page_filename(page)
+            if os.path.exists(filename):
+                os.unlink(filename)
 
 
 def overlap_top(overlap):
