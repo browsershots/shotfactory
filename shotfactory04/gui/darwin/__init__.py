@@ -60,6 +60,7 @@ class Gui(base.Gui):
             pdf.write_ppm(width, height, image, filename)
         else:
             self.shell('pngtopnm "%s" > "%s"' % (capture_filename, filename))
+        os.unlink(capture_filename)
 
     def close(self):
         """Kill helper programs."""
