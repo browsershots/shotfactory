@@ -43,7 +43,7 @@ def retry(func, *args, **kwargs):
         print "Safari not ready, retrying in 3 seconds..."
         time.sleep(3)
         retry -= 1
-    raise RuntimeError("Could not run appscript in Safari")
+    raise RuntimeError("could not run appscript in Safari")
 
 
 class Gui(base.Gui):

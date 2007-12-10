@@ -70,7 +70,7 @@ class Gui:
             if not os.path.exists(filename):
                 continue
             if self.verbose:
-                print 'Deleting', filename
+                print "Deleting", filename
             if os.path.isdir(filename):
                 delete = shutil.rmtree
             else:
@@ -89,9 +89,9 @@ class Gui:
         Check if the screenshot file looks ok.
         """
         if not os.path.exists(filename):
-            raise RuntimeError('screenshot file %s not found' % filename)
+            raise RuntimeError("screenshot file %s not found" % filename)
         if not os.path.getsize(filename):
-            raise RuntimeError('screenshot file %s is empty' % filename)
+            raise RuntimeError("screenshot file %s is empty" % filename)
         magic, width, height, maxval = hashmatch.read_ppm_header(
             open(filename, 'rb'))
         if magic != 'P6':
@@ -108,22 +108,22 @@ class Gui:
     def reset_browser(self):
         """Delete cache, history, cookies, previous sessions..."""
         raise NotImplementedError(
-            '%s.reset_browser() is not implemented' % self.__class__)
+            "%s.reset_browser() is not implemented" % self.__class__)
 
     def down(self):
         """Scroll down one line."""
         raise NotImplementedError(
-            '%s.down() is not implemented' % self.__class__)
+            "%s.down() is not implemented" % self.__class__)
 
     def scroll_bottom(self):
         """Scroll down to the bottom of the page."""
         raise NotImplementedError(
-            '%s.scroll_bottom() is not implemented' % self.__class__)
+            "%s.scroll_bottom() is not implemented" % self.__class__)
 
     def screenshot(self, filename):
         """Take a screenshot and save it to a PPM file."""
         raise NotImplementedError(
-            '%s.screenshot(filename) is not implemented' % self.__class__)
+            "%s.screenshot(filename) is not implemented" % self.__class__)
 
     def scroll_pages(self, height):
         """
@@ -200,8 +200,8 @@ class Gui:
         Merge multi-page screenshots and yield scanlines.
         """
         overlaps = [self.height - offset for offset in offsets]
-        # print 'offsets: ', offsets
-        # print 'overlaps:', overlaps
+        # print "offsets: ", offsets
+        # print "overlaps:", overlaps
         total = 0
         row_bytes = 3 * self.width
         for index in range(0, len(overlaps) + 1):

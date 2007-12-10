@@ -47,13 +47,13 @@ class Gui(base.Gui):
             error = os.system(command)
             if not error:
                 break
-            print 'vncserver error (attempt %d out of %d)' % (
+            print "vncserver error (attempt %d out of %d)" % (
                 attempt + 1, attempts)
             if attempt + 1 < attempts:
                 time.sleep(5)
         if error:
             self.force_quit_vnc_server()
-            raise RuntimeError('could not start vncserver')
+            raise RuntimeError("could not start vncserver")
         # Move the mouse cursor out of the way
         self.shell('xte "mousemove 400 0"')
 
@@ -121,7 +121,7 @@ class Gui(base.Gui):
         """
         error = self.shell('scrot "%s"' % filename)
         if error:
-            raise RuntimeError('screenshot failed')
+            raise RuntimeError("screenshot failed")
 
     def start_browser(self, config, url, options):
         """
@@ -129,10 +129,10 @@ class Gui(base.Gui):
         """
         command = config['command'] or config['browser'].lower()
         command = '%s "%s" &' % (command, url)
-        print 'Running', command
+        print "Running", command
         error = self.shell(command)
         if error:
-            raise RuntimeError("Could not start the browser.")
+            raise RuntimeError("could not start the browser")
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait - 10)
         self.maximize()

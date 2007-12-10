@@ -70,7 +70,7 @@ class Gui(windows.Gui):
             print "Requested version: %s, Registry override: %s" % (
                 requested, registered)
             print "Please rename or delete the key 'IE' with regedit."
-            raise RuntimeError("Browser version override in the registry")
+            raise RuntimeError("browser version override in the registry")
 
     def start_browser(self, config, url, options):
         """
