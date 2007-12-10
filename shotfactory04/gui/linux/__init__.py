@@ -130,7 +130,9 @@ class Gui(base.Gui):
         command = config['command'] or config['browser'].lower()
         command = '%s "%s" &' % (command, url)
         print 'Running', command
-        self.shell(command)
+        error = self.shell(command)
+        if error:
+            raise RuntimeError("Could not start the browser.")
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait - 10)
         self.maximize()
