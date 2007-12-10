@@ -111,7 +111,7 @@ def error_sleep(message):
     Log error message, sleep a while.
     """
     if not message:
-        message = 'runtime error'
+        message = "runtime error"
     if not message[0].isupper():
         message = message[0].upper() + message[1:]
     if not message.endswith('.'):
@@ -153,43 +153,43 @@ def _main():
     revision = __revision__.strip('$').replace('Rev: ', 'r')
     version = '%prog ' + revision
     parser = OptionParser(version=version)
-    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+    parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       help="more output (for trouble-shooting)")
-    parser.add_option("-p", "--password", action="store", type="string",
-                      metavar="<password>",
+    parser.add_option('-p', '--password', action='store', type='string',
+                      metavar='<password>',
                       help="supply password on command line (insecure)")
-    parser.add_option("-s", "--server", action="store", type="string",
-                      metavar="<url>", default=default_server_url,
+    parser.add_option('-s', '--server', action='store', type='string',
+                      metavar='<url>', default=default_server_url,
                       help="server url (%s)" % default_server_url)
-    parser.add_option("-f", "--factory", action="store", type="string",
-                      metavar="<name>",
+    parser.add_option('-f', '--factory', action='store', type='string',
+                      metavar='<name>',
                       help="factory name (default: hostname)")
-    parser.add_option("-P", "--proxy", action="store", type="string",
-                      metavar="<proxy>",
+    parser.add_option('-P', '--proxy', action='store', type='string',
+                      metavar='<proxy>',
                       help="use a HTTP proxy (default: environment)")
-    parser.add_option("-d", "--display", action="store", type="string",
-                      metavar="<name>", default=":1",
+    parser.add_option('-d', '--display', action='store', type='string',
+                      metavar='<name>', default=':1',
                       help="run on a different display (default: :1)")
-    parser.add_option("-w", "--wait", action="store", type="int",
-                      metavar="<seconds>", default=30,
+    parser.add_option('-w', '--wait', action='store', type='int',
+                      metavar='<seconds>', default=30,
                       help="wait while page is loading (default: 30)")
-    parser.add_option("-l", "--load-limit", action="store", type="float",
-                      metavar="<limit>", default=1.0,
+    parser.add_option('-l', '--load-limit', action='store', type='float',
+                      metavar='<limit>', default=1.0,
                       help="system load limit (default: 1.0)")
-    parser.add_option("-u", "--upload-limit", action="store", type="float",
-                      metavar="<megabytes>", default=100,
+    parser.add_option('-u', '--upload-limit', action='store', type='float',
+                      metavar='<megabytes>', default=100,
                       help="maximum megabytes per hour (default: 100)")
-    parser.add_option("-q", "--queue", action="store", type="string",
-                      metavar="<directory>",
+    parser.add_option('-q', '--queue', action='store', type='string',
+                      metavar='<directory>',
                       help="get requests from files, don't poll server")
-    parser.add_option("-o", "--output", action="store", type="string",
-                      metavar="<directory>",
+    parser.add_option('-o', '--output', action='store', type='string',
+                      metavar='<directory>',
                       help="save screenshots locally, don't upload")
-    parser.add_option("-r", "--resize-output", action="append", nargs=2,
-                      metavar="<width> <folder>", default=[],
+    parser.add_option('-r', '--resize-output', action='append', nargs=2,
+                      metavar='<width> <folder>', default=[],
                       help="scale screenshots and save locally")
-    parser.add_option("-m", "--max-pages", action="store", type="int",
-                      metavar="<count>", default=7,
+    parser.add_option('-m', '--max-pages', action='store', type='int',
+                      metavar='<count>', default=7,
                       help="scroll down and merge screenshots (default: 7)")
     (options, args) = parser.parse_args()
     options.revision = revision
@@ -257,24 +257,23 @@ def _main():
             config = server.poll()
             print config
             if config['command'] and not safe_command(config['command']):
-                raise RuntimeError(
-                    'unsafe command "%s"' % config['command'])
+                raise RuntimeError("unsafe command '%s'" % config['command'])
             bytes = browsershot(options, server, config, options.password)
             upload_log.append((time.time(), bytes))
         except socket.gaierror, (errno, message):
-            error_sleep('Socket gaierror: ' + message)
+            error_sleep("Socket gaierror: " + message)
         except socket.timeout:
-            error_sleep('Socket timeout.')
+            error_sleep("Socket timeout.")
         except socket.error, error:
             if type(error.args) in (tuple, list):
                 (errno, message) = error.args
             else:
                 message = str(error.args)
-            error_sleep('Socket error: ' + message)
+            error_sleep("Socket error: " + message)
         except xmlrpclib.ProtocolError:
-            error_sleep('XML-RPC protocol error.')
+            error_sleep("XML-RPC protocol error.")
         except xmlrpclib.Fault, fault:
-            error_sleep('%d %s' % (fault.faultCode, fault.faultString))
+            error_sleep("%d %s" % (fault.faultCode, fault.faultString))
         except RuntimeError, message:
             if options.verbose:
                 traceback.print_exc()
