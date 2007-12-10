@@ -54,12 +54,18 @@ class Gui(base.Gui):
         """Save the full screen to a PPM file."""
         capture_filename = filename + '.capture'
         self.shell('screencapture "%s"' % capture_filename)
-        head = file(capture_filename).read(20)
-        if head.startswith('%PDF'): # Mac OS X 10.3 Panther
+        try:
+            magic = file(capture_filename, 'rb').read(4)
+        except IOError:
+            raise RuntimeError("could not read " + capture_filename)
+        if magic == '%PDF': # Mac OS X 10.3 Panther
             width, height, image = pdf.read_pdf(capture_filename)
             pdf.write_ppm(width, height, image, filename)
-        else:
+        elif magic == '\x89PNG':
             self.shell('pngtopnm "%s" > "%s"' % (capture_filename, filename))
+        else:
+            raise RuntimeError("unsupported file type %s in %s" %
+                               (repr(magic), capture_filename))
         os.unlink(capture_filename)
 
     def close(self):
