@@ -92,7 +92,7 @@ def can_reuse_browser(options, gui, config, previous):
     elif options.reuse_count >= options.reuse_browser:
         print "Browser was already reused %d times." % options.reuse_count
     elif not hasattr(gui, 'reuse_browser'):
-        print "Method %s.reuse_browser() is not implemented." % gui.__name__
+        print "Method %s.reuse_browser() is not implemented." % gui.__class__
     elif config['browser'] != previous['browser']:
         print "Different browser %s (was %s)." % (
             config['browser'], previous['browser'])
@@ -253,7 +253,6 @@ def _main():
         options.reuse_vnc_server = options.reuse_browser
     if options.reuse_vnc_server:
         options.reuse_count = 0
-        options.previous = None
     if not options.reuse_wait:
         options.reuse_wait = options.wait
 
@@ -294,6 +293,7 @@ def _main():
         if options.verbose:
             server.debug_factory_features()
 
+    options.previous = None
     upload_log = []
     while True:
         try:
