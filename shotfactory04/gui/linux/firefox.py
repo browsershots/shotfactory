@@ -59,4 +59,6 @@ class Gui(base.Gui):
             raise RuntimeError("could not load new URL in the browser")
         print "Sleeping %d seconds while page is loading." % (
             options.reuse_wait)
-        time.sleep(options.reuse_wait)
+        time.sleep(options.reuse_wait / 2.0)
+        self.maximize()
+        time.sleep(options.reuse_wait / 2.0)
