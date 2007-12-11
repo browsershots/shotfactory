@@ -24,6 +24,7 @@ __author__ = "$Author$"
 
 
 import os
+import time
 from shotfactory04.gui import linux as base
 
 
@@ -45,3 +46,17 @@ class Gui(base.Gui):
             home, '.mozilla', 'firefox', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             home, '.mozilla', 'firefox', '*', 'cookies.txt'))
+
+    def reuse_browser(self, config, url, options):
+        """
+        Open a new URL in the same browser window.
+        """
+        command = config['command'] or config['browser'].lower()
+        command = '%s -remote "OpenURL(%s)"' % (command, url)
+        print "Running", command
+        error = self.shell(command)
+        if error:
+            raise RuntimeError("could not load new URL in the browser")
+        print "Sleeping %d seconds while page is loading." % (
+            options.reuse_wait)
+        time.sleep(options.reuse_wait)

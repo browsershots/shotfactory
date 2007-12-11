@@ -59,6 +59,52 @@ def sleep():
     time.sleep(60)
 
 
+def can_reuse_vnc_server(options, config, previous):
+    """
+    Check if the existing VNC server can be reused.
+    """
+    if not options.reuse_vnc_server:
+        pass # print "VNC server reuse is not enabled."
+    elif not options.reuse_count:
+        pass # print "No VNC server is running yet."
+    elif options.reuse_count >= options.reuse_vnc_server:
+        print "VNC server was already reused %d times." % options.reuse_count
+    elif (config['width'] != previous['width'] or
+        config['height'] != previous['height']):
+        print "Different screen size %dx%d (was %dx%d)." % (
+            config['width'], config['height'],
+            previous['width'], previous['height'])
+    elif config['bpp'] != previous['bpp']:
+        print "Different color depth %d (was %d)." % (
+            config['bpp'], previous['bpp'])
+    else:
+        return True
+
+
+def can_reuse_browser(options, gui, config, previous):
+    """
+    Check if the existing browser window can be reused.
+    """
+    if not options.reuse_browser:
+        pass # print "Browser reuse is not enabled."
+    elif not options.reuse_count:
+        pass # print "No browser is running yet."
+    elif options.reuse_count >= options.reuse_browser:
+        print "Browser was already reused %d times." % options.reuse_count
+    elif not hasattr(gui, 'reuse_browser'):
+        print "Method %s.reuse_browser() is not implemented." % gui.__name__
+    elif config['browser'] != previous['browser']:
+        print "Different browser %s (was %s)." % (
+            config['browser'], previous['browser'])
+    elif (config['major'] != previous['major'] or
+          config['minor'] != previous['minor']):
+        print "Different browser version %d.%d (was %d.%d)." % (
+            config['major'], config['minor'],
+            previous['major'], previous['minor'])
+    else:
+        return True
+
+
 def browsershot(options, server, config, password):
     """
     Process a screenshot request and upload the resulting PNG file.
@@ -76,19 +122,22 @@ def browsershot(options, server, config, password):
         raise NotImplementedError("unsupported platform: " + platform_name)
     gui_module = __import__(module_name, globals(), locals(), ['non-empty'])
     gui = gui_module.Gui(config, options)
-
-    # Close old browser instances and helper programs
-    gui.close()
-
-    # Reset browser (delete cache etc.)
-    gui.reset_browser()
-
-    # Prepare screen for output
-    gui.prepare_screen()
-
-    # Start new browser
     url = server.get_request_url(config)
-    gui.start_browser(config, url, options)
+
+    if can_reuse_vnc_server(options, config, options.previous):
+        if can_reuse_browser(options, gui, config, options.previous):
+            gui.reuse_browser(config, url, options)
+        else:
+            gui.close_all_browsers()
+            gui.reset_browser()
+            gui.start_browser(config, url, options)
+        options.reuse_count += 1
+    else:
+        gui.close()
+        gui.prepare_screen()
+        gui.reset_browser()
+        gui.start_browser(config, url, options)
+        options.reuse_count = 1
 
     # Make screenshots
     pngfilename = '%s.png' % config['request']
@@ -96,8 +145,9 @@ def browsershot(options, server, config, password):
         os.remove(pngfilename)
     gui.browsershot(pngfilename)
 
-    # Close browser and helper programs
-    gui.close()
+    if not options.reuse_browser:
+        gui.close()
+    options.previous = config
 
     # Upload PNG file
     bytes = server.upload_png(config, pngfilename)
@@ -185,11 +235,27 @@ def _main():
     parser.add_option('-m', '--max-pages', type='int',
                       metavar='<count>', default=7,
                       help="scroll down and merge screenshots (default: 7)")
+    parser.add_option('-V', '--reuse-vnc-server', type='int', metavar='<max>',
+                      help="restart VNC server only after <max> requests")
+    parser.add_option('-B', '--reuse-browser', type='int', metavar='<max>',
+                      help="restart browser only after <max> requests")
+    parser.add_option('-W', '--reuse-wait', type='int', metavar='<seconds>',
+                      help="shorter wait time when reusing (default: --wait)")
     (options, args) = parser.parse_args()
     options.revision = revision
 
     if options.factory is None:
         options.factory = socket.gethostname().split('.')[0].lower()
+
+    if options.reuse_browser and options.reuse_vnc_server:
+        parser.error("--reuse-browser already implies --reuse-vnc-server")
+    if options.reuse_browser:
+        options.reuse_vnc_server = options.reuse_browser
+    if options.reuse_vnc_server:
+        options.reuse_count = 0
+        options.previous = None
+    if not options.reuse_wait:
+        options.reuse_wait = options.wait
 
     if options.queue and (options.output or options.resize_output):
         options.server = None
