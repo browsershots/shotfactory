@@ -27,7 +27,7 @@ import sys
 
 kwargs = {
     'name': 'ShotFactory',
-    'version': '0.4-alpha1',
+    'version': '0.4-beta3',
     'description': 'Screenshot factory for browsershots.org',
     'author': 'Johann C. Rocholl',
     'author_email': 'johann@browsershots.org',
@@ -39,6 +39,7 @@ kwargs = {
         'shotfactory04.gui.linux',
         'shotfactory04.gui.windows',
         'shotfactory04.image',
+        'shotfactory04.servers',
         ],
     'scripts': [
         'shotfactory.py',
