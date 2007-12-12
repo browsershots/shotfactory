@@ -43,10 +43,12 @@ class Gui:
         self.width = config['width']
         if not self.width:
             self.width = 1024
-        if self.width == 1280:
-            self.height = 1024
-        else:
-            self.height = self.width / 4 * 3
+        self.height = config['height']
+        if not self.height:
+            if self.width == 1280:
+                self.height = 1024
+            else:
+                self.height = self.width / 4 * 3
         self.bpp = config['bpp']
         if not self.bpp:
             self.bpp = 24
