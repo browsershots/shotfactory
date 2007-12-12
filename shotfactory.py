@@ -69,12 +69,13 @@ def can_reuse_vnc_server(options, config, previous):
         pass # print "No VNC server is running yet."
     elif options.reuse_count >= options.reuse_vnc_server:
         print "VNC server was already reused %d times." % options.reuse_count
-    elif (config['width'] != previous['width'] or
-        config['height'] != previous['height']):
-        print "Different screen size %dx%d (was %dx%d)." % (
-            config['width'], config['height'],
-            previous['width'], previous['height'])
-    elif config['bpp'] != previous['bpp']:
+    elif 'width' in config and config['width'] != previous['width']:
+        print "Different screen width %d (was %d)." % (
+            config['width'], previous['width'])
+    elif 'height' in config and config['height'] != previous['height']:
+        print "Different screen height %d (was %d)." % (
+            config['height'], previous['height'])
+    elif 'bpp' in config and config['bpp'] != previous['bpp']:
         print "Different color depth %d (was %d)." % (
             config['bpp'], previous['bpp'])
     else:
@@ -93,14 +94,15 @@ def can_reuse_browser(options, gui, config, previous):
         print "Browser was already reused %d times." % options.reuse_count
     elif not hasattr(gui, 'reuse_browser'):
         print "Method %s.reuse_browser() is not implemented." % gui.__class__
-    elif config['browser'] != previous['browser']:
+    elif 'browser' in config and config['browser'] != previous['browser']:
         print "Different browser %s (was %s)." % (
             config['browser'], previous['browser'])
-    elif (config['major'] != previous['major'] or
-          config['minor'] != previous['minor']):
-        print "Different browser version %d.%d (was %d.%d)." % (
-            config['major'], config['minor'],
-            previous['major'], previous['minor'])
+    elif 'major' in config and config['major'] != previous['major']:
+        print "Different major browser version %d (was %d)." % (
+            config['major'], previous['major'])
+    elif 'minor' in config and config['minor'] != previous['minor']:
+        print "Different minor browser version %d (was %d)." % (
+            config['minor'], previous['minor'])
     else:
         return True
 
