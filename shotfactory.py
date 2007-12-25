@@ -24,6 +24,7 @@ __date__ = "$Date$"
 __author__ = "$Author$"
 
 import sys
+import stat
 import os
 import time
 import re
@@ -294,6 +295,8 @@ def _main():
             and os.path.exists(DEFAULT_PASSWORD_FILE)):
             options.password_file = DEFAULT_PASSWORD_FILE
         if options.password_file:
+            if os.stat(options.password_file).st_mode & stat.S_IROTH:
+                parser.error("your password file is world-readable")
             options.password = file(options.password_file).readline().strip()
         if options.password is None:
             from getpass import getpass
