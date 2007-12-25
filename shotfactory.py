@@ -33,6 +33,7 @@ import traceback
 import xmlrpclib
 
 default_server_url = 'http://api.browsershots.org/'
+DEFAULT_PASSWORD_FILE = '.passwd'
 
 # Security: allow only alphanumeric browser commands
 # Optionally within a subfolder, relative to working directory
@@ -208,9 +209,10 @@ def _main():
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       help="more output (for trouble-shooting)")
     parser.add_option('-P', '--password', metavar='<password>',
-                      help="supply password on command line (very insecure)")
+                      help="supply password on command line (insecure)")
     parser.add_option('-F', '--password-file', metavar='<path>',
-                      help="read password from plaintext file (insecure)")
+                      help="plaintext password file (default: %s)" %
+                      DEFAULT_PASSWORD_FILE)
     parser.add_option('-s', '--server',
                       metavar='<url>', default=default_server_url,
                       help="server url (%s)" % default_server_url)
@@ -288,6 +290,9 @@ def _main():
             options.server = 'http://' + options.server
         if options.password_file and options.password:
             parser.error("can't use both --password and --password-file")
+        if (options.password_file is None and options.password is None
+            and os.path.exists(DEFAULT_PASSWORD_FILE)):
+            options.password_file = DEFAULT_PASSWORD_FILE
         if options.password_file:
             options.password = file(options.password_file).readline().strip()
         if options.password is None:
