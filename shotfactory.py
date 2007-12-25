@@ -32,7 +32,7 @@ import platform
 import traceback
 import xmlrpclib
 
-default_server_url = 'http://api.browsershots.org/'
+DEFAULT_SERVER_URL = 'http://api.browsershots.org/'
 DEFAULT_PASSWORD_FILE = '.passwd'
 
 # Security: allow only alphanumeric browser commands
@@ -214,8 +214,8 @@ def _main():
                       help="plaintext password file (default: %s)" %
                       DEFAULT_PASSWORD_FILE)
     parser.add_option('-s', '--server',
-                      metavar='<url>', default=default_server_url,
-                      help="server url (%s)" % default_server_url)
+                      metavar='<url>', default=DEFAULT_SERVER_URL,
+                      help="server url (%s)" % DEFAULT_SERVER_URL)
     parser.add_option('-f', '--factory', metavar='<name>',
                       help="factory name (default: hostname)")
     parser.add_option('-p', '--proxy', metavar='<proxy>',
