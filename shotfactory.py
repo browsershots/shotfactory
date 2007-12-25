@@ -208,7 +208,9 @@ def _main():
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       help="more output (for trouble-shooting)")
     parser.add_option('-P', '--password', metavar='<password>',
-                      help="supply password on command line (insecure)")
+                      help="supply password on command line (very insecure)")
+    parser.add_option('-F', '--password-file', metavar='<path>',
+                      help="read password from plaintext file (insecure)")
     parser.add_option('-s', '--server',
                       metavar='<url>', default=default_server_url,
                       help="server url (%s)" % default_server_url)
@@ -284,6 +286,10 @@ def _main():
         options.output = None
         if not options.server.startswith('http://'):
             options.server = 'http://' + options.server
+        if options.password_file and options.password:
+            parser.error("can't use both --password and --password-file")
+        if options.password_file:
+            options.password = file(options.password_file).readline().strip()
         if options.password is None:
             from getpass import getpass
             options.password = getpass('Factory password: ')
