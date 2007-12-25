@@ -207,14 +207,14 @@ def _main():
     parser = OptionParser(version=version)
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       help="more output (for trouble-shooting)")
-    parser.add_option('-p', '--password', metavar='<password>',
+    parser.add_option('-P', '--password', metavar='<password>',
                       help="supply password on command line (insecure)")
     parser.add_option('-s', '--server',
                       metavar='<url>', default=default_server_url,
                       help="server url (%s)" % default_server_url)
     parser.add_option('-f', '--factory', metavar='<name>',
                       help="factory name (default: hostname)")
-    parser.add_option('-P', '--proxy', metavar='<proxy>',
+    parser.add_option('-p', '--proxy', metavar='<proxy>',
                       help="use a HTTP proxy (default: environment)")
     parser.add_option('-d', '--display', metavar='<name>', default=':1',
                       help="run on a different display (default: :1)")
