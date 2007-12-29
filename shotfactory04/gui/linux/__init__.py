@@ -37,9 +37,11 @@ class Gui(base.Gui):
         """
         Start a VNC server with requested resolution.
         """
-        command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d -rfbport %d'
+        command = ('vncserver %s -geometry %dx%d -depth %d -dpi %d'
                    % (self.display, self.width, self.height,
-                      self.bpp, self.dpi, self.rfbport))
+                      self.bpp, self.dpi))
+        if self.rfbport is not None:
+            command = '%s -rfbport %d' % (command, self.rfbport)
         if self.verbose is None:
             command = '%s >/dev/null 2>/dev/null' % command
         attempts = 3
