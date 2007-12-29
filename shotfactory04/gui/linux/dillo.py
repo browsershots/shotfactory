@@ -30,4 +30,9 @@ class Gui(base.Gui):
     """
     Special functions for Dillo.
     """
-    pass
+
+    def reset_browser(self):
+        """
+        Reset crashed state and delete browser cache.
+        """
+        pass
