@@ -223,6 +223,9 @@ def _main():
                       help="use a HTTP proxy (default: environment)")
     parser.add_option('-d', '--display', metavar='<name>', default=':1',
                       help="run on a different display (default: :1)")
+    parser.add_option('-b', '--rfbport', type='int',
+                      metavar='<port>', default=5902,
+                      help="tcp port number used by VNC server for incoming connections (default: 5902)")
     parser.add_option('-w', '--wait', type='int',
                       metavar='<seconds>', default=30,
                       help="wait while page is loading (default: 30)")

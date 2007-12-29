@@ -55,6 +55,8 @@ class Gui:
         self.dpi = 90
         if hasattr(options, 'display'):
             self.display = options.display
+        if hasattr(options, 'rfbport'):
+            self.rfbport = options.rfbport
         if hasattr(options, 'verbose'):
             self.verbose = options.verbose
         self.max_pages = options.max_pages
