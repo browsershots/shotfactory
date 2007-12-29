@@ -329,7 +329,7 @@ def _main():
 "estimated %.2f MB per hour" % (bytes_per_hour / 1024.0 / 1024.0),
 "exceeds upload limit %.2f MB, sleeping" % options.upload_limit)))
                     continue
-            print '=' * 32, time.strftime('%H:%M:%S'), '=' * 32
+            print '=' * 30, time.strftime('%H:%M:%S'), '=' * 30
             config = server.poll()
             print config
             if config['command'] and not safe_command(config['command']):
