@@ -224,7 +224,7 @@ def _main():
     parser.add_option('-d', '--display', metavar='<name>', default=':1',
                       help="run on a different display (default: :1)")
     parser.add_option('-b', '--rfbport', type='int',
-                      metavar='<port>', default=5902,
+                      metavar='<port>',
                       help="tcp port number used by VNC server for incoming connections (default: 5902)")
     parser.add_option('-w', '--wait', type='int',
                       metavar='<seconds>', default=30,
