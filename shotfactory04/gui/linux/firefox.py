@@ -39,13 +39,13 @@ class Gui(base.Gui):
         """
         home = os.environ['HOME']
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'firefox', '*', 'Cache'))
+            home, '.mozilla', 'firefox*', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'firefox', '*', 'sessionstore.js'))
+            home, '.mozilla', 'firefox*', '*', 'sessionstore.js'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'firefox', '*', 'history.dat'))
+            home, '.mozilla', 'firefox*', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'firefox', '*', 'cookies.txt'))
+            home, '.mozilla', 'firefox*', '*', 'cookies.txt'))
 
     def reuse_browser(self, config, url, options):
         """
