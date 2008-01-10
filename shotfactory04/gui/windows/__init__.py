@@ -81,6 +81,8 @@ class Gui(base.Gui):
             'iedw.exe',
             'telnet.exe',
             'msimn.exe',
+            'seamonkey.exe',
+            'k-meleon.exe',
             )
         for name in process_names:
             # Kill all processes matching name, using
