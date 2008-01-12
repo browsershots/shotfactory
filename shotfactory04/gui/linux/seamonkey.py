@@ -40,4 +40,18 @@ class Gui(base.Gui):
         self.delete_if_exists(os.path.join(
             home, '.mozilla', 'default', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'default', '*', '*.slt', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'default', '*', '*.slt', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'seamonkey*', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'seamonkey*', '*', '*.slt', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'seamonkey*', '*', '*.slt', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
             home, '.mozilla.org', 'seamonkey', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla.org', 'seamonkey', '*', '*.slt','history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla.org', 'seamonkey', '*', '*.slt','cookies.txt'))
