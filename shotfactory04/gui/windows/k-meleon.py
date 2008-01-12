@@ -53,9 +53,21 @@ class Gui(windows.Gui):
         time.sleep(options.wait)
 
     def find_scrollable(self):
-        """Find scrollable window."""
-        kmeleon = self.find_window_by_title_suffix(' (K-Meleon)')
-        return self.get_child_window(kmeleon)
+        """
+        Find the scrollable window.
+        """
+        hwnd = win32gui.WindowFromPoint((self.width/2, self.height/2))
+        for dummy in range(20):
+            if not hwnd:
+                return None
+            if self.verbose >= 3:
+                print 'handle', hwnd
+                print 'classname', win32gui.GetClassName(hwnd)
+                print 'text', win32gui.GetWindowText(hwnd)
+                print
+            if win32gui.GetClassName(hwnd) == 'MozillaWindowClass':
+                return hwnd
+            hwnd = win32gui.GetParent(hwnd)
 
 
 # Test scrolling from command line
