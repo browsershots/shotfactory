@@ -38,20 +38,26 @@ class Gui(base.Gui):
         """
         home = os.environ['HOME']
         self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'default', 'Cache'))
+        self.delete_if_exists(os.path.join(
             home, '.mozilla', 'default', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', '*.slt', 'history.dat'))
+            home, '.mozilla', 'default', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', '*.slt', 'cookies.txt'))
+            home, '.mozilla', 'default', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'seamonkey*', 'Cache'))
         self.delete_if_exists(os.path.join(
             home, '.mozilla', 'seamonkey*', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', '*.slt', 'history.dat'))
+            home, '.mozilla', 'seamonkey*', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', '*.slt', 'cookies.txt'))
+            home, '.mozilla', 'seamonkey*', '*', 'cookies.txt'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey', '*', 'Cache'))
+            home, '.mozilla.org', 'seamonkey', 'Cache'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey', '*', '*.slt','history.dat'))
+            home, '.mozilla.org', 'seamonkey', '*','Cache'))
         self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey', '*', '*.slt','cookies.txt'))
+            home, '.mozilla.org', 'seamonkey', '*','history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla.org', 'seamonkey', '*','cookies.txt'))
