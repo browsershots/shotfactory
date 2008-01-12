@@ -83,6 +83,8 @@ class Gui(base.Gui):
             'msimn.exe',
             'seamonkey.exe',
             'k-meleon.exe',
+            'flock.exe',
+            'navigator.exe',
             )
         for name in process_names:
             # Kill all processes matching name, using
