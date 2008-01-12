@@ -44,6 +44,10 @@ class Gui(windows.Gui):
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         self.delete_if_exists(os.path.join(
             appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'sessionstore.js'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'cookies.txt'))
 
     def start_browser(self, config, url, options):
         """
