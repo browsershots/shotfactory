@@ -43,3 +43,9 @@ class Gui(base.Gui):
             home, '.mozilla', 'default', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             home, '.mozilla', 'default', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'mozilla*', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'mozilla*', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.mozilla', 'mozilla*', '*', 'cookies.txt'))
