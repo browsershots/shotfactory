@@ -38,3 +38,5 @@ class Gui(base.Gui):
         """
         home = os.environ['HOME']
         self.delete_if_exists(os.path.join(home, '.netscape', 'cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.netscape', 'navigator', '*', 'Cache'))
