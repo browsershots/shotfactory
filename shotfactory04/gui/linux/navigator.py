@@ -40,3 +40,9 @@ class Gui(base.Gui):
         self.delete_if_exists(os.path.join(home, '.netscape', 'cache'))
         self.delete_if_exists(os.path.join(
             home, '.netscape', 'navigator', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.netscape', 'navigator', '*', 'sessionstore.js'))
+        self.delete_if_exists(os.path.join(
+            home, '.netscape', 'navigator', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.netscape', 'navigator', '*', 'cookies.txt'))
