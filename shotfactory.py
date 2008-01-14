@@ -129,13 +129,15 @@ def browsershot(options, server, config, password):
     url = server.get_request_url(config)
 
     if can_reuse_vnc_server(options, config, options.previous):
-        if can_reuse_browser(options, gui, config, options.previous):
-            gui.reuse_browser(config, url, options)
-        else:
-            gui.close_all_browsers()
-            gui.reset_browser()
-            gui.start_browser(config, url, options)
-        options.reuse_count += 1
+        try:
+            if can_reuse_browser(options, gui, config, options.previous):
+                gui.reuse_browser(config, url, options)
+            else:
+                gui.close_all_browsers()
+                gui.reset_browser()
+                gui.start_browser(config, url, options)
+        finally:
+            options.reuse_count += 1
     else:
         gui.close()
         gui.prepare_screen()
