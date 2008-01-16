@@ -37,31 +37,17 @@ class Gui(base.Gui):
         Delete crash dialog and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'cookies.txt'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', 'cookies.txt'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', 'Crash Reports'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'seamonkey*', '*', 'minidumps'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey*', '*','Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey*', '*','history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla.org', 'seamonkey*', '*','cookies.txt'))
+	for profile_folder in ('.mozilla', '.mozilla.org'):
+            for profile_name in ('default', 'seamonkey*'):
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, 'Cache'))
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, '*', 'Cache'))
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, '*', 'history.dat'))
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, '*', 'cookies.txt'))
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, 'Crash Reports'))
+                self.delete_if_exists(os.path.join(
+                    home, profile_folder, profile_name, '*', 'minidumps'))
