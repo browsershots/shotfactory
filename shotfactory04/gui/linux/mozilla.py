@@ -37,15 +37,10 @@ class Gui(base.Gui):
         Delete crash dialog and browser cache.
         """
         home = os.environ['HOME']
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'default', '*', 'cookies.txt'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'mozilla*', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'mozilla*', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.mozilla', 'mozilla*', '*', 'cookies.txt'))
+        for profile_name in ('default', 'mozilla*'):
+            self.delete_if_exists(os.path.join(
+                home, '.mozilla', profile_name, '*', 'Cache'))
+            self.delete_if_exists(os.path.join(
+                home, '.mozilla', profile_name, '*', 'history.dat'))
+            self.delete_if_exists(os.path.join(
+                home, '.mozilla', profile_name, '*', 'cookies.txt'))
