@@ -22,29 +22,11 @@ __revision__ = "$Rev$"
 __date__ = "$Date$"
 __author__ = "$Author$"
 
-import os
-from shotfactory04.gui import linux as base
+from shotfactory04.gui.linux import phoenix as base
 
 
 class Gui(base.Gui):
     """
     Special functions for Mozilla Firebird.
     """
-
-    def reset_browser(self):
-        """
-        Delete crash dialog and browser cache.
-        """
-        home = os.environ['HOME']
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'default', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'default', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'default', '*', 'cookies.txt'))
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'phoenix', '*', 'Cache'))
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'phoenix', '*', 'history.dat'))
-        self.delete_if_exists(os.path.join(
-            home, '.phoenix', 'phoenix', '*', 'cookies.txt'))
+    pass
