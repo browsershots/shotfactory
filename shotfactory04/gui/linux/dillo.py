@@ -37,6 +37,13 @@ class Gui(base.Gui):
         """
         pass
 
+    def maximize(self):
+        """Maximize the active window."""
+        self.focus_browser()
+        self.shell('xte "keydown Alt_L"')
+        self.shell('xte "key F10"')
+        self.shell('xte "keyup Alt_L"')
+
     def focus_browser(self):
         """
         Focus on the browser window.
