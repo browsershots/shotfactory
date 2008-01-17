@@ -39,6 +39,9 @@ class Gui(base.Gui):
         home = os.environ['HOME']
         self.delete_if_exists(os.path.join(
             home, '.kazehakase', 'mozilla', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
             home, '.kazehakase', 'mozilla', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
             home, '.kazehakase', 'mozilla', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
             home, '.kazehakase', 'favicon'))
