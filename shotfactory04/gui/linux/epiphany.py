@@ -40,4 +40,6 @@ class Gui(base.Gui):
         self.delete_if_exists(os.path.join(
             home, '.gnome2', 'epiphany', 'mozilla', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
+            home, '.gnome2', 'epiphany', 'mozilla', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
             home, '.gnome2', 'epiphany', 'session_crashed.xml'))
