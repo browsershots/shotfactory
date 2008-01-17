@@ -40,4 +40,6 @@ class Gui(base.Gui):
         self.delete_if_exists(os.path.join(
             home, '.galeon', 'mozilla', '*', 'Cache'))
         self.delete_if_exists(os.path.join(
+            home, '.galeon', 'mozilla', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
             home, '.galeon', 'session_crashed.xml'))
