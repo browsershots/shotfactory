@@ -36,3 +36,10 @@ class Gui(base.Gui):
         Reset crashed state and delete browser cache.
         """
         pass
+
+    def focus_browser(self):
+        """
+        Focus on the browser window.
+        """
+        self.shell('xte "mousemove 200 4"')
+        self.shell('xte "mouseclick 1"')
