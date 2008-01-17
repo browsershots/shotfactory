@@ -45,3 +45,7 @@ class Gui(base.Gui):
             home, '.flock', 'browser', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             home, '.flock', 'browser', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            home, '.flock', 'browser', '*', 'historysearch'))
+        self.delete_if_exists(os.path.join(
+            home, '.flock', 'browser', '*', 'lucene'))
