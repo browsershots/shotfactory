@@ -119,6 +119,8 @@ def browsershot(options, server, config, password):
     platform_name = platform.system()
     if platform_name in ('Microsoft', 'Microsoft Windows'):
         platform_name = 'Windows'
+    if platform_name in ('FreeBSD', 'OpenBSD', 'NetBSD'):
+        platform_name = 'Linux' # use Linux browser modules on *BSD
     if platform_name in ('Linux', 'Darwin', 'Windows'):
         module_name = 'shotfactory04.gui.%s.%s' % (
             platform_name.lower(), browser_module)
