@@ -38,6 +38,7 @@ class Gui(base.Gui):
         Reset crashed state and delete browser cache.
         """
         home = os.environ['HOME']
+        self.delete_if_exists(os.path.join(home, '.opera', 'lock'))
         self.delete_if_exists(os.path.join(home, '.opera', 'cache4'))
         self.delete_if_exists(os.path.join(home, '.opera', 'opcache'))
         self.delete_if_exists(os.path.join(home, '.opera', 'images'))
