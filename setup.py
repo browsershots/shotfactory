@@ -68,9 +68,14 @@ if 'py2exe' in sys.argv:
     kwargs['options'] = {
         'py2exe': {
             'includes': ','.join([
-                'shotfactory04.gui.windows.msie',
                 'shotfactory04.gui.windows.firefox',
+                'shotfactory04.gui.windows.flock',
+                'shotfactory04.gui.windows.k_meleon',
+                'shotfactory04.gui.windows.msie',
+                'shotfactory04.gui.windows.navigator',
+                'shotfactory04.gui.windows.opera',
                 'shotfactory04.gui.windows.safari',
+                'shotfactory04.gui.windows.seamonkey',
                 ]),
             'dist_dir': 'bin',
             }
