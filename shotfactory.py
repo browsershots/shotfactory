@@ -113,7 +113,7 @@ def browsershot(options, server, config, password):
     """
     Process a screenshot request and upload the resulting PNG file.
     """
-    browser_module = config['browser'].lower()
+    browser_module = config['browser'].lower().replace('-', '_')
     if browser_module == 'internet explorer':
         browser_module = 'msie'
     platform_name = platform.system()
