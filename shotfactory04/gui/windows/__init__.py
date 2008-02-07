@@ -30,6 +30,7 @@ import win32gui
 import win32con
 import pywintypes
 from shotfactory04 import gui as base
+from shotfactory04.utils import remove_version_number
 
 
 class Gui(base.Gui):
@@ -105,7 +106,7 @@ class Gui(base.Gui):
                 title = win32gui.GetWindowText(window)
                 if self.verbose >= 3:
                     print "GetWindowText(%d) => '%s'" % (window, title)
-                if title.endswith(suffix):
+                if remove_version_number(title).endswith(suffix):
                     break
                 previous = window
                 window = win32gui.GetWindow(previous, win32con.GW_HWNDNEXT)
