@@ -30,7 +30,7 @@ import win32gui
 import win32con
 import pywintypes
 from shotfactory04 import gui as base
-from shotfactory04.utils import remove_version_number
+from shotfactory04.utils import remove_version_number, short_filename
 
 
 class Gui(base.Gui):
@@ -92,6 +92,10 @@ class Gui(base.Gui):
             # pv.exe from teamcti.com (freeware):
             # http://www.teamcti.com/pview/prcview.htm
             os.system('pv.exe -kf %s "2>nul" > nul' % name)
+            short = short_filename(name)
+            if short != name:
+                os.system('pv.exe -kf %s "2>nul" > nul' % short)
+
 
     def find_window_by_title_suffix(self, suffix):
         """Find a window on the desktop where the title ends as specified."""

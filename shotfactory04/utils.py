@@ -47,6 +47,23 @@ def remove_version_number(text):
     return text
 
 
+def short_filename(filename):
+    """
+    Guess abbreviated filename (8.3) on Windows.
+    >>> short_filename('navigator.exe')
+    'naviga~1.exe'
+    >>> short_filename('NAVIGATOR.EXE')
+    'NAVIGA~1.EXE'
+    >>> short_filename('IEXPLORE.EXE')
+    'IEXPLORE.EXE'
+    >>> short_filename('firefox.exe')
+    'firefox.exe'
+    """
+    if len(filename) <= 12:
+        return filename
+    return '%s~1.%s' % (filename[:6], filename.split('.')[-1])
+
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
