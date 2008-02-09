@@ -32,8 +32,10 @@ def remove_version_number(text):
     'Title - Netscape Navigator'
     >>> remove_version_number(' Example 0.4-3556_4')
     ' Example'
+    >>> remove_version_number('')
+    ''
     """
-    while True:
+    while text:
         if text.lower().endswith('alpha'):
             text = text[:-5]
         elif text.lower().endswith('beta'):
@@ -41,7 +43,8 @@ def remove_version_number(text):
         elif text[-1] in '0123456789.-_ ':
             text = text[:-1]
         else:
-            return text
+            break
+    return text
 
 
 if __name__ == '__main__':
