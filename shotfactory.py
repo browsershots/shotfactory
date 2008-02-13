@@ -211,7 +211,7 @@ def _main():
     revision = __revision__.strip('$').replace('Rev: ', 'r')
     version = '%prog ' + revision
     parser = OptionParser(version=version)
-    parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
+    parser.add_option('-v', '--verbose', dest='verbose', action='count',
                       help="more output (for trouble-shooting)")
     parser.add_option('-P', '--password', metavar='<password>',
                       help="supply password on command line (insecure)")

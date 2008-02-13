@@ -42,11 +42,9 @@ class Gui(base.Gui):
                       self.bpp, self.dpi))
         if self.rfbport is not None:
             command = '%s -rfbport %d' % (command, self.rfbport)
-        if self.verbose is None:
-            command = '%s >/dev/null 2>/dev/null' % command
         attempts = 3
         for attempt in range(attempts):
-            error = os.system(command)
+            error = self.shell(command)
             if not error:
                 break
             print "vncserver error (attempt %d out of %d)" % (
@@ -64,9 +62,9 @@ class Gui(base.Gui):
         Try to kill old VNC server on my display.
         """
         print "Trying to kill old VNC server"
-        os.system('vncserver -kill %s' % self.display)
-        time.sleep(10)
-        os.system('killall -q -9 vncserver')
+        self.shell('vncserver -kill %s' % self.display)
+        time.sleep(3)
+        self.shell('killall -q -9 vncserver')
         host, numeric = self.display.rsplit(':', 1)
         numeric = int(numeric)
         self.delete_if_exists('/tmp/.X%d-lock' % numeric)
@@ -74,12 +72,15 @@ class Gui(base.Gui):
 
     def shell(self, command):
         """Run a shell command on my display."""
+        command = 'DISPLAY=%s %s' % (self.display, command)
         if self.verbose < 3:
             if command.endswith('&'):
                 command = command[:-1].rstrip() + ' >/dev/null 2>/dev/null &'
             else:
                 command += ' >/dev/null 2>/dev/null'
-        return os.system('DISPLAY=%s %s' % (self.display, command))
+        else:
+            print command
+        return os.system(command)
 
     def scroll_top(self):
         """Scroll to the top."""
