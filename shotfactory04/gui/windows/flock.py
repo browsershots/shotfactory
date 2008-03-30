@@ -48,6 +48,10 @@ class Gui(windows.Gui):
             appdata, 'Flock', 'Browser', 'Profiles', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             appdata, 'Flock', 'Browser', 'Profiles', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Flock', 'Browser', 'Profiles', '*', 'historysearch'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Flock', 'Browser', 'Profiles', '*', 'lucene'))
 
     def start_browser(self, config, url, options):
         """
