@@ -80,7 +80,7 @@ class Gui(windows.Gui):
         command = config['command'] or r'c:\progra~1\intern~1\iexplore.exe'
         print 'running', command
         try:
-            from subprocess import Popen
+            import subprocess
         except ImportError:
             os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
         else:
