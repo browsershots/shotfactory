@@ -55,7 +55,12 @@ class Gui(windows.Gui):
         """
         command = config['command'] or r'c:\progra~1\mozill~1\firefox.exe'
         print 'running', command
-        os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
+        try:
+            from subprocess import Popen
+        except ImportError:
+            os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
+        else:
+            subprocess.Popen([command, url])
         print "Sleeping %d seconds while page is loading." % options.wait
         time.sleep(options.wait)
 
