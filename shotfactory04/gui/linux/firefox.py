@@ -56,7 +56,7 @@ class Gui(base.Gui):
         Open a new URL in the same browser window.
         """
         command = config['command'] or config['browser'].lower()
-        command = '%s -remote "OpenURL(%s)"' % (command, url)
+        command = '%s -remote "OpenURL(%s,new-tab)"' % (command, url)
         print "Running", command
         error = self.shell(command)
         if error:
