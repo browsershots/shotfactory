@@ -93,6 +93,10 @@ class Gui(windows.Gui):
         Find the scrollable window.
         """
         ieframe = self.find_window_by_classname('IEFrame')
+        frametab = self.find_child_window_by_classname(
+            ieframe, "Frame Tab")
+        if frametab:
+            ieframe = frametab
         tabs = self.find_child_window_by_classname(
             ieframe, "TabWindowClass")
         if tabs:
@@ -105,11 +109,14 @@ class Gui(windows.Gui):
 if __name__ == '__main__':
     config = {
         'width': 1024,
+        'height': 768,
         'bpp': 24,
+        'request': 123,
         }
 
     class Options:
         verbose = 3
+        max_pages = 7
 
     gui = Gui(config, Options())
     gui.down()
