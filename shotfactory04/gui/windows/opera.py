@@ -89,11 +89,14 @@ class Gui(windows.Gui):
 if __name__ == '__main__':
     config = {
         'width': 1024,
+        'height': 768,
         'bpp': 24,
+        'request': 123,
         }
 
     class Options:
         verbose = 3
+        max_pages = 7
 
     gui = Gui(config, Options())
     print "Press Alt+Tab now!"
