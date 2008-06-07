@@ -15,19 +15,72 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-GUI-specific interface functions for X11.
+GUI-specific interface functions for Mozilla Minefield on Microsoft Windows.
 """
 
-__revision__ = "$Rev: 2261 $"
-__date__ = "$Date: 2007-10-26 20:47:50 +0200 (Fri, 26 Oct 2007) $"
-__author__ = "$Author: johann $"
+__revision__ = "$Rev: 2746 $"
+__date__ = "$Date: 2008-04-08 14:33:11 +0200 (Tue, 08 Apr 2008) $"
+__author__ = "$Author: hawk $"
+
+import os
+import time
+from win32com.shell import shellcon
+from win32com.shell import shell
+from shotfactory04.gui import windows
 
 
-from shotfactory04.gui.windows import firefox as base
-
-
-class Gui(base.Gui):
+class Gui(windows.Gui):
     """
-    Special functions for Mozilla Minefield.
+    Special functions for Minefield on Windows.
     """
-    pass
+
+    def reset_browser(self):
+        """
+        Delete previous session and browser cache.
+        """
+        appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'Cache'))
+        appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'sessionstore.js'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'cookies.txt'))
+
+    def start_browser(self, config, url, options):
+        """
+        Start browser and load website.
+        """
+        command = config['command'] or r'c:\progra~1\minefi~1\firefox.exe'
+        print 'running', command
+        try:
+            import subprocess
+        except ImportError:
+            os.spawnl(os.P_DETACH, command, os.path.basename(command), url)
+        else:
+            subprocess.Popen([command, url])
+        print "Sleeping %d seconds while page is loading." % options.wait
+        time.sleep(options.wait)
+
+    def find_scrollable(self):
+        """Find scrollable window."""
+        minefield = self.find_window_by_title_suffix(' Minefield')
+        return self.get_child_window(minefield)
+
+
+# Test scrolling from command line
+if __name__ == '__main__':
+    config = {
+        'width': 1024,
+        'bpp': 24,
+        }
+
+    class Options:
+        verbose = 3
+
+    gui = Gui(config, Options())
+    gui.down()
+    time.sleep(1)
+    gui.scroll_bottom()
