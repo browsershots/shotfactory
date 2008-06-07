@@ -18,9 +18,9 @@
 GUI-specific interface functions for Mozilla Minefield on Microsoft Windows.
 """
 
-__revision__ = "$Rev: 2746 $"
-__date__ = "$Date: 2008-04-08 14:33:11 +0200 (Tue, 08 Apr 2008) $"
-__author__ = "$Author: hawk $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import os
 import time

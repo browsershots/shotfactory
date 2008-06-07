@@ -18,9 +18,9 @@
 GUI-specific interface functions for X11.
 """
 
-__revision__ = "$Rev: 2248 $"
-__date__ = "$Date: 2007-10-26 12:16:36 +0200 (Fri, 26 Oct 2007) $"
-__author__ = "$Author: johann $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 
 import os
