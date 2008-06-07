@@ -41,11 +41,17 @@ class Gui(windows.Gui):
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
         self.delete_if_exists(os.path.join(
             appdata, 'Mozilla', 'Profiles', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'SeaMonkey', 'Profiles', '*', 'Cache'))
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         self.delete_if_exists(os.path.join(
             appdata, 'Mozilla', 'Profiles', 'default', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             appdata, 'Mozilla', 'Profiles', 'default', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'SeaMonkey', 'Profiles', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'SeaMonkey', 'Profiles', '*', 'cookies.txt'))
 
     def start_browser(self, config, url, options):
         """
