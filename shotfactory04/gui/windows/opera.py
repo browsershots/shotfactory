@@ -41,6 +41,11 @@ class Gui(windows.Gui):
         """
         Disable crash dialog and delete browser cache.
         """
+        appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
+        profile = os.path.join(appdata, 'Opera*', '*', 'profile')
+        self.delete_if_exists(os.path.join(profile, 'cache4'))
+        self.delete_if_exists(os.path.join(profile, 'images'))
+        self.delete_if_exists(os.path.join(profile, 'opcache'))
         appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         profile = os.path.join(appdata, 'Opera*', '*', 'profile')
         self.delete_if_exists(os.path.join(profile, 'cache4'))
