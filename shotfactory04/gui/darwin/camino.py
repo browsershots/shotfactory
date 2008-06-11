@@ -42,6 +42,9 @@ class Gui(base.Gui):
         home = os.environ['HOME']
         self.delete_if_exists(os.path.join(
             home, 'Library', 'Caches', 'Camino', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, 'Library', 'Application Support', 'Camino',
+            'WindowState.plist'))
 
     def start_browser(self, config, url, options):
         """
