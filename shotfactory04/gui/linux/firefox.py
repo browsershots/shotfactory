@@ -50,6 +50,18 @@ class Gui(base.Gui):
             home, '.mozilla', 'firefox*', 'Crash Reports'))
         self.delete_if_exists(os.path.join(
             home, '.mozilla', 'firefox*', '*', 'minidumps'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', '*', 'Cache'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', '*', 'sessionstore.js'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', '*', 'history.dat'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', 'Crash Reports'))
+        self.delete_if_exists(os.path.join(
+            home, '.iceweasel', '*', 'minidumps'))
 
     def reuse_browser(self, config, url, options):
         """
