@@ -27,7 +27,7 @@ import sys
 
 kwargs = {
     'name': 'ShotFactory',
-    'version': '0.4-beta3',
+    'version': '0.4.0',
     'description': 'Screenshot factory for browsershots.org',
     'author': 'Johann C. Rocholl',
     'author_email': 'johann@browsershots.org',
