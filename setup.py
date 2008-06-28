@@ -72,6 +72,7 @@ if 'py2exe' in sys.argv:
                 'shotfactory04.gui.windows.flock',
                 'shotfactory04.gui.windows.k_meleon',
                 'shotfactory04.gui.windows.msie',
+                'shotfactory04.gui.windows.minefield',
                 'shotfactory04.gui.windows.navigator',
                 'shotfactory04.gui.windows.opera',
                 'shotfactory04.gui.windows.safari',
