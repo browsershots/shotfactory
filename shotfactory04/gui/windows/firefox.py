@@ -50,6 +50,8 @@ class Gui(windows.Gui):
             appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'history.dat'))
         self.delete_if_exists(os.path.join(
             appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'cookies.txt'))
+        self.delete_if_exists(os.path.join(
+            appdata, 'Mozilla', 'Firefox', 'Profiles', '*', 'urlclassifier*.sqlite'))
 
     def start_browser(self, config, url, options):
         """
