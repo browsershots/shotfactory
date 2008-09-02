@@ -74,6 +74,7 @@ class Gui(base.Gui):
         # win32gui.PostMessage(self.msie_window, win32con.WM_CLOSE, 0, 0)
         process_names = (
             'iexplore.exe',
+            'chrome.exe',
             'firefox.exe',
             'safari.exe',
             'opera.exe',

@@ -70,6 +70,7 @@ if 'py2exe' in sys.argv:
             'includes': ','.join([
                 'shotfactory04.gui.windows.firefox',
                 'shotfactory04.gui.windows.shiretoko',
+                'shotfactory04.gui.windows.chrome',
                 'shotfactory04.gui.windows.flock',
                 'shotfactory04.gui.windows.k_meleon',
                 'shotfactory04.gui.windows.msie',
