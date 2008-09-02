@@ -46,7 +46,10 @@ class Gui(windows.Gui):
         """
         Start browser and load website.
         """
-        command = config['command'] or r'c:\progra~1\chrome\chrome.exe'
+        command = config['command']
+        if not command:
+            appdata = shell.SHGetFolderPath(0, shellcon.CSIDL_LOCAL_APPDATA, 0, 0)
+            command = appdata + '\Google\Chrome\Application\chrome.exe'
         print 'running', command
         try:
             import subprocess
