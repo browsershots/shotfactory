@@ -18,9 +18,9 @@
 GUI-specific interface functions for Mozilla Shiretoko on Microsoft Windows.
 """
 
-__revision__ = "$Rev: 3038 $"
-__date__ = "$Date: 2008-08-29 16:12:00 +0200 (vr, 29 aug 2008) $"
-__author__ = "$Author: tvdw $"
+__revision__ = "$Rev$"
+__date__ = "$Date$"
+__author__ = "$Author$"
 
 import os
 import time

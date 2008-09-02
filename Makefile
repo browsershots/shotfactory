@@ -16,12 +16,12 @@ doctest :
 	grep -rl --include "*.py" "doctest.testmod()" . | xargs -n1 python
 
 headers :
-	find -name "*.py" \
+	find . -name "*.py" \
 	| xargs header.py shotfactory04/__init__.py
 
 properties :
-	find -name "*.py" | xargs svn propset svn:keywords "Rev Date Author"
-	find -type f | grep -v \\.svn | grep -v \\.log \
+	find . -name "*.py" | xargs svn propset svn:keywords "Rev Date Author"
+	find . -type f | grep -v \\.svn | grep -v \\.log \
 	| grep -v \\.bz2 | grep -v \\.gz | grep -v \\.pyc \
 	| grep -v \\.png | grep -v \\.ico | grep -v \\.jpg | grep -v \\.ppm \
 	| xargs svn propset svn:eol-style native
