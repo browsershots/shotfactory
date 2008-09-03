@@ -25,6 +25,7 @@ __author__ = "$Author$"
 import os
 import time
 import win32gui
+import win32con
 from win32com.shell import shellcon
 from win32com.shell import shell
 from shotfactory04.gui import windows
@@ -59,8 +60,39 @@ class Gui(windows.Gui):
         else:
             subprocess.Popen([command, url])
         print "Sleeping %d seconds while page is loading." % options.wait
-        time.sleep(options.wait)
+        time.sleep(options.wait - 10)
+        self.maximize()
+        time.sleep(10)
+
+    def maximize(self):
+        """Maximize the browser window."""
+        window = self.find_maximizable()
+        if window:
+             win32gui.PostMessage(window,
+                 win32con.WM_SYSCOMMAND, win32con.SC_MAXIMIZE)
+
+    def find_maximizable(self):
+        """Find window to maximize."""
+        return self.find_window_by_classname('Chrome_XPFrame')
+        # return self.find_window_by_title_suffix('Google Chrome')
 
     def find_scrollable(self):
         """Find scrollable window."""
         return win32gui.WindowFromPoint((self.width/2, self.height/2))
+
+
+# Test browser interface from command line                                              
+if __name__ == '__main__':
+    config = {
+        'width': 1024,
+        'height': 768,
+        'bpp': 24,
+        'request': 123,
+        }
+
+    class Options:
+        verbose = 3
+        max_pages = 7
+
+    gui = Gui(config, Options())
+    gui.maximize()
